@@ -1,0 +1,80 @@
+body {
+	background-color:maroon;
+	overflow-x:hidden;
+	width: 100%
+}
+
+img{z-index:10;}
+
+#Dash{
+	font: 1.5em/2em Arial, Helvetica, sans-serif;
+	background:#FFF;
+	border: 2px outset grey;
+	color: maroon;
+	left:645px;
+	height: 2em;
+	padding:0 1em;
+	position: absolute;
+}
+
+#Dash p{display:inline; margin:0; padding:0;}
+
+#board{
+	background:url(../images/marble.jpg);
+	border:4px outset gray;
+	width:624px;
+	height:624px;
+	position:relative;
+	margin:5px;
+	padding:7px 0 0 7px;
+}
+
+#board ul{
+	height:77px;
+	width:616px;
+	position:relative;
+	background-color:rgba(255,255,255,0.5);
+	color:#222;
+}
+
+#board ul li{
+	display:inline;
+	float:left;
+	position:relative;
+	height:75px;
+	width:75px;
+	border:1px solid silver;
+}
+
+#board ul li:not(.selected){
+}
+
+#board ul li img{display:block; position:relative;}
+
+#board ul:nth-child(1) div{}
+#board ul li:nth-child(1){}
+
+#board ul:nth-child(odd) li:nth-child(odd){background-color:rgba(0,0,0,0.5);}
+#board ul:nth-child(even) li:nth-child(even){background-color:rgba(0,0,0,0.5);}
+
+#board ul li:hover{
+	border:1px solid red;
+}
+
+#board ul:first-child div:hover{margin-top:0;}
+#board ul li:first-child:hover{margin-left:0;}
+
+.label{
+	position:absolute;
+	bottom:0px;
+	left:2px;
+	z-index:100;
+}
+
+.selected{
+	background-color:silver !important;
+	border:1px solid purple;
+	z-index:5;
+}
+
+#board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
