@@ -6,30 +6,39 @@
  * v12.1 - Added basic king moves, still needs castle functionality & legality.
  * v12.2 - Added castle legality & functionality, rook moves but looses its data
  * v12.3 - Corrected rook issues when castling
- * v12.4 - Revised CSS. Added marble background with opacity on the squares.
+ * ^^^ B. Fisher ^^^
+ * v13 - Revised CSS. Added marble background with opacity on the squares. << B. Fisher
+ * 
+ * v13.1 - Added and corrected En Passant << J-M Glenn
+ *
+ * v13.3 - Removed the Player object from the Game object. Creating a Player sets up its pieces.
+ * 			Set Players as a global var. Turn changes reverses the Players array. << B. Fisher
  */
 
-var cLabels = "ABCDEFGH";
+var cLabels = "ABCDEFGH", Players = [];
 
 function Game(){
 	var self = this,
-	currentPlayer = 'white',
 	pieces,
 	board = $('#board'),
 	squares = $('#board ul li'),
 	selectedSquare = null;
+	
+	Players = [new Player('white'), new Player('black')];
 	
 	function turn(){
 		select(false);
 		$(pieces).draggable("disable");
 		$('.legal').removeClass('legal')
 		
-		currentPlayer = (currentPlayer == 'white') ? 'black' : 'white';
+		this.Players.reverse();
+		alert(this.Players[0].color);
 		
 		$('#Dash').css('background', currentPlayer);
-		$('#turn').html(currentPlayer);
+		$('#turn').html(Players[0].color);
 		
-		$("#board img." + currentPlayer).draggable("enable");
+		$("#board img." + Players[0].color).draggable("enable");
+		
 	};
 	
 	function select(square){
@@ -93,18 +102,22 @@ function Game(){
 			}).data().piece.moved = true;
 			$(rook).data().piece.position = $(dest).attr('id');
 		};
-		
+		// Checking for En Passant - John-Michael
 		if(pieceData.type == 'pawn' && !pieceData.moved && (squareID.match('4') || squareID.match('5'))){
-			var prev = $(square).prev().children('img')[0],
-				next = $(square).next().children('img')[0],
-				inc = (pieceData.color == 'white') ? -1 : 1;
+			var prev = $(square).prev().children('img')[0],  // pawn to left
+				next = $(square).next().children('img')[0],  // pawn to right
+				inc = (pieceData.color == 'white') ? 1 : -1; // our pawn, if white it's 1, otherwise it's -1
 			
-			if(prev && $(prev).data().type == 'pawn' && ($(prev).data().color != pieceData.color)){
-				console.log($(prev).data());
-				$(prev).data().EP = oCol + (oRow + inc);
-			} else if(next && $(next).data().type == 'pawn' && ($(next).data().color != pieceData.color)){
-				console.log($(next).data());
-				$(next).data().EP = oCol + (oRow + inc);
+			// If pawn to left is not the same color (enemy pawn)
+			if(prev && $(prev).data().piece.type == 'pawn' && ($(prev).data().piece.color != pieceData.color)){
+				var EP = writeID(origin[0], oRow+inc);
+				$(prev).data().piece.EP = EP; // And set EP to the point behind the enemy
+				console.log($(prev).data().piece);
+			// Else if pawn to right is not the same color (enemy pawn)
+			} else if(next && $(next).data().piece.type == 'pawn' && ($(next).data().piece.color != pieceData.color)){
+				var EP = writeID(origin[0], (oRow+inc));
+				$(next).data().piece.EP = EP; // And set EP to the point behind the enemy
+				console.log($(next).data().piece);
 			}
 		};
 		
@@ -124,35 +137,6 @@ function Game(){
 	};
 	
 // === End movePiece function ===
-	
-// Place pieces on the board in the starting position	
-	for (p = 0; p <= 7; p++) {
-		new pawn("white", cLabels[p] + "2");
-		new pawn("black", cLabels[p] + "7");
-	};
-
-	new rook("white", "A1");
-	new rook("white", "H1");
-	new rook("black", "A8");
-	new rook("black", "H8");
-
-	new knight("white", "B1");
-	new knight("white", "G1");
-	new knight("black", "B8");
-	new knight("black", "G8");
-	
-	new bishop("white", "C1");
-	new bishop("white", "F1");
-	new bishop("black", "C8");
-	new bishop("black", "F8");
-
-	new queen("white", "D1");
-	new queen("black", "D8");
-
-	new king("white", "E1");
-	new king("black", "E8");
-
-// === End Piece Placement ===
 	
 	pieces = $("#board img");
 	
@@ -186,7 +170,7 @@ function Game(){
 	$(squares).click(function(event){
 		var kid = $(this).children('img')[0];
 		
-		if(kid && $(kid).data().piece.color == currentPlayer){
+		if(kid && $(kid).data().piece.color == Players[0].color){
 			select(this);
 			$(Legal(kid)).addClass('legal');
 		} else if($(this).hasClass('legal')) {
@@ -197,6 +181,32 @@ function Game(){
 		};
 	});
 };
+
+// ===============================================
+function Player(side){
+	this.color = side;
+	this.pieces = new Array();
+	
+	var startRow = (this.color == 'white') ? 1 : 8, // White Player starts on Row 1, Black on row 8
+	pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
+	
+	for (p = 0; p <= 7; p++) {
+		this.pieces.push(new pawn(this.color, cLabels[p] + pawnRow));
+	};
+
+	this.pieces.push(new rook(this.color, "A" + startRow));
+	this.pieces.push(new rook(this.color, "H" + startRow));
+
+	this.pieces.push(new knight(this.color, "B" + startRow));
+	this.pieces.push(new knight(this.color, "G" + startRow));
+	
+	this.pieces.push(new bishop(this.color, "C" + startRow));
+	new bishop(this.color, "F" + startRow);
+
+	this.pieces.push(new queen(this.color, "D" + startRow));
+	this.pieces.push(new king(this.color, "E" + startRow));
+	
+}
 
 //=======================================================
 function Piece(color, position){
