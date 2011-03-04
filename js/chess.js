@@ -21,6 +21,11 @@
  * 
  * v13.5 - check function passed initial testing. Captured pieces need to be removed 
  * 			from Player pieces array << B. Fisher 3/1 0330
+ * 
+ * v14.3 - Moved capture functionality to the Player object. Pieces are now removed from the array on capture.
+ * 			Check function is working. Added Checkmate (comments only) and Stalemate function (untested). << B. Fisher 3.3 2200
+ * 
+ * v14.4 - Modified check function to return checking pieces. << B. Fisher 3.4 0300
  */
 
 var cLabels = "ABCDEFGH", Players = [];
@@ -551,12 +556,16 @@ function findDiagonal(start, xInc, yInc){
 	return(cLabels[x] + y);
 };
 
+// Find pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column).
+// If theating pieces are found return an array of their objects, else returns false.
 function check(square, player){
 	var chk = false;
 	$(player.pieces).each(function(){
 		var ids = Legal(this);
-		console.log('piece: ' + this.color + ' ' + this, ids);
-		if(ids.match(square)) chk = true;
+		if(ids.match(square)){
+			if(!chk) chk = new Array();
+			chk.push(this);
+		};
 	});
 	return chk;
 };
