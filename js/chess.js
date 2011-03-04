@@ -45,8 +45,7 @@ function Game(){
 		});
 		
 		// Find whether the last move placed the next player in check
-		
-		var king_check = check(Players[1].King.position);
+		var king_check = check(Players[1].King.position, Players[0]);
 		console.log('Check: ' + king_check);
 		
 		this.Players.reverse(); // Switches the active player
@@ -228,7 +227,7 @@ function Player(side){
 	var piece, i;
 	
 	for (p = 0; p <= 7; p++) {
-		piece = new pawn(this.color, cLabels[p] + pawnRow)
+		this.pieces.push(new pawn(this.color, cLabels[p] + pawnRow));
 	};
 	
 	this.pieces.push(new rook(this.color, "A" + startRow));	
@@ -243,12 +242,16 @@ function Player(side){
 	this.pieces.push(new queen(this.color, "D" + startRow));
 
 	this.King = new king(this.color, "E" + startRow);
+	this.pieces.push(this.King);
 	
+	//Remove a piece from this players piece array when captured << B. Fisher 3.3 2100
 	$(this.pieces).bind('remove', function(){
-		$.each(self.pieces, function(index, value){
-			if(this === value){
+		var piece = this;
+		$.each(self.pieces, function(index, item){
+			if(piece === item){
 				self.pieces.splice(index, 1);
-			}
+				return false;
+			};
 		});
 	});
 };
@@ -274,8 +277,8 @@ function Piece(color, start){
 	
 	this.capture = function(){
 		$(this.image).remove();
-		$(this).trigger("remove");
-	}
+		$(this).trigger('remove');
+	};
 };
 
 // Start piece definitions
@@ -548,13 +551,30 @@ function findDiagonal(start, xInc, yInc){
 	return(cLabels[x] + y);
 };
 
-function check(square){
+function check(square, player){
 	var chk = false;
-	console.log('Square: ' + square)
-	$(Players[0].pieces).each(function(){
+	$(player.pieces).each(function(){
 		var ids = Legal(this);
 		console.log('piece: ' + this.color + ' ' + this, ids);
 		if(ids.match(square)) chk = true;
 	});
 	return chk;
 };
+
+function Checkmate(){
+	//if players king is in check
+	
+	// if checking piece is vulnerable
+	
+	//if all available moves for the king are threatened
+};
+
+function Stalemate(Player) {
+	legalMoves = '';
+	$.each(Player.pieces, function(){
+		legalmoves += this.Legal;
+	});
+	if(legalmoves.length > 0) return true;
+	else return false;
+	
+}
