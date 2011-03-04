@@ -47,6 +47,7 @@ function Game(){
 		// Find whether the last move placed the next player in check
 		
 		var king_check = check(Players[1].King.position);
+		console.log('Check: ' + king_check);
 		
 		this.Players.reverse(); // Switches the active player
 		
@@ -192,17 +193,15 @@ function Game(){
 		accept: "img",
 		activeClass: 'legal',
 		drop: function(event, ui){
-			$.when(movePiece($(ui.draggable).data().piece, this));
+			movePiece($(ui.draggable).data().piece, this);
+			turn();
 		}
-	}).then(function(){turn()})
-		.droppable({disabled: true});
+	}).droppable({disabled: true});
 	
 	$(squares).click(function(event){
 		var kid = $(this).children('img')[0];
 		
-		if (kid) {
-			kid = $(kid).data().piece				// Loads piece data into kid variable
-		}
+		if (kid) kid = $(kid).data().piece	;			// Loads piece data into kid variable
 		
 		if(kid && kid.color == Players[0].color){	// checks if piece belongs to the current player
 			select(this);
@@ -223,40 +222,45 @@ function Player(side){
 	this.pieces = new Array();
 	
 	var startRow = (this.color == 'white') ? 1 : 8, // White Player starts on Row 1, Black on row 8
-	pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
+		pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
+		self = this;
 	
 	var piece, i;
 	
 	for (p = 0; p <= 7; p++) {
-		piece = new pawn(this, cLabels[p] + pawnRow)
+		piece = new pawn(this.color, cLabels[p] + pawnRow)
 	};
 	
-	this.pieces.push(new rook(this, "A" + startRow));	
-	this.pieces.push(new rook(this, "H" + startRow));
+	this.pieces.push(new rook(this.color, "A" + startRow));	
+	this.pieces.push(new rook(this.color, "H" + startRow));
 
-	this.pieces.push(new knight(this, "B" + startRow));
-	this.pieces.push(new knight(this, "G" + startRow));
+	this.pieces.push(new knight(this.color, "B" + startRow));
+	this.pieces.push(new knight(this.color, "G" + startRow));
 	
-	this.pieces.push(new bishop(this, "C" + startRow));
-	new bishop(this.color, "F" + startRow);
+	this.pieces.push(new bishop(this.color, "C" + startRow));
+	this.pieces.push(new bishop(this.color, "F" + startRow));
 
-	this.pieces.push(new queen(this, "D" + startRow));
+	this.pieces.push(new queen(this.color, "D" + startRow));
 
-	this.King = new king(this, "E" + startRow);
+	this.King = new king(this.color, "E" + startRow);
+	
+	$(this.pieces).bind('remove', function(){
+		$.each(self.pieces, function(index, value){
+			if(this === value){
+				self.pieces.splice(index, 1);
+			}
+		});
+	});
 };
 
 //=======================================================
-function Piece(player, position){
-	this.player = player;
-	
-	this.color = this.player.color;
+function Piece(color, start){
 	this.moved = false;
-	this.position = position;
+	this.position = start;
+	this.color = color;
 	
 	this.col = function(){return this.position[0]};
 	this.row = function(){return this.position[1]*1};
-	
-	this.index = player.pieces.length;
 	
 	this.image = $("<img>");
 	$(this.image).attr({src:'images/' + this + '_' + color + '.png',
@@ -264,20 +268,20 @@ function Piece(player, position){
 					.addClass(color)
 					.data("piece", this);  // Adds piece data to the images;
 	
-	this.capture = function(){
-		$(this.image).remove();
+	this.place = function(position){
+		$(this.image).appendTo("#" + position);
 	};
 	
-	this.place = function(position){
-		$(this.image)
-			.appendTo("#" + position)
-	};
+	this.capture = function(){
+		$(this.image).remove();
+		$(this).trigger("remove");
+	}
 };
 
 // Start piece definitions
-function pawn(player, start){
+function pawn(color, start){
 	this.toString = function(){return 'pawn'}
-	Piece.call(this, player, start);
+	Piece.call(this, color, start);
 	
 	var self = this;
 	this.type = "pawn";
@@ -299,9 +303,9 @@ function pawn(player, start){
 }
 pawn.prototype = new Piece();
 
-function rook(player, start){
+function rook(color, start){
 	this.toString = function(){return 'rook'}
-	Piece.call(this, player, start);
+	Piece.call(this, color, start);
 	
 	var self = this;
 	this.type = "rook";
@@ -317,9 +321,10 @@ function rook(player, start){
 };
 rook.prototype = new Piece();
 
-function knight(player, start){
+function knight(color, start){
 	this.toString = function(){return 'knight'}
-	Piece.call(this, player, start);
+	Piece.call(this, color, start);
+	
 	var self = this;
 	this.type = "knight";
 	
@@ -329,9 +334,9 @@ function knight(player, start){
 };
 knight.prototype = new Piece();
 
-function bishop(player, start){
+function bishop(color, start){
 	this.toString = function(){return 'bishop'}
-	Piece.call(this, player, start);
+	Piece.call(this, color, start);
 	var self = this;
 	this.type = "bishop";
 	
@@ -346,9 +351,9 @@ function bishop(player, start){
 };
 bishop.prototype = new Piece();
 
-function queen(player, start){
+function queen(color, start){
 	this.toString = function(){return 'queen'}
-	Piece.call(this, player, start);
+	Piece.call(this, color, start);
 	var self = this;
 	this.type = "queen";
 	
@@ -363,9 +368,9 @@ function queen(player, start){
 };
 queen.prototype = new Piece();
 
-function king(player, start){
+function king(color, start){
 	this.toString = function(){return 'king'}
-	Piece.call(this, player, start);
+	Piece.call(this, color, start);
 	
 	var self = this;
 	this.type = "king";
