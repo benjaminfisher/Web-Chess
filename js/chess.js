@@ -579,11 +579,11 @@ function Checkmate(){
 };
 
 function Stalemate(Player) {
-	legalMoves = '';
+	var legalMoves = '';
 	$.each(Player.pieces, function(){
-		legalmoves += this.Legal;
+		legalMoves += this.Legal;
 	});
-	if(legalmoves.length > 0) return true;
+	if(legalMoves.length > 0) return true;
 	else return false;
 	
 }
