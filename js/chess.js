@@ -50,8 +50,8 @@ function Game(){
 		});
 		
 		// Find whether the last move placed the next player in check
-		var king_check = check(Players[1].King.position, Players[0]);
-		console.log('Check: ' + king_check);
+		Players[1].King.check = (!check(Players[1].King.position, Players[0])) ? false : true;
+		console.log('Check: ' + Players[1].King.check);
 		
 		this.Players.reverse(); // Switches the active player
 		
