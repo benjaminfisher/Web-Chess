@@ -489,15 +489,15 @@ function Legal(piece){
 		}
 	};
 	
-	//Check for castle legality and add king double step if true << B. Fisher
+	// Check for castle legality and add king double step if true. << B. Fisher
 	if(type == 'king'){
-		if(!piece.check && !piece.moved){
+		if(!piece.check && !piece.moved){				// King is not in check and has not moved
 			var kid = $('#H' + rNum).children('img')[0];
 			if (kid) {
 				rook = $(kid).data().piece
 			}
-			
-			if(vector(position, 'G' + rNum, color, false).match('G') && !rook.moved){
+			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
+			if(vector(position, 'G' + rNum, color, false).match('G') && !rook.moved && !check('F' + rNum, Players[1], true)){
 				legalIDs += writeID('G', rNum);
 			};
 			
@@ -505,7 +505,9 @@ function Legal(piece){
 			if (kid) {
 				rook = $(kid).data().piece
 			}
-			if(vector(position, 'B' + rNum, color, false).match('B') && !rook.moved){
+			// Queenside squares between rook and king are not occupied. The king is not moving accross check.
+			// and the queenside rook has not moved.
+			if(vector(position, 'B' + rNum, color, false).match('B') && !rook.moved && !check('D' + rNum, Players[1], true)){
 				legalIDs += writeID('C', rNum);
 			};
 		};
@@ -513,9 +515,9 @@ function Legal(piece){
 		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		var squares = legalIDs.split(',');
 		console.log(legalIDs, squares);
-		$.each(squares, function(index){
-			if(check(this, Players[1], true)) squares.splice(index, 1);
-		});
+		for(var i = squares.length-1; i>=0; i--){
+			if(check(squares[i], Players[1], true)) squares.splice(i, 1);
+		};
 		legalIDs = squares.join(',');
 		
 	};
