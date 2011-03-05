@@ -23,9 +23,13 @@
  * 			from Player pieces array << B. Fisher 3/1 0330
  * 
  * v14.3 - Moved capture functionality to the Player object. Pieces are now removed from the array on capture.
- * 			Check function is working. Added Checkmate (comments only) and Stalemate function (untested). << B. Fisher 3.3 2200
+ * 			Check function is working. Added Checkmate (comments only) and Stalemate function (untested). << B. Fisher 3/03 2200
  * 
- * v14.4 - Modified check function to return checking pieces. << B. Fisher 3.4 0300
+ * v14.4 - Modified check function to return checking pieces. << B. Fisher 3/04 0300
+ * 
+ * v14.5 - Added skipKing option to check to prevent recursion over the Legal function.
+ * 			Legal is removing threatened squares from the kings legal moves.
+ * 			Started adding movePiece functionality into the Piece.move() function. << B. Fisher 3/04 1930
  */
 
 var cLabels = "ABCDEFGH", Players = [];
@@ -50,7 +54,7 @@ function Game(){
 		});
 		
 		// Find whether the last move placed the next player in check
-		Players[1].King.check = (!check(Players[1].King.position, Players[0])) ? false : true;
+		Players[1].King.check = (check(Players[1].King.position, Players[0], true))
 		console.log('Check: ' + Players[1].King.check);
 		
 		this.Players.reverse(); // Switches the active player
@@ -280,6 +284,26 @@ function Piece(color, start){
 		$(this.image).appendTo("#" + position);
 	};
 	
+	this.move = function(destination){
+		if(this.type == 'king' && !this.moved && (squareID.match('G') || squareID.match('C'))){
+			if(squareID.match('G')){
+				var rook = $('#H' + oRow).children('img')[0],
+					dest = $(square).prev();
+			}else if(squareID.match('C')){
+				var rook = $('#A' + oRow).children('img')[0],
+					dest = $(square).next();
+			};
+			$(rook).fadeOut('fast', function(){
+				$(this)
+					.appendTo(dest)
+					.fadeIn('fast')
+			}).data().piece.moved = true;
+			$(rook).data().piece.position = $(dest).attr('id');
+		};
+		
+		$(this.image).appendTo(destination);
+	};
+	
 	this.capture = function(){
 		$(this.image).remove();
 		$(this).trigger('remove');
@@ -394,10 +418,14 @@ function king(color, start){
 	this.footprint = function(){
 		var row = this.row(),
 			col = this.col(),
-			C = cLabels.indexOf(col);
+			C = cLabels.indexOf(col),
+			squares = [col + (row + 1), col + (row - 1), cLabels[C + 1] + row, cLabels[C - 1] + row,
+				cLabels[C + 1] + (row + 1), cLabels[C + 1] + (row - 1), cLabels[C - 1] + (row + 1), 
+				cLabels[C - 1] + (row - 1)];
 		
-		return [col + (row + 1), col + (row - 1), cLabels[C + 1] + row, cLabels[C - 1] + row,
-		cLabels[C + 1] + (row + 1), cLabels[C + 1] + (row - 1), cLabels[C - 1] + (row + 1), cLabels[C - 1] + (row - 1)];
+		console.log('King squares:' + squares);
+		
+		return squares;
 	};
 	
 	self.place(start);
@@ -421,7 +449,47 @@ function Legal(piece){
 	
 //	console.log(color + ' ' + type + ': ' + pieceData.index + ' - footprint: ' + footprint + ' | moved: ' + pieceData.moved);
 	
-	//Check for castle legality and add king double step if true
+	$(footprint).each(function(){
+		// 1st: culls out knights, 2nd: culls the pieces location
+		// 3rd & 4th: culls rows outside board, 5th: culls columns outside board
+		if (this.length && position != this && this[1]*1 >= 1 && this[1]*1 <= 8 && cLabels.indexOf(this[0]) >= 0){
+			legalIDs += vector(position, this, color, type != 'pawn');
+		};
+	});
+	
+	// pawn capture
+	if (type == 'pawn'){
+		var fStep = (color == 'black') ? rNum - 1 : rNum + 1; 			// fStep is the capture row for pawns << B. Fisher
+		
+		dest = writeID(cLabels[cNum - 2], fStep);						// Check forward-left for opponent piece << B. Fisher
+		if(occupied(dest) && occupied(dest).color != color){legalIDs += dest;};
+		
+		dest = writeID(cLabels[cNum], fStep);							// Check forward-right for opponent piece << B. Fisher
+		if(occupied(dest) && occupied(dest).color != color){legalIDs += dest;};
+		
+		if(piece.EP){legalIDs += piece.EP}; // If EP (En Passant) variable contains a location, add it to legal moves << B. Fisher
+	};
+	
+	// Knight moves: the knight object doesn't have a footprint. Its legal moves are 2 squares horz or vert,
+	// than 1 square along the other dimension (like an 'L'). << B. Fisher
+	if(type == 'knight'){
+		var kCol = cLabels.indexOf(C),
+			cShift;
+		
+		for(var r = rNum - 2; r <= rNum + 2; r++){
+			if(r != rNum){
+				if(Math.abs(rNum - r) == 1) {cShift = 2} else {cShift = 1};
+				
+				dest = writeID(cLabels[kCol + cShift], r);
+				if(!(occupied(dest).color == color)){legalIDs += dest};
+				
+				dest = writeID(cLabels[kCol - cShift], r);
+				if(!(occupied(dest).color == color)){legalIDs += dest};
+			}
+		}
+	};
+	
+	//Check for castle legality and add king double step if true << B. Fisher
 	if(type == 'king'){
 		if(!piece.check && !piece.moved){
 			var kid = $('#H' + rNum).children('img')[0];
@@ -441,47 +509,18 @@ function Legal(piece){
 				legalIDs += writeID('C', rNum);
 			};
 		};
+		
+		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
+		var squares = legalIDs.split(',');
+		console.log(legalIDs, squares);
+		$.each(squares, function(index){
+			if(check(this, Players[1], true)) squares.splice(index, 1);
+		});
+		legalIDs = squares.join(',');
+		
 	};
-	
-	$(footprint).each(function(){
-		// 1st: culls out knights, 2nd: culls the pieces location
-		// 3rd & 4th: culls rows outside board, 5th: culls columns outside board
-		if (this.length && position != this && this[1]*1 >= 1 && this[1]*1 <= 8 && cLabels.indexOf(this[0]) >= 0){
-			legalIDs += vector(position, this, color, type != 'pawn');
-		};
-	});
-	
-	// pawn capture
-	if (type == 'pawn'){
-		var fStep = (color == 'black') ? rNum - 1 : rNum + 1; 			// fStep is the capture row for pawns << B. Fisher
-		
-		dest = writeID(cLabels[cNum - 2], fStep);						// Check forward-left for opponent piece << B. Fisher
-		if(occupied(dest) && occupied(dest) != color){legalIDs += dest;};
-		
-		dest = writeID(cLabels[cNum], fStep);							// Check forward-right for opponent piece << B. Fisher
-		if(occupied(dest) && occupied(dest) != color){legalIDs += dest;};
-		
-		if(piece.EP){legalIDs += piece.EP}; // If EP (En Passant) variable contains a location, add it to legal moves << B. Fisher
-	};
-	
-	if(type == 'knight'){
-		var kCol = cLabels.indexOf(C),
-			cShift;
-		
-		for(var r = rNum - 2; r <= rNum + 2; r++){
-			if(r != rNum){
-				if(Math.abs(rNum - r) == 1) {cShift = 2} else {cShift = 1};
-				
-				dest = writeID(cLabels[kCol + cShift], r);
-				if(!(occupied(dest) == color)){legalIDs += dest};
-				
-				dest = writeID(cLabels[kCol - cShift], r);
-				if(!(occupied(dest) == color)){legalIDs += dest};
-			}
-		}
-	};
-	
-//	console.log('Legal IDs: ' + legalIDs);
+
+	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
 	
 	return legalIDs;
 };
@@ -500,7 +539,7 @@ function vector(start, end, side, capture){
 		sX += xInc;
 		sY += yInc;
 		square = cLabels[sX] + sY;
-		color = occupied('#' + square);
+		color = occupied('#' + square).color;
 		
 		if(color){
 			if(capture && color != side){list += '#' + square + ',';}
@@ -515,16 +554,20 @@ function vector(start, end, side, capture){
 		
 };
 
+// Checks the square ID for a occupying piece.
+// If one is found return the piece, if not return false. << B. Fisher
 function occupied(square_ID){
 	var kid = $(square_ID).children('img');
 	if (kid.length > 0) {
 		kid = kid[0];
-		return $(kid).data().piece.color;
+		return $(kid).data().piece;
 	}else {
 		return false;
 	}
 };
 
+// Returns a properly formated CSS square ID (for jQuery selection)
+// unless the row and/or column are beyound the edge of the board. << B. Fisher
 function writeID(column, row) {
 	if(column && row && row > 0 && row <= 8){
 		return '#' + column + row + ","
@@ -532,6 +575,8 @@ function writeID(column, row) {
 	return "";
 };
 
+//Simple function to return a comparison between [first] and [second]
+// Returns: 1 if greater than, Returns: -1 if less than, Returns: 0 if equal << B. Fisher
 function findInc (first, second){
 	var Inc;
 	
@@ -542,6 +587,8 @@ function findInc (first, second){
 	return Inc;
 };
 
+// Returns: the ID of the farthest diagonal square on the board from [start] (requires ID, not object)
+// given X and Y increments << B. Fisher
 function findDiagonal(start, xInc, yInc){
 	var x = cLabels.indexOf(start[0]),
 		y = start[1]*1;
@@ -556,15 +603,19 @@ function findDiagonal(start, xInc, yInc){
 	return(cLabels[x] + y);
 };
 
-// Find pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column).
-// If theating pieces are found return an array of their objects, else returns false.
-function check(square, player){
-	var chk = false;
+// Returns: pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column).
+// var skipKing is Boolean. It is used to prevent recursion in the Legal function.
+// If threatening pieces are found return an array of their objects, else returns false. << B. Fisher
+function check(square, player, skipKing){
+	var chk = false, ids;
 	$(player.pieces).each(function(){
-		var ids = Legal(this);
-		if(ids.match(square)){
-			if(!chk) chk = new Array();
-			chk.push(this);
+		if (!(this.type == 'king' && skipKing)) {
+			ids = Legal(this);
+			if (ids.match(square)) {
+				if (!chk) 
+					chk = new Array();
+				chk.push(this);
+			};
 		};
 	});
 	return chk;
@@ -586,4 +637,4 @@ function Stalemate(Player) {
 	if(legalMoves.length > 0) return true;
 	else return false;
 	
-}
+};
