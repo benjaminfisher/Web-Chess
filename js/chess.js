@@ -515,13 +515,14 @@ function Legal(piece){
 		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		var squares = legalIDs.split(',');
 		console.log(legalIDs, squares);
-		for(var i = squares.length-1; i>=0; i--){
+		for(var i = squares.length-2; i>=0; i--){
 			if(check(squares[i], Players[1], true)) squares.splice(i, 1);
 		};
 		legalIDs = squares.join(',');
 		
 	};
-
+	// === End King legality checks ===
+	
 	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
 	
 	return legalIDs;
