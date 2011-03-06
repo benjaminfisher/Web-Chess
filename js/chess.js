@@ -30,6 +30,9 @@
  * v14.5 - Added skipKing option to check to prevent recursion over the Legal function.
  * 			Legal is removing threatened squares from the kings legal moves.
  * 			Started adding movePiece functionality into the Piece.move() function. << B. Fisher 3/04 1930
+ * 
+ * v15   - Removed the movePiece function. All piece movement is now handled by the individual piece objects
+ * 			and the Piece class. Revamped the Legality function to handle pawn capture and en passant legality << B. Fisher 3/05 2310
  */
 
 var cLabels = "ABCDEFGH", Players = [];
@@ -84,100 +87,7 @@ function Game(){
 		}
 	};
 	
-	function movePiece(piece, square){
-		/* Handles relocating pieces and capturing opponent pieces as well as
-		 * functionality of castling for the king (finding and moving the rook)
-		 * and locating and capturing the passing pawn on en passant. << B. Fisher
-		 */
-		
-		var kid = $(square).children('img'),
-			origin = piece.position,
-			oRow = origin[1] * 1,
-			oCol = origin[0],
-			squareID = $(square).attr('id'),
-			inc;
-		
-		/* If the destination square contains a piece (kid variable) remove it.
-		 * This if statement currently contains the capture functionality,
-		 * which should be moved to its own function << B. Fisher
-		 */ 
-		if (kid.length) {
-			kid = $(kid).data().piece;
-			$(kid.image).fadeOut('slow', function(){
-				console.log('Captured piece:' + $(this).data().piece);
-				kid.capture();
-				$(piece.image).appendTo(square);
-			});
-		/* This condition contains capture functionality for en passant captures.
-		 * The otherPawn var holds the img of the passing pawn << B. Fisher
-		 */
-		}else if(piece == 'pawn' && piece.EP && piece.EP.match(squareID)){
-			var otherPawn = $("#" + squareID[0] + oRow).children('img');
-			otherPawn = $(otherPawn).data().piece;
-			
-			$(otherPawn.image).fadeOut('slow', function(){
-				otherPawn.capture();
-				$(piece.image).appendTo(square);
-			});
-		}
-		else {
-			$(piece.image).appendTo(square); // Moves the piece to the destination square
-		};
-		
-		/* Castleing functionality (legality is handled by the Legal function)
-		 * If the king moves two squares on his first move (landing on column 'G' or 'C')
-		 * a castle has been performed. The corrosponding rook is located, moved past the king
-		 * (to column 'D' or 'F' respectivly) and its moved, and position variables are updated.
-		 */ 
-		if(piece == 'king' && !piece.moved && (squareID.match('G') || squareID.match('C'))){
-			if(squareID.match('G')){
-				var rook = $('#H' + oRow).children('img')[0],
-					dest = $(square).prev();
-			}else if(squareID.match('C')){
-				var rook = $('#A' + oRow).children('img')[0],
-					dest = $(square).next();
-			};
-			$(rook).fadeOut('fast', function(){
-				$(this)
-					.appendTo(dest)
-					.fadeIn('fast')
-			}).data().piece.moved = true;
-			$(rook).data().piece.position = $(dest).attr('id');
-		};
-		// Checking for En Passant - John-Michael
-		if(piece == 'pawn' && !piece.moved && (squareID.match('4') || squareID.match('5'))){
-			var prev = $(square).prev().children('img')[0],  // square to left
-				next = $(square).next().children('img')[0];  // square to right
-				
-				inc = (piece.color == 'white') ? 1 : -1; // current player's pawn, if white it's 1, otherwise it's -1
-			
-			// If pawn to left is not the same color (enemy pawn)
-			if(prev && $(prev).data().piece.type == 'pawn' && ($(prev).data().piece.color != piece.color)) {
-				enPassant(prev); // And set EP to the point behind the enemy
-			// Else if pawn to right is not the same color (enemy pawn)
-			}else if(next && $(next).data().piece.type == 'pawn' && ($(next).data().piece.color != piece.color)) {
-					enPassant(next); // And set EP to the point behind the enemy (next)
-			}
-		};
-		
-		piece.moved = true;
-		piece.position = square.id;
-		
-		// Corrected v13.1 by John-Michael
-		function enPassant(pawn){
-			if (pawn) {
-				var pieceData = $(pawn).data().piece;
-					
-				pieceData.EP = '#' + oCol + (oRow + inc);
-			};
-		};
-		//turn();
-	};
-	
-// === End movePiece function ===
-	
 	pieces = $("#board img");
-	
 	$(pieces).draggable({
 			revert: "invalid",
 			revertDuration: 1000,
@@ -201,22 +111,20 @@ function Game(){
 		accept: "img",
 		activeClass: 'legal',
 		drop: function(event, ui){
-			movePiece($(ui.draggable).data().piece, this);
+			$(ui.draggable).data().piece.move(this);
 			turn();
 		}
 	}).droppable({disabled: true});
 	
 	$(squares).click(function(event){
-		var kid = $(this).children('img')[0];
-		
-		if (kid) kid = $(kid).data().piece	;			// Loads piece data into kid variable
+		var kid = occupied(this.id);
 		
 		if(kid && kid.color == Players[0].color){	// checks if piece belongs to the current player
 			select(this);
 			$(Legal(kid)).addClass('legal');
 		} else if($(this).hasClass('legal')) {				// If clicked square is a legal move
-			piece = $(selectedSquare).children('img')[0];	// retrieve piece image from the selected square
-			movePiece($(piece).data().piece, this);
+			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
+			piece.move(this);
 			turn();
 		} else {
 			select();			// if square is not occupied, or is occupied by an opponent piece
@@ -284,29 +192,21 @@ function Piece(color, start){
 		$(this.image).appendTo("#" + position);
 	};
 	
-	this.move = function(destination){
-		if(this.type == 'king' && !this.moved && (squareID.match('G') || squareID.match('C'))){
-			if(squareID.match('G')){
-				var rook = $('#H' + oRow).children('img')[0],
-					dest = $(square).prev();
-			}else if(squareID.match('C')){
-				var rook = $('#A' + oRow).children('img')[0],
-					dest = $(square).next();
-			};
-			$(rook).fadeOut('fast', function(){
-				$(this)
-					.appendTo(dest)
-					.fadeIn('fast')
-			}).data().piece.moved = true;
-			$(rook).data().piece.position = $(dest).attr('id');
-		};
+	this._move = function(destination){
+		var occupent = occupied(destination.id);
+		if(occupent) occupent.capture();
+		if(this.EP) this.EP.capture();
 		
+		this.position = destination.id;
+		this.moved = true;
 		$(this.image).appendTo(destination);
+		return this;
 	};
 	
 	this.capture = function(){
-		$(this.image).remove();
+		$(this.image).fadeOut('fast', function(){this.remove});
 		$(this).trigger('remove');
+		return true;
 	};
 };
 
@@ -315,20 +215,40 @@ function pawn(color, start){
 	this.toString = function(){return 'pawn'}
 	Piece.call(this, color, start);
 	
-	var self = this;
+	var self = this,
+	inc = (color == 'white') ? 1 : -1;
+	
 	this.type = "pawn";
 	this.EP = false;
 	
 	this.footprint = function(){
-		var inc = (color == 'white') ? 1 : -1,
 		row = self.row(),
-		col = self.col();
+		col = self.col(),
+		ids = new Array();
 		
-		if(!self.moved){
-			return [col + (row + 2*inc)];
-		} else {
-			return [col + (row + 1*inc)];
-		}
+		if(!self.moved)	ids.push(col + (row + 2*inc));
+		else ids.push(col + (row + 1*inc));
+		
+		ids.push(cLabels[cLabels.indexOf(col)-1] + (row + inc));
+		ids.push(cLabels[cLabels.indexOf(col)+1] + (row + inc));
+		
+		return ids;
+	};
+	
+	this.move = function(position){
+		// Check for en passant
+		if(!this.moved && (position.id.match(4) || position.id.match(5))){
+			var prev = (this.col() == 'A') ? false : occupied(position.previousElementSibling.id);
+			var next = (this.col() == 'H') ? false : occupied(position.nextElementSibling.id);
+			
+			if(prev && prev == 'pawn' && prev.color != color) prev.EP = this;
+			if(next && next == 'pawn' && next.color != color) next.EP = this;
+		};
+		
+		// Check if pawn is capturing en passant
+		if(this.EP && this.EP.position[0] != position.id[0]) this.EP = false;
+		
+		this._move(position)
 	};
 	
 	self.place(start);
@@ -341,6 +261,8 @@ function rook(color, start){
 	
 	var self = this;
 	this.type = "rook";
+	
+	this.move = function(position){this._move(position)};
 	
 	this.footprint = function(){
 		row = self.row();
@@ -360,7 +282,23 @@ function knight(color, start){
 	var self = this;
 	this.type = "knight";
 	
-	this.footprint = function(){return[]};
+	this.move = function(position){this._move(position)};
+	
+	this.footprint = function(){
+		var ids = [],
+			col = cLabels.indexOf(self.col()),
+			row = self.row(),
+			cShift;
+		
+		for(var r = row - 2; r <= row + 2; r++){
+			if(r != row){
+				if(Math.abs(row - r) == 1) {cShift = 2} else {cShift = 1};
+				ids.push(cLabels[col + cShift] + r);
+				ids.push(cLabels[col - cShift] + r);
+			};
+		};
+		return ids;
+	};
 	
 	self.place(start);
 };
@@ -371,6 +309,8 @@ function bishop(color, start){
 	Piece.call(this, color, start);
 	var self = this;
 	this.type = "bishop";
+	
+	this.move = function(position){this._move(position)};
 	
 	this.footprint = function(){
 		return [findDiagonal(this.position, 1, 1),
@@ -388,6 +328,8 @@ function queen(color, start){
 	Piece.call(this, color, start);
 	var self = this;
 	this.type = "queen";
+	
+	this.move = function(position){this._move(position)};
 	
 	this.footprint = function(){
 		return ['A' + this.row(), 'H' + this.row(), this.col() + 1, this.col() + 8,
@@ -409,10 +351,28 @@ function king(color, start){
 	this.check = false;
 	this.index = null;
 	
+	this.move = function(position){
+		if (this.castle() && (position.id.match('G') || position.id.match('C'))) {
+			if (position.id.match('G')) {
+				var rook = callPiece($('#H' + this.row()).children('img')[0]),
+					dest = position.previousElementSibling;
+			}
+			else 
+				if (position.id.match('C')) {
+					var rook = callPiece($('#A' + this.row()).children('img')[0]),
+						dest = position.nextElementSibling;
+				};
+			this._move(position);
+			$(rook.image).fadeOut('fast', function(){
+				rook.move(dest);
+				$(rook.image).fadeIn('fast');
+			});
+		} else this._move(position);
+	};
+
 	this.castle = function(){
-		if(this.check || this.moved){
-			return false;
-		};
+		if(this.check || this.moved) return false;
+		else return true;
 	};
 	
 	this.footprint = function(){
@@ -447,67 +407,40 @@ function Legal(piece){
 		dest, orig,
 		legalIDs ="";
 	
-//	console.log(color + ' ' + type + ': ' + pieceData.index + ' - footprint: ' + footprint + ' | moved: ' + pieceData.moved);
+//	console.log(color + ' ' + type + ' - footprint: ' + footprint + ' | moved: ' + piece.moved);
 	
 	$(footprint).each(function(){
-		// 1st: culls out knights, 2nd: culls the pieces location
-		// 3rd & 4th: culls rows outside board, 5th: culls columns outside board
-		if (this.length && position != this && this[1]*1 >= 1 && this[1]*1 <= 8 && cLabels.indexOf(this[0]) >= 0){
-			legalIDs += vector(position, this, color, type != 'pawn');
+		// 1st: culls the pieces location, 3rd & 4th: culls rows outside board,
+		// 5th: culls columns outside board
+		if (this && position != this && this[1]*1 >= 1 && this.substr(1)*1 <= 8 && cLabels.indexOf(this[0]) >= 0){
+			if(type == 'knight') {
+				if(occupied('#' + this).color != color) legalIDs += writeID(this[0], this[1]);
+			}else if(type == 'pawn'){
+				// pawns cannot capture on their own column
+				if(occupied('#' + this) && C != this[0]) legalIDs += writeID(this[0], this[1]);
+				// Check for a pawn in EP and whether its column matches the move
+				else if(piece.EP && piece.EP.col() == this[0]) legalIDs += writeID(this[0], this[1]);
+				// add vertical moves
+				else if(C == this[0]) legalIDs += vector(position, this, color, false);
+			} else {
+				legalIDs += vector(position, this, color, true)
+			};
 		};
 	});
-	
-	// pawn capture
-	if (type == 'pawn'){
-		var fStep = (color == 'black') ? rNum - 1 : rNum + 1; 			// fStep is the capture row for pawns << B. Fisher
-		
-		dest = writeID(cLabels[cNum - 2], fStep);						// Check forward-left for opponent piece << B. Fisher
-		if(occupied(dest) && occupied(dest).color != color){legalIDs += dest;};
-		
-		dest = writeID(cLabels[cNum], fStep);							// Check forward-right for opponent piece << B. Fisher
-		if(occupied(dest) && occupied(dest).color != color){legalIDs += dest;};
-		
-		if(piece.EP){legalIDs += piece.EP}; // If EP (En Passant) variable contains a location, add it to legal moves << B. Fisher
-	};
-	
-	// Knight moves: the knight object doesn't have a footprint. Its legal moves are 2 squares horz or vert,
-	// than 1 square along the other dimension (like an 'L'). << B. Fisher
-	if(type == 'knight'){
-		var kCol = cLabels.indexOf(C),
-			cShift;
-		
-		for(var r = rNum - 2; r <= rNum + 2; r++){
-			if(r != rNum){
-				if(Math.abs(rNum - r) == 1) {cShift = 2} else {cShift = 1};
-				
-				dest = writeID(cLabels[kCol + cShift], r);
-				if(!(occupied(dest).color == color)){legalIDs += dest};
-				
-				dest = writeID(cLabels[kCol - cShift], r);
-				if(!(occupied(dest).color == color)){legalIDs += dest};
-			}
-		}
-	};
 	
 	// Check for castle legality and add king double step if true. << B. Fisher
 	if(type == 'king'){
 		if(!piece.check && !piece.moved){				// King is not in check and has not moved
-			var kid = $('#H' + rNum).children('img')[0];
-			if (kid) {
-				rook = $(kid).data().piece
-			}
+			var rook = occupied('#H' + rNum);
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
-			if(vector(position, 'G' + rNum, color, false).match('G') && !rook.moved && !check('F' + rNum, Players[1], true)){
+			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], true)){
 				legalIDs += writeID('G', rNum);
 			};
 			
-			var kid = $('#A' + rNum).children('img')[0];
-			if (kid) {
-				rook = $(kid).data().piece
-			}
+			var rook = occupied('#A' + rNum);
 			// Queenside squares between rook and king are not occupied. The king is not moving accross check.
 			// and the queenside rook has not moved.
-			if(vector(position, 'B' + rNum, color, false).match('B') && !rook.moved && !check('D' + rNum, Players[1], true)){
+			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], true)){
 				legalIDs += writeID('C', rNum);
 			};
 		};
@@ -560,10 +493,13 @@ function vector(start, end, side, capture){
 // Checks the square ID for a occupying piece.
 // If one is found return the piece, if not return false. << B. Fisher
 function occupied(square_ID){
+	if (typeof(square_ID) != 'string') return false;
+	if(!square_ID.match('#')) square_ID = '#' + square_ID;
+	
 	var kid = $(square_ID).children('img');
 	if (kid.length > 0) {
 		kid = kid[0];
-		return $(kid).data().piece;
+		return callPiece(kid);
 	}else {
 		return false;
 	}
@@ -572,10 +508,19 @@ function occupied(square_ID){
 // Returns a properly formated CSS square ID (for jQuery selection)
 // unless the row and/or column are beyound the edge of the board. << B. Fisher
 function writeID(column, row) {
-	if(column && row && row > 0 && row <= 8){
-		return '#' + column + row + ","
+	try{
+		if (!column) throw 0;
+		else if (!row) throw 1;
+		else if (row < 0) throw 2;
+		else if (row > 8) throw 3;
 	}
-	return "";
+	catch (er){
+		if(er == 0) alert('Square ID Error: column is not defined');
+		else if(er == 1) alert('Square ID Error: row is not defined');
+		else if(er == 2) alert('Square ID Error: row is less than board index');
+		else if(er == 3) alert('Square ID Error: row is greater than board index');
+	}
+	return '#' + column + row + ","
 };
 
 //Simple function to return a comparison between [first] and [second]
@@ -622,6 +567,10 @@ function check(square, player, skipKing){
 		};
 	});
 	return chk;
+};
+
+function callPiece(image){
+	return $(image).data().piece;
 };
 
 function Checkmate(){
