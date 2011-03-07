@@ -27,12 +27,26 @@
  * 
  * v14.4 - Modified check function to return checking pieces. << B. Fisher 3/04 0300
  * 
- * v14.5 - Added skipKing option to check to prevent recursion over the Legal function.
- * 			Legal is removing threatened squares from the kings legal moves.
+ * v14.5 - Added skipKing option to the check function to prevent recursion over the Legal function.
+ * 			Legal is removing threatened squares from the kings legal moves. Still doesn't recognize protected pieces.
  * 			Started adding movePiece functionality into the Piece.move() function. << B. Fisher 3/04 1930
  * 
  * v15   - Removed the movePiece function. All piece movement is now handled by the individual piece objects
- * 			and the Piece class. Revamped the Legality function to handle pawn capture and en passant legality << B. Fisher 3/05 2310
+ * 			and the Piece class. Revamped the Legality function to handle pawn capture and en passant legality.
+ * 			also disabled piece drag and drop due to issues with turn changes. << B. Fisher 3/05 2310
+ * 
+ * v15.1 - Added pawn promotion << B. Fisher 3/06 0230
+ * 
+ * v15.2 - Corrected issue with piece removal from pieces array on capture << B. Fisher 3/06 0430
+ * 
+ * Tasks to complete: Correct the following issues with King moves under check: 1) King can capture protected pieces
+ * 						2) Checked King is able to move to squares in the checking pieces vector that are behind itself
+ * 							for example: King @ G8, Rook on 8th row, King can still move to H8.
+ * 					
+ * 						Code out the Checkmate function.
+ * 						Debug the Stalemate function
+ * 						Add move list and captured pieces to the dashboard
+ * 						Ask for player names at the beginning of the game, and show them in the dashboard
  */
 
 var cLabels = "ABCDEFGH", Players = [];
@@ -55,6 +69,10 @@ function Game(){
 		$(Players[0].pieces).each(function(){
 			if(this.type == 'pawn') this.EP = false;
 		});
+		
+		if(check(Players[0].King.position,Players[1], true)){
+			alert('Move results in check');
+		};
 		
 		// Find whether the last move placed the next player in check
 		Players[1].King.check = (check(Players[1].King.position, Players[0], true))
@@ -87,7 +105,9 @@ function Game(){
 		}
 	};
 	
-	pieces = $("#board img");
+/*	Disabled due to drop function not completeing before the turn change << B. Fisher 3/06 0145 
+ * 
+ * 	pieces = $("#board img");
 	$(pieces).draggable({
 			revert: "invalid",
 			revertDuration: 1000,
@@ -115,14 +135,15 @@ function Game(){
 			turn();
 		}
 	}).droppable({disabled: true});
-	
+*/
+
 	$(squares).click(function(event){
 		var kid = occupied(this.id);
 		
 		if(kid && kid.color == Players[0].color){	// checks if piece belongs to the current player
 			select(this);
 			$(Legal(kid)).addClass('legal');
-		} else if($(this).hasClass('legal')) {				// If clicked square is a legal move
+		} else if($(this).hasClass('legal')) {		// If clicked square is a legal move
 			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
 			piece.move(this);
 			turn();
@@ -139,7 +160,6 @@ function Player(side){
 	
 	var startRow = (this.color == 'white') ? 1 : 8, // White Player starts on Row 1, Black on row 8
 		pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
-		self = this;
 	
 	var piece, i;
 	
@@ -161,13 +181,15 @@ function Player(side){
 	this.King = new king(this.color, "E" + startRow);
 	this.pieces.push(this.King);
 	
+	var self = this;
+	
 	//Remove a piece from this players piece array when captured << B. Fisher 3.3 2100
-	$(this.pieces).bind('remove', function(){
+	$(self.pieces).bind('remove', function(){
 		var piece = this;
 		$.each(self.pieces, function(index, item){
 			if(piece === item){
 				self.pieces.splice(index, 1);
-				return false;
+				return true;
 			};
 		});
 	});
@@ -188,12 +210,16 @@ function Piece(color, start){
 					.addClass(color)
 					.data("piece", this);  // Adds piece data to the images;
 	
+	var self = this;
+	
 	this.place = function(position){
 		$(this.image).appendTo("#" + position);
 	};
 	
 	this._move = function(destination){
-		var occupent = occupied(destination.id);
+		var occupent = occupied(destination.id),
+			self = this;
+		
 		if(occupent) occupent.capture();
 		if(this.EP) this.EP.capture();
 		
@@ -204,7 +230,8 @@ function Piece(color, start){
 	};
 	
 	this.capture = function(){
-		$(this.image).fadeOut('fast', function(){this.remove});
+//		$(this.image).fadeOut('fast', function(){$(this).remove()});
+		$(this.image).remove();
 		$(this).trigger('remove');
 		return true;
 	};
@@ -216,7 +243,8 @@ function pawn(color, start){
 	Piece.call(this, color, start);
 	
 	var self = this,
-	inc = (color == 'white') ? 1 : -1;
+		inc = (color == 'white') ? 1 : -1,
+		endRow = (color == 'white') ? 8 : 1;
 	
 	this.type = "pawn";
 	this.EP = false;
@@ -235,20 +263,30 @@ function pawn(color, start){
 		return ids;
 	};
 	
-	this.move = function(position){
+	this.move = function(destination){
 		// Check for en passant
-		if(!this.moved && (position.id.match(4) || position.id.match(5))){
-			var prev = (this.col() == 'A') ? false : occupied(position.previousElementSibling.id);
-			var next = (this.col() == 'H') ? false : occupied(position.nextElementSibling.id);
+		if(!this.moved && (destination.id.match(4) || destination.id.match(5))){
+			var prev = (this.col() == 'A') ? false : occupied(destination.previousElementSibling.id);
+			var next = (this.col() == 'H') ? false : occupied(destination.nextElementSibling.id);
 			
 			if(prev && prev == 'pawn' && prev.color != color) prev.EP = this;
 			if(next && next == 'pawn' && next.color != color) next.EP = this;
 		};
 		
 		// Check if pawn is capturing en passant
-		if(this.EP && this.EP.position[0] != position.id[0]) this.EP = false;
+		if(this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
 		
-		this._move(position)
+		this._move(destination)
+		
+		if(this.row() == endRow) this.promote();
+	};
+	
+	this.promote = function(){
+		this.capture();
+		var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
+		if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
+			Players[0].pieces.push(new knight(this.color, this.position));
+		} else Players[0].pieces.push(new queen(this.color, this.position));
 	};
 	
 	self.place(start);
@@ -262,7 +300,7 @@ function rook(color, start){
 	var self = this;
 	this.type = "rook";
 	
-	this.move = function(position){this._move(position)};
+	this.move = function(destination){this._move(destination)};
 	
 	this.footprint = function(){
 		row = self.row();
@@ -282,7 +320,7 @@ function knight(color, start){
 	var self = this;
 	this.type = "knight";
 	
-	this.move = function(position){this._move(position)};
+	this.move = function(destination){this._move(destination)};
 	
 	this.footprint = function(){
 		var ids = [],
@@ -310,7 +348,7 @@ function bishop(color, start){
 	var self = this;
 	this.type = "bishop";
 	
-	this.move = function(position){this._move(position)};
+	this.move = function(destination){this._move(destination)};
 	
 	this.footprint = function(){
 		return [findDiagonal(this.position, 1, 1),
@@ -329,7 +367,7 @@ function queen(color, start){
 	var self = this;
 	this.type = "queen";
 	
-	this.move = function(position){this._move(position)};
+	this.move = function(destination){this._move(destination)};
 	
 	this.footprint = function(){
 		return ['A' + this.row(), 'H' + this.row(), this.col() + 1, this.col() + 8,
@@ -351,23 +389,22 @@ function king(color, start){
 	this.check = false;
 	this.index = null;
 	
-	this.move = function(position){
-		if (this.castle() && (position.id.match('G') || position.id.match('C'))) {
-			if (position.id.match('G')) {
+	this.move = function(destination){
+		if (this.castle() && (destination.id.match('G') || destination.id.match('C'))) {
+			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
-					dest = position.previousElementSibling;
-			}
-			else 
-				if (position.id.match('C')) {
-					var rook = callPiece($('#A' + this.row()).children('img')[0]),
-						dest = position.nextElementSibling;
-				};
-			this._move(position);
+					dest = destination.previousElementSibling;
+			}else if (position.id.match('C')) {
+				var rook = callPiece($('#A' + this.row()).children('img')[0]),
+					dest = destination.nextElementSibling;
+			};
+			
+			this._move(destination);
 			$(rook.image).fadeOut('fast', function(){
 				rook.move(dest);
 				$(rook.image).fadeIn('fast');
 			});
-		} else this._move(position);
+		} else this._move(destination);
 	};
 
 	this.castle = function(){
@@ -396,7 +433,7 @@ king.prototype = new Piece();
 //=======================================================
 
 // Returns array of the ids of squares where a piece can move
-function Legal(piece){
+function Legal(piece, checking){
 	var footprint = piece.footprint(),
 		color = piece.color,
 		type = piece.type,
@@ -408,20 +445,35 @@ function Legal(piece){
 		legalIDs ="";
 	
 //	console.log(color + ' ' + type + ' - footprint: ' + footprint + ' | moved: ' + piece.moved);
+
+	// Attempt to verify if the moving piece is pinned against the king (non-functional) << B. Fisher 3/06 0700
+	if(!checking){
+		$.each(Players[1].pieces, function(index, piece){
+			if(!(piece.type == 'pawn' || piece.type == 'knight' || piece.type == 'king')){
+				var fp = piece.footprint();
+				for(var i = 0; i <= fp.length; i++){
+					if (inside(fp[i], piece.position)) {
+						var path = vector(piece.position, fp[i], piece.color, false, true);
+						if(path.match(position) && path.match(Players[0].King.position)) return '';
+					};
+				};
+			};
+		});
+	};
 	
 	$(footprint).each(function(){
-		// 1st: culls the pieces location, 3rd & 4th: culls rows outside board,
-		// 5th: culls columns outside board
-		if (this && position != this && this[1]*1 >= 1 && this.substr(1)*1 <= 8 && cLabels.indexOf(this[0]) >= 0){
+		if (inside(this, position)){
 			if(type == 'knight') {
 				if(occupied('#' + this).color != color) legalIDs += writeID(this[0], this[1]);
 			}else if(type == 'pawn'){
 				// pawns cannot capture on their own column
-				if(occupied('#' + this) && C != this[0]) legalIDs += writeID(this[0], this[1]);
+				if (occupied('#' + this) && occupied('#' + this).color != color && C != this[0]) {
+					legalIDs += writeID(this[0], this[1]);
+				}
 				// Check for a pawn in EP and whether its column matches the move
-				else if(piece.EP && piece.EP.col() == this[0]) legalIDs += writeID(this[0], this[1]);
-				// add vertical moves
-				else if(C == this[0]) legalIDs += vector(position, this, color, false);
+				else if (piece.EP && piece.EP.col() == this[0]) legalIDs += writeID(this[0], this[1]);
+					// add vertical moves
+					else if (C == this[0]) legalIDs += vector(position, this, color, false);
 			} else {
 				legalIDs += vector(position, this, color, true)
 			};
@@ -438,7 +490,7 @@ function Legal(piece){
 			};
 			
 			var rook = occupied('#A' + rNum);
-			// Queenside squares between rook and king are not occupied. The king is not moving accross check.
+			// Queenside squares between rook and king are not occupied. The king is not moving across check.
 			// and the queenside rook has not moved.
 			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], true)){
 				legalIDs += writeID('C', rNum);
@@ -447,7 +499,6 @@ function Legal(piece){
 		
 		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		var squares = legalIDs.split(',');
-		console.log(legalIDs, squares);
 		for(var i = squares.length-2; i>=0; i--){
 			if(check(squares[i], Players[1], true)) squares.splice(i, 1);
 		};
@@ -456,16 +507,24 @@ function Legal(piece){
 	};
 	// === End King legality checks ===
 	
-	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
+//	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
 	
 	return legalIDs;
 };
 
-function vector(start, end, side, capture){
+/* Function: vector
+ * Peramiters: start - the pieces location, end - the final square along the given path, side - current players color
+ * 				capture - whether opposing pieces can be captured on the last square, 
+ * 				cont - if true stop when a friendly piece (just one) is found 
+ * Returns: a string of comma seperated square ids for the requested vector, continuing to an occupied square
+ * 			if the square is occupied by an opponent piece the vector ids includes that square unless capture is false.
+ * Coded by: B. Fisher
+ */
+function vector(start, end, side, capture, cont){
 	var sX = cLabels.indexOf(start[0]),
 		eX = cLabels.indexOf(end[0]),
 		sY = start[1]*1,
-		eY = end[1]*1,	
+		eY = end[1]*1,
 		xInc = findInc(sX, eX),
 		yInc = findInc(sY, eY),
 		list = '',
@@ -475,11 +534,15 @@ function vector(start, end, side, capture){
 		sX += xInc;
 		sY += yInc;
 		square = cLabels[sX] + sY;
-		color = occupied('#' + square).color;
+		color = occupied('#' + square).color,
+		block = true;
 		
 		if(color){
-			if(capture && color != side){list += '#' + square + ',';}
-			break;
+			if(capture && color != side && !cont && block){
+				list += '#' + square + ',';
+				block = false;
+			};
+			if(color == side || !block) break;
 		};
 		
 		list += '#' + square + ',';
@@ -551,6 +614,13 @@ function findDiagonal(start, xInc, yInc){
 	return(cLabels[x] + y);
 };
 
+// Checks that square is valid and not equal to origin, and its coordinates are inside the board.
+// housekeeping function for Legal << B. Fisher
+function inside(square, origin){
+	if(square && origin != square && square[1] * 1 >= 1 && square.substr(1) * 1 <= 8 && cLabels.indexOf(square[0]) >= 0) return true;
+	else return false;
+};
+
 // Returns: pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column).
 // var skipKing is Boolean. It is used to prevent recursion in the Legal function.
 // If threatening pieces are found return an array of their objects, else returns false. << B. Fisher
@@ -558,7 +628,7 @@ function check(square, player, skipKing){
 	var chk = false, ids;
 	$(player.pieces).each(function(){
 		if (!(this.type == 'king' && skipKing)) {
-			ids = Legal(this);
+			ids = Legal(this, true); // 2nd criteria stops Legal from running pinned checks << B. Fisher
 			if (ids.match(square)) {
 				if (!chk) 
 					chk = new Array();
