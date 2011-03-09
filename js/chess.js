@@ -39,17 +39,23 @@
  * 
  * v15.2 - Corrected issue with piece removal from pieces array on capture << B. Fisher 3/06 0430
  * 
+ * v15.3 - Added pinning check to Piece._move function. Detachs the piece and runs check before moving the piece.
+ * 			Still doesn't work fully, as the piece should still be able to move within the pinning vector << B. Fisher 3/07 2100
+ * 
+ * v15.4 - Resolved pinned against king issues except when the pinning piece captures the pinner << B. Fisher 3/07 2115
+ * 
  * Tasks to complete: Correct the following issues with King moves under check: 1) King can capture protected pieces
  * 						2) Checked King is able to move to squares in the checking pieces vector that are behind itself
  * 							for example: King @ G8, Rook on 8th row, King can still move to H8.
  * 					
+ * 						Resolve issus with piece movement when pinned against the king
  * 						Code out the Checkmate function.
  * 						Debug the Stalemate function
  * 						Add move list and captured pieces to the dashboard
  * 						Ask for player names at the beginning of the game, and show them in the dashboard
  */
 
-var cLabels = "ABCDEFGH", Players = [];
+var cLabels = "ABCDEFGH", Players = [], change = false;
 
 function Game(){
 	var self = this,
@@ -70,15 +76,12 @@ function Game(){
 			if(this.type == 'pawn') this.EP = false;
 		});
 		
-		if(check(Players[0].King.position,Players[1], true)){
-			alert('Move results in check');
-		};
-		
 		// Find whether the last move placed the next player in check
-		Players[1].King.check = (check(Players[1].King.position, Players[0], true))
+		Players[1].King.check = (check(Players[1].King.position, Players[0], Players[0].King))
 		console.log('Check: ' + Players[1].King.check);
 		
 		this.Players.reverse(); // Switches the active player
+		change = null;
 		
 		$('#Dash').css('background', Players[0].color);
 		$('#turn').html(Players[0].color);
@@ -145,8 +148,10 @@ function Game(){
 			$(Legal(kid)).addClass('legal');
 		} else if($(this).hasClass('legal')) {		// If clicked square is a legal move
 			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
+			
 			piece.move(this);
-			turn();
+			console.log('Change :' + change);
+			if (change) turn();
 		} else {
 			select();			// if square is not occupied, or is occupied by an opponent piece
 		};						// that is not capturable than clear the selection
@@ -218,15 +223,31 @@ function Piece(color, start){
 	
 	this._move = function(destination){
 		var occupent = occupied(destination.id),
-			self = this;
+			self = this,
+			capturedPiece = null;
 		
-		if(occupent) occupent.capture();
-		if(this.EP) this.EP.capture();
-		
-		this.position = destination.id;
-		this.moved = true;
+		// Check to see if move results in check << B. Fisher 3/07 2030
+
 		$(this.image).appendTo(destination);
-		return this;
+		if (occupent) capturedPiece = occupent;
+		else if (this.EP) capturedPiece = this.EP;
+		
+		if (capturedPiece) $(capturedPiece).remove();
+		
+		if (check(Players[0].King.position, Players[1], Players[1].King)) {
+			$('.legal').removeClass('legal');
+			$(this.image).appendTo('#' + this.position);
+			if(capturedPiece) (capturedPiece.image).appendTo(capturedPiece.position);
+			
+			alert('Move results in check.');
+			change = false;
+			
+		}else{
+			this.position = destination.id;
+			this.moved = true;
+			if(capturedPiece) capturedPiece.capture();
+			change = true;
+		};
 	};
 	
 	this.capture = function(){
@@ -433,7 +454,7 @@ king.prototype = new Piece();
 //=======================================================
 
 // Returns array of the ids of squares where a piece can move
-function Legal(piece, checking){
+function Legal(piece){
 	var footprint = piece.footprint(),
 		color = piece.color,
 		type = piece.type,
@@ -442,24 +463,10 @@ function Legal(piece, checking){
 		C = position[0],
 		cNum = cLabels.indexOf(C)+1,
 		dest, orig,
-		legalIDs ="";
+		legalIDs = "";
 	
 //	console.log(color + ' ' + type + ' - footprint: ' + footprint + ' | moved: ' + piece.moved);
 
-	// Attempt to verify if the moving piece is pinned against the king (non-functional) << B. Fisher 3/06 0700
-	if(!checking){
-		$.each(Players[1].pieces, function(index, piece){
-			if(!(piece.type == 'pawn' || piece.type == 'knight' || piece.type == 'king')){
-				var fp = piece.footprint();
-				for(var i = 0; i <= fp.length; i++){
-					if (inside(fp[i], piece.position)) {
-						var path = vector(piece.position, fp[i], piece.color, false, true);
-						if(path.match(position) && path.match(Players[0].King.position)) return '';
-					};
-				};
-			};
-		});
-	};
 	
 	$(footprint).each(function(){
 		if (inside(this, position)){
@@ -485,14 +492,14 @@ function Legal(piece, checking){
 		if(!piece.check && !piece.moved){				// King is not in check and has not moved
 			var rook = occupied('#H' + rNum);
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
-			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], true)){
+			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], Players[0].King)){
 				legalIDs += writeID('G', rNum);
 			};
 			
 			var rook = occupied('#A' + rNum);
 			// Queenside squares between rook and king are not occupied. The king is not moving across check.
 			// and the queenside rook has not moved.
-			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], true)){
+			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], Players[0].King)){
 				legalIDs += writeID('C', rNum);
 			};
 		};
@@ -515,16 +522,16 @@ function Legal(piece, checking){
 /* Function: vector
  * Peramiters: start - the pieces location, end - the final square along the given path, side - current players color
  * 				capture - whether opposing pieces can be captured on the last square, 
- * 				cont - if true stop when a friendly piece (just one) is found 
+ * 				pin - if true pass the first opponent piece on the vector
  * Returns: a string of comma seperated square ids for the requested vector, continuing to an occupied square
  * 			if the square is occupied by an opponent piece the vector ids includes that square unless capture is false.
  * Coded by: B. Fisher
  */
-function vector(start, end, side, capture, cont){
+function vector(start, end, side, capture){
 	var sX = cLabels.indexOf(start[0]),
 		eX = cLabels.indexOf(end[0]),
 		sY = start[1]*1,
-		eY = end[1]*1,
+		eY = end[1]*1,	
 		xInc = findInc(sX, eX),
 		yInc = findInc(sY, eY),
 		list = '',
@@ -534,15 +541,11 @@ function vector(start, end, side, capture, cont){
 		sX += xInc;
 		sY += yInc;
 		square = cLabels[sX] + sY;
-		color = occupied('#' + square).color,
-		block = true;
+		color = occupied('#' + square).color;
 		
 		if(color){
-			if(capture && color != side && !cont && block){
-				list += '#' + square + ',';
-				block = false;
-			};
-			if(color == side || !block) break;
+			if(capture && color != side) list += '#' + square + ',';
+			break;
 		};
 		
 		list += '#' + square + ',';
@@ -550,7 +553,6 @@ function vector(start, end, side, capture, cont){
 	}while((cLabels[sX] + sY) != end);
 	
 	return list;
-		
 };
 
 // Checks the square ID for a occupying piece.
@@ -622,12 +624,12 @@ function inside(square, origin){
 };
 
 // Returns: pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column).
-// var skipKing is Boolean. It is used to prevent recursion in the Legal function.
+// var ignore is a piece. It can be used to prevent recursion in the Legal object, helps in pinning checks.
 // If threatening pieces are found return an array of their objects, else returns false. << B. Fisher
-function check(square, player, skipKing){
+function check(square, player, ignore){
 	var chk = false, ids;
 	$(player.pieces).each(function(){
-		if (!(this.type == 'king' && skipKing)) {
+		if (this != ignore) {
 			ids = Legal(this, true); // 2nd criteria stops Legal from running pinned checks << B. Fisher
 			if (ids.match(square)) {
 				if (!chk) 
