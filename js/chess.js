@@ -44,6 +44,9 @@
  * 
  * v15.4 - Resolved pinned against king issues except when the pinning piece captures the pinner << B. Fisher 3/07 2115
  * 
+ * v15.5 - Still working on pinned against king issues. Pinning piece can move if not resulting in check. King in check isn't able to move
+ * 			except to take the checking piece due to recursion issues with Legal and check functions. << B. Fisher 3/10 0500
+ * 
  * Tasks to complete: Correct the following issues with King moves under check: 1) King can capture protected pieces
  * 						2) Checked King is able to move to squares in the checking pieces vector that are behind itself
  * 							for example: King @ G8, Rook on 8th row, King can still move to H8.
@@ -77,8 +80,7 @@ function Game(){
 		});
 		
 		// Find whether the last move placed the next player in check
-		Players[1].King.check = (check(Players[1].King.position, Players[0], Players[0].King))
-		console.log('Check: ' + Players[1].King.check);
+		Players[1].King.inCheck = (check(Players[1].King.position, Players[0], [Players[0].King]))
 		
 		this.Players.reverse(); // Switches the active player
 		change = null;
@@ -150,7 +152,6 @@ function Game(){
 			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
 			
 			piece.move(this);
-			console.log('Change :' + change);
 			if (change) turn();
 		} else {
 			select();			// if square is not occupied, or is occupied by an opponent piece
@@ -226,20 +227,20 @@ function Piece(color, start){
 			self = this,
 			capturedPiece = null;
 		
-		// Check to see if move results in check << B. Fisher 3/07 2030
-
 		$(this.image).appendTo(destination);
 		if (occupent) capturedPiece = occupent;
 		else if (this.EP) capturedPiece = this.EP;
 		
 		if (capturedPiece) $(capturedPiece).remove();
 		
-		if (check(Players[0].King.position, Players[1], Players[1].King)) {
+		// Check to see if move results in check << B. Fisher 3/07 2030
+		if (check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
 			$('.legal').removeClass('legal');
 			$(this.image).appendTo('#' + this.position);
 			if(capturedPiece) (capturedPiece.image).appendTo(capturedPiece.position);
 			
 			alert('Move results in check.');
+			$('#' + this.position).removeClass('selected');
 			change = false;
 			
 		}else{
@@ -407,7 +408,7 @@ function king(color, start){
 	
 	var self = this;
 	this.type = "king";
-	this.check = false;
+	this.inCheck = false;
 	this.index = null;
 	
 	this.move = function(destination){
@@ -415,7 +416,7 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
-			}else if (position.id.match('C')) {
+			}else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
 			};
@@ -429,7 +430,7 @@ function king(color, start){
 	};
 
 	this.castle = function(){
-		if(this.check || this.moved) return false;
+		if(this.inCheck || this.moved) return false;
 		else return true;
 	};
 	
@@ -489,17 +490,17 @@ function Legal(piece){
 	
 	// Check for castle legality and add king double step if true. << B. Fisher
 	if(type == 'king'){
-		if(!piece.check && !piece.moved){				// King is not in check and has not moved
+		if(!piece.inCheck && !piece.moved){				// King is not in check and has not moved
 			var rook = occupied('#H' + rNum);
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
-			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], Players[0].King)){
+			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], [Players[1].King])){
 				legalIDs += writeID('G', rNum);
 			};
 			
 			var rook = occupied('#A' + rNum);
 			// Queenside squares between rook and king are not occupied. The king is not moving across check.
 			// and the queenside rook has not moved.
-			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], Players[0].King)){
+			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], [Players[1].King])){
 				legalIDs += writeID('C', rNum);
 			};
 		};
@@ -507,7 +508,7 @@ function Legal(piece){
 		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		var squares = legalIDs.split(',');
 		for(var i = squares.length-2; i>=0; i--){
-			if(check(squares[i], Players[1], true)) squares.splice(i, 1);
+			if(check(squares[i], Players[1], [Players[1].King])) squares.splice(i, 1);
 		};
 		legalIDs = squares.join(',');
 		
@@ -629,8 +630,8 @@ function inside(square, origin){
 function check(square, player, ignore){
 	var chk = false, ids;
 	$(player.pieces).each(function(){
-		if (this != ignore) {
-			ids = Legal(this, true); // 2nd criteria stops Legal from running pinned checks << B. Fisher
+		if (!$(ignore).match(this)) {
+			ids = Legal(this);
 			if (ids.match(square)) {
 				if (!chk) 
 					chk = new Array();
@@ -662,3 +663,14 @@ function Stalemate(Player) {
 	else return false;
 	
 };
+
+
+(function($){
+	$.fn.match = function(item){
+		var matchValue = false;
+	  	this.each(function(){
+		  	if(this == item) matchValue = true;
+		});
+		return matchValue;
+	};
+ }(jQuery));
