@@ -49,6 +49,8 @@
  * 
  * v16   - Added resign button with gameOver and turnCount variables. << B. Fisher 3/10 1800
  * 
+ * v16.1 - Added the prison to display captured pieces << B. Fisher 33/10 1915
+ * 
  * Tasks to complete: Correct the following issues with King moves under check: 1) King can capture protected pieces
  * 						2) Checked King is able to move to squares in the checking pieces vector that are behind itself
  * 							for example: King @ G8, Rook on 8th row, King can still move to H8.

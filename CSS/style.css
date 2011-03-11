@@ -1,20 +1,22 @@
 body {
 	background-color: maroon;
 	overflow-x: hidden;
-	width: 100%
 }
 
 img{z-index:10;}
+
+#wrapper{width:1200px; float:left;}
 
 #Dash{
 	font: 1.5em/2em Arial, Helvetica, sans-serif;
 	background-color: #FFF;
 	border: 2px outset grey;
 	color: maroon;
-	left: 645px;
+	float:right;
 	line-height: 24px;
 	padding: 5px;
-	position: absolute;
+	position: relative;
+	width:450px;
 }
 
 #Dash p {
@@ -31,9 +33,17 @@ img{z-index:10;}
 	color: #FFF;
 }
 
+#prison{
+	float:left;
+	height:624px;
+	width:60px;
+	display:block;
+}
+
 #board{
 	background:url(../images/marble.jpg);
 	border:4px outset gray;
+	float:left;
 	width:624px;
 	height:624px;
 	position:relative;

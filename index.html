@@ -17,101 +17,119 @@
 		
 	</head>
 	<body>
-		<div id="Dash">
-			<button id="resign">resign</button>
-			<p>Turn: <span id='turn'>white</span></p>
-			<br/>
-			<br/>
-			<div id="log">
-				<ol>
-					<li>White</li>
-					<li>Black</li>
-				</ol>
-			</div>
-		</div>
-		
-		<div id="board">
+		<div id="wrapper">
+			
+			<div id="board">
+					<ul>
+					<li id="A8"><span class="label">8</span></li>
+					<li id="B8"></li>
+					<li id="C8"></li>
+					<li id="D8"></li>
+					<li id="E8"></li>
+					<li id="F8"></li>
+					<li id="G8"></li>
+					<li id="H8"></li>
+				</ul>
 				<ul>
-				<li id="A8"><span class="label">8</span></li>
-				<li id="B8"></li>
-				<li id="C8"></li>
-				<li id="D8"></li>
-				<li id="E8"></li>
-				<li id="F8"></li>
-				<li id="G8"></li>
-				<li id="H8"></li>
-			</ul>
-			<ul>
-				<li id="A7"><span class="label">7</span></li>
-				<li id="B7"></li>
-				<li id="C7"></li>
-				<li id="D7"></li>
-				<li id="E7"></li>
-				<li id="F7"></li>
-				<li id="G7"></li>
-				<li id="H7"></li>
-			</ul>
-			<ul>
-				<li id="A6"><span class="label">6</span></li>
-				<li id="B6"></li>
-				<li id="C6"></li>
-				<li id="D6"></li>
-				<li id="E6"></li>
-				<li id="F6"></li>
-				<li id="G6"></li>
-				<li id="H6"></li>
-			</ul>
-			<ul>
-				<li id="A5"><span class="label">5</span></li>
-				<li id="B5"></li>
-				<li id="C5"></li>
-				<li id="D5"></li>
-				<li id="E5"></li>
-				<li id="F5"></li>
-				<li id="G5"></li>
-				<li id="H5"></li>
-			</ul>
-			<ul>
-				<li id="A4"><span class="label">4</span></li>
-				<li id="B4"></li>
-				<li id="C4"></li>
-				<li id="D4"></li>
-				<li id="E4"></li>
-				<li id="F4"></li>
-				<li id="G4"></li>
-				<li id="H4"></li>
-			</ul>
-			<ul>
-				<li id="A3"><span class="label">3</span></li>
-				<li id="B3"></li>
-				<li id="C3"></li>
-				<li id="D3"></li>
-				<li id="E3"></li>
-				<li id="F3"></li>
-				<li id="G3"></li>
-				<li id="H3"></li>
-			</ul>
-			<ul>
-				<li id="A2"><span class="label">2</span></li>
-				<li id="B2"></li>
-				<li id="C2"></li>
-				<li id="D2"></li>
-				<li id="E2"></li>
-				<li id="F2"></li>
-				<li id="G2"></li>
-				<li id="H2"></li>
-			</ul>
-			<ul>
-				<li id="A1"><span class="label">A1</span></li>
-				<li id="B1"><span class="label">B</span></li>
-				<li id="C1"><span class="label">C</span></li>
-				<li id="D1"><span class="label">D</span></li>
-				<li id="E1"><span class="label">E</span></li>
-				<li id="F1"><span class="label">F</span></li>
-				<li id="G1"><span class="label">G</span></li>
-				<li id="H1"><span class="label">H</span></li>
-			</ul>
+					<li id="A7"><span class="label">7</span></li>
+					<li id="B7"></li>
+					<li id="C7"></li>
+					<li id="D7"></li>
+					<li id="E7"></li>
+					<li id="F7"></li>
+					<li id="G7"></li>
+					<li id="H7"></li>
+				</ul>
+				<ul>
+					<li id="A6"><span class="label">6</span></li>
+					<li id="B6"></li>
+					<li id="C6"></li>
+					<li id="D6"></li>
+					<li id="E6"></li>
+					<li id="F6"></li>
+					<li id="G6"></li>
+					<li id="H6"></li>
+				</ul>
+				<ul>
+					<li id="A5"><span class="label">5</span></li>
+					<li id="B5"></li>
+					<li id="C5"></li>
+					<li id="D5"></li>
+					<li id="E5"></li>
+					<li id="F5"></li>
+					<li id="G5"></li>
+					<li id="H5"></li>
+				</ul>
+				<ul>
+					<li id="A4"><span class="label">4</span></li>
+					<li id="B4"></li>
+					<li id="C4"></li>
+					<li id="D4"></li>
+					<li id="E4"></li>
+					<li id="F4"></li>
+					<li id="G4"></li>
+					<li id="H4"></li>
+				</ul>
+				<ul>
+					<li id="A3"><span class="label">3</span></li>
+					<li id="B3"></li>
+					<li id="C3"></li>
+					<li id="D3"></li>
+					<li id="E3"></li>
+					<li id="F3"></li>
+					<li id="G3"></li>
+					<li id="H3"></li>
+				</ul>
+				<ul>
+					<li id="A2"><span class="label">2</span></li>
+					<li id="B2"></li>
+					<li id="C2"></li>
+					<li id="D2"></li>
+					<li id="E2"></li>
+					<li id="F2"></li>
+					<li id="G2"></li>
+					<li id="H2"></li>
+				</ul>
+				<ul>
+					<li id="A1"><span class="label">A1</span></li>
+					<li id="B1"><span class="label">B</span></li>
+					<li id="C1"><span class="label">C</span></li>
+					<li id="D1"><span class="label">D</span></li>
+					<li id="E1"><span class="label">E</span></li>
+					<li id="F1"><span class="label">F</span></li>
+					<li id="G1"><span class="label">G</span></li>
+					<li id="H1"><span class="label">H</span></li>
+				</ul>
+			</div>
+			
+			<div id="prison">
+				<ul>
+					<li><img src="images/thumb/bishop_black_thumb.png" alt="Captured Bishop" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+					<li><img src="" alt="" /></li>
+				</ul>
+			</div>
+			
+			<div id="Dash">
+				<button id="resign">resign</button>
+				<p>Turn: <span id='turn'>white</span></p>
+				<br/>
+				<br/>
+				<div id="log">
+					<ol>
+						<li>White</li>
+						<li>Black</li>
+					</ol>
+				</div>
+			</div>
+			
 		</div>
-		
 	</body>
 </html>
