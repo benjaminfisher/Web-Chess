@@ -192,7 +192,7 @@ function Piece(color, start){
 		if (capturedPiece) $(capturedPiece).remove();
 		
 		// Check to see if move results in check << B. Fisher 3/07 2030
-		if (check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
+		if (this.type != 'king' && check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
 			$('.legal').removeClass('legal');
 			$(this.image).appendTo('#' + this.position);
 			if(capturedPiece) (capturedPiece.image).appendTo(capturedPiece.position);
@@ -206,6 +206,9 @@ function Piece(color, start){
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
 			change = true;
+			//append the move depend on what moved and where it went, what it captured, etc.
+			$('#log tbody').append('<tr><td>Move</td><td>Move</td></tr>');
+			$('#Dash').attr({ scrollTop: $('#Dash').attr('scrollHeight') });
 		};
 	};
 	
