@@ -5,7 +5,7 @@ body {
 
 img{z-index:10;}
 
-#wrapper{width:1200px; float:left;}
+#wrapper{width:950px; float:left;}
 
 #Dash{
 	font: 1.5em/2em Arial, Helvetica, sans-serif;
@@ -13,10 +13,13 @@ img{z-index:10;}
 	border: 2px outset grey;
 	color: maroon;
 	float:right;
+	height: 624px;
 	line-height: 24px;
+	margin-top: 5px;
+	overflow-y: scroll;
 	padding: 5px;
 	position: relative;
-	width:450px;
+	width:225px;
 }
 
 #Dash p {
@@ -28,18 +31,19 @@ img{z-index:10;}
 
 #log {
 	font: 14px Arial, Helvetica, sans-serif;
-	background-color: maroon;
+	background-color: transparent;
 	border: 2px outset grey;
 	color: #FFF;
 	padding: 3px;
 }
 #log table {
+	background-color: transparent;
 	border-color: black;
 	border-collapse: separate;
 	border-spacing: 2px 2px;
-	width: 200px;
+	width: 100%;
 }
-#log table, tr, th {
+#log table tr {
 	border: 1px solid;
 }
 #log table td {
@@ -51,8 +55,11 @@ img{z-index:10;}
 #log table tr td:last-child {
 	color: black;
 }
-#log table tbody tr:nth-child(odd) {
+#log table tr:nth-child(odd) {
 	background-color: grey;
+}
+#log table tbody tr:nth-child(even) {
+	background-color: darkgrey;
 }
 
 #prison{

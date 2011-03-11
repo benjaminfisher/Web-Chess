@@ -206,6 +206,9 @@ function Piece(color, start){
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
 			change = true;
+			//append the move depend on what moved and where it went, what it captured, etc.
+			$('#log tbody').append('<tr><td>Move</td><td>Move</td></tr>');
+			$('#Dash').attr({ scrollTop: $('#Dash').attr('scrollHeight') });
 		};
 	};
 	
