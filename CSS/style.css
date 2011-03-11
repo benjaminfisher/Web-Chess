@@ -31,6 +31,28 @@ img{z-index:10;}
 	background-color: maroon;
 	border: 2px outset grey;
 	color: #FFF;
+	padding: 3px;
+}
+#log table {
+	border-color: black;
+	border-collapse: separate;
+	border-spacing: 2px 2px;
+	width: 200px;
+}
+#log table, tr, th {
+	border: 1px solid;
+}
+#log table td {
+	padding: 1px;
+}
+#log table thead th:last-child {
+	color: black;
+}
+#log table tr td:last-child {
+	color: black;
+}
+#log table tbody tr:nth-child(odd) {
+	background-color: grey;
 }
 
 #prison{
