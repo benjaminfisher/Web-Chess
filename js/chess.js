@@ -220,14 +220,15 @@ function Piece(color, start){
 	};
 	
 	this._move = function(destination){
-		var occupent = occupied(destination.id),
+		var occupant = occupied(destination.id),
 			self = this,
 			capturedPiece = null;
 		
 		$(this.image).appendTo(destination);
-		if (occupent) capturedPiece = occupent;
+		if (occupant) capturedPiece = occupant;
 		else if (this.EP) capturedPiece = this.EP;
 		
+		// If piece is captured, remove the piece
 		if (capturedPiece) $(capturedPiece).remove();
 		
 		// Check to see if move results in check << B. Fisher 3/07 2030
@@ -240,7 +241,7 @@ function Piece(color, start){
 			$('#' + this.position).removeClass('selected');
 			change = false;
 			
-		}else{
+		} else {
 			this.position = destination.id;
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
