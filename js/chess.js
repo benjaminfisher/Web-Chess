@@ -47,6 +47,8 @@
  * v15.5 - Still working on pinned against king issues. Pinning piece can move if not resulting in check. King in check isn't able to move
  * 			except to take the checking piece due to recursion issues with Legal and check functions. << B. Fisher 3/10 0500
  * 
+ * v16   - Added resign button with gameOver and turnCount variables. << B. Fisher 3/10 1800
+ * 
  * Tasks to complete: Correct the following issues with King moves under check: 1) King can capture protected pieces
  * 						2) Checked King is able to move to squares in the checking pieces vector that are behind itself
  * 							for example: King @ G8, Rook on 8th row, King can still move to H8.
@@ -65,9 +67,18 @@ function Game(){
 	pieces,
 	board = $('#board'),
 	squares = $('#board ul li'),
-	selectedSquare = null;
+	selectedSquare = null,
+	gameOver = false,
+	turnCount = 1;
 	
 	Players = [new Player('white'), new Player('black')];
+	
+	$('#resign')
+		.button()
+		.click(function(){
+			gameOver = true;
+			turn();
+		});
 	
 	function turn(){
 		select(false);
@@ -82,13 +93,21 @@ function Game(){
 		// Find whether the last move placed the next player in check
 		Players[1].King.inCheck = (check(Players[1].King.position, Players[0], [Players[0].King]))
 		
-		this.Players.reverse(); // Switches the active player
-		change = null;
-		
-		$('#Dash').css('background', Players[0].color);
-		$('#turn').html(Players[0].color);
-		
-		$("#board img." + Players[0].color).draggable("enable");
+		// Check whether the game has ended due to resignation.
+		//Will prevent the turn change but doesn't exit the game. << B. Fisher 3/10 1800
+		if (gameOver) {
+			alert(Players[0].color + ' resigned on turn ' + turnCount + '.');
+		} else {
+			this.Players.reverse(); // Switches the active player
+			if (Players[0].color == 'white') 
+				turnCount++
+			change = null;
+			
+			$('#Dash').css('background', Players[0].color);
+			$('#turn').html(Players[0].color);
+			
+			$("#board img." + Players[0].color).draggable("enable");
+		};
 		
 	};
 	
