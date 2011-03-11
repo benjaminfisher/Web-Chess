@@ -1,6 +1,6 @@
 body {
-	background-color:maroon;
-	overflow-x:hidden;
+	background-color: maroon;
+	overflow-x: hidden;
 	width: 100%
 }
 
@@ -8,16 +8,28 @@ img{z-index:10;}
 
 #Dash{
 	font: 1.5em/2em Arial, Helvetica, sans-serif;
-	background:#FFF;
+	background-color: #FFF;
 	border: 2px outset grey;
 	color: maroon;
-	left:645px;
-	height: 2em;
-	padding:0 1em;
+	left: 645px;
+	line-height: 24px;
+	padding: 5px;
 	position: absolute;
 }
 
-#Dash p{display:inline; margin:0; padding:0;}
+#Dash p {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+#log {
+	font: 14px Arial, Helvetica, sans-serif;
+	background-color: maroon;
+	border: 2px outset grey;
+	color: #FFF;
+}
 
 #board{
 	background:url(../images/marble.jpg);
