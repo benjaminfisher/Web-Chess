@@ -192,7 +192,7 @@ function Piece(color, start){
 		if (capturedPiece) $(capturedPiece).remove();
 		
 		// Check to see if move results in check << B. Fisher 3/07 2030
-		if (check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
+		if (this.type != 'king' && check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
 			$('.legal').removeClass('legal');
 			$(this.image).appendTo('#' + this.position);
 			if(capturedPiece) (capturedPiece.image).appendTo(capturedPiece.position);
