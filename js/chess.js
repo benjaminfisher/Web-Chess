@@ -264,6 +264,8 @@ function pawn(color, start){
 	this.toString = function(){return 'pawn'}
 	Piece.call(this, color, start);
 	
+	// inc variable indicates which direction is forward depending on color.
+	// endRow variable is the promotion rank for the pawn << B. Fisher
 	var self = this,
 		inc = (color == 'white') ? 1 : -1,
 		endRow = (color == 'white') ? 8 : 1;
@@ -303,8 +305,13 @@ function pawn(color, start){
 		if(this.row() == endRow) this.promote();
 	};
 	
+	// Pawn promotion functionality << B. Fisher 3/06
 	this.promote = function(){
-		this.capture();
+		// Remove the pawn's image, and clear it from the Player's pieces array.
+		$(this.image).remove();
+		$(this).trigger('remove');
+		
+		// Request promotion preference from Player and add the requested piece.
 		var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
 		if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
 			Players[0].pieces.push(new knight(this.color, this.position));
