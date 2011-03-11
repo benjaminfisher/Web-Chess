@@ -407,7 +407,7 @@ function king(color, start){
 				cLabels[C + 1] + (row + 1), cLabels[C + 1] + (row - 1), cLabels[C - 1] + (row + 1), 
 				cLabels[C - 1] + (row - 1)];
 		
-		console.log('King squares:' + squares);
+		console.log(this.color + ' King squares:' + squares);
 		
 		return squares;
 	};
@@ -433,7 +433,6 @@ function Legal(piece){
 	
 //	console.log(color + ' ' + type + ' - footprint: ' + footprint + ' | moved: ' + piece.moved);
 
-	
 	$(footprint).each(function(){
 		if (inside(this, position)){
 			if(type == 'knight') {
@@ -471,10 +470,18 @@ function Legal(piece){
 		};
 		
 		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
-		var squares = legalIDs.split(',');
+		var squares = legalIDs.split(','),
+			otherKingSquares = Players[1].King.footprint();
+			
 		for(var i = squares.length-2; i>=0; i--){
 			if(check(squares[i], Players[1], [Players[1].King])) squares.splice(i, 1);
 		};
+		
+		// Attempt to remove opposing king's footprint from moving kings available moves << B. Fisher 3.10 2215
+		for (var i = squares.length - 2; i >= 0; i--) {
+			if ($(otherKingSquares).match(squares[i])) squares.splice(i, 1);
+		};
+		
 		legalIDs = squares.join(',');
 		
 	};
@@ -634,7 +641,8 @@ function Stalemate(Player) {
 	$.fn.match = function(item){
 		var matchValue = false;
 	  	this.each(function(){
-		  	if(this == item) matchValue = true;
+		  	if (typeof item == 'string' && item.match(this)) matchValue = true;
+			else if(item === this) matchValue = true;
 		});
 		return matchValue;
 	};
