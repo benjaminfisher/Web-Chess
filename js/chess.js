@@ -44,6 +44,9 @@
  * 
  * v15.4 - Resolved pinned against king issues except when the pinning piece captures the pinner << B. Fisher 3/07 2115
  * 
+ * v15.5 - Still working on pinned against king issues. Pinning piece can move if not resulting in check. King in check isn't able to move
+ * 			except to take the checking piece due to recursion issues with Legal and check functions. << B. Fisher 3/10 0500
+ * 
  * Tasks to complete: Correct the following issues with King moves under check: 1) King can capture protected pieces
  * 						2) Checked King is able to move to squares in the checking pieces vector that are behind itself
  * 							for example: King @ G8, Rook on 8th row, King can still move to H8.
@@ -262,6 +265,8 @@ function pawn(color, start){
 	this.toString = function(){return 'pawn'}
 	Piece.call(this, color, start);
 	
+	// inc variable indicates which direction is forward depending on color.
+	// endRow variable is the promotion rank for the pawn << B. Fisher
 	var self = this,
 		inc = (color == 'white') ? 1 : -1,
 		endRow = (color == 'white') ? 8 : 1;
@@ -301,8 +306,13 @@ function pawn(color, start){
 		if(this.row() == endRow) this.promote();
 	};
 	
+	// Pawn promotion functionality << B. Fisher 3/06
 	this.promote = function(){
-		this.capture();
+		// Remove the pawn's image, and clear it from the Player's pieces array.
+		$(this.image).remove();
+		$(this).trigger('remove');
+		
+		// Request promotion preference from Player and add the requested piece.
 		var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
 		if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
 			Players[0].pieces.push(new knight(this.color, this.position));
