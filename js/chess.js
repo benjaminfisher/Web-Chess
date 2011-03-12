@@ -180,7 +180,7 @@ function Piece(color, start){
 	};
 	
 	this._move = function(destination){
-		var occupant = occupied(destination.id),
+		var occupant = occupied(destination.id), // Piece to be captured
 			self = this,
 			capturedPiece = null;
 		
@@ -194,21 +194,26 @@ function Piece(color, start){
 		// Check to see if move results in check << B. Fisher 3/07 2030
 		if (this.type != 'king' && check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
 			$('.legal').removeClass('legal');
+			// Move it to the place of the piece it's capturing
 			$(this.image).appendTo('#' + this.position);
+			// Capturing would result in check, put the piece back and alert the player
 			if(capturedPiece) (capturedPiece.image).appendTo(capturedPiece.position);
-			
 			alert('Move results in check.');
 			$('#' + this.position).removeClass('selected');
 			change = false;
-			
 		} else {
+			// The move was valid, carry on with the capture
 			this.position = destination.id;
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
 			change = true;
-			//append the move depend on what moved and where it went, what it captured, etc.
-			$('#log tbody').append('<tr><td>Move</td><td>Move</td></tr>');
-			$('#Dash').attr({ scrollTop: $('#Dash').attr('scrollHeight') });
+			// Append the move depending on what moved, where it went, what it captured, etc. << J-M Glenn
+			if (color == "white") {
+				$('<tr><td>WHITE Move</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+				$('#Dash').attr({ scrollTop: $('#Dash').attr('scrollHeight') });
+			} else {
+				$('#log tbody td:last').show().text('BLACK Move');
+			}
 		};
 	};
 	
