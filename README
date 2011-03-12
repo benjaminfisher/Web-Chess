@@ -1,5 +1,9 @@
 Author: Benjamin Fisher
+Collaborator: John-Michael Glenn
 Date: January 2011
+
+Web based chess application. Layout is via HTML5 with CSS3 styling. Functionality is via JavaScript utilizing the jQuery library.
+Play is hot-seat between two players (no AI).
 
 version 12 - All pieces but king are moving legally except en Passant capture. Footprint function added to pieces.
 v12.1 - Added basic king moves, still needs castle functionality & legality.
@@ -70,5 +74,5 @@ Tasks to complete: Correct the following issues with King moves under check:
 			Some legal squares are being removed.
 	Code out the Checkmate function.
 	Debug the Stalemate function
-	Add move list and captured pieces to the dashboard
+	Append actual player moves using algebraic notation
 	Ask for player names at the beginning of the game, and show them in the dashboard
