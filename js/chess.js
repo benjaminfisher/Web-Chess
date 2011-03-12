@@ -18,6 +18,8 @@ function Game(){
 			turn();
 		});
 	
+	$('.hidden').hide();
+	
 	function turn(){
 		select(false);
 		$(pieces).draggable("disable");		// disables piece dragging for previous player
@@ -218,9 +220,23 @@ function Piece(color, start){
 	};
 	
 	this.capture = function(){
-//		$(this.image).fadeOut('fast', function(){$(this).remove()});
+//		$(this.image).fadeOut('fast', function(){$(this.image).remove()});
 		$(this.image).remove();
 		$(this).trigger('remove');
+		
+		// Show captured piece in the prison << B. Fisher 3/11 1640
+		var cell = $('#prison [rel="' + this.color + ' ' + this.type + '"]');
+		$(cell).find('img').fadeIn('slow');
+		
+		// If the count span is empty, insert '1' and hide it.
+		// If it already contains a number, add 1 and show it. << B. Fisher <<3/11 1800
+		var cellCount = $(cell).find('.count')[0],	c;
+		if($(cellCount).html()){
+			c = $(cellCount).html();
+			c++;
+			$(cellCount).html(c).fadeIn('slow');
+		} else $(cellCount).html(1).hide();
+		
 		return true;
 	};
 };

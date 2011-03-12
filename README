@@ -52,19 +52,22 @@ v16.1 - Added the prison to display captured pieces << B. Fisher 33/10 1915
 
 v16.2 - Adding the move logging table along with it's styling << J-M Glenn
 
-<<<<<<< HEAD
 v16.3 - Attempting to remove opposing king's footprint from moving king's available moves with the match function.
 			Currently removing squares that should be legal. << B. Fisher 3/10 2215
-=======
-v16.3 - Added auto-scrolling to the move logger
+v16.4 - Added auto-scrolling to the move logger << J-M Glenn
 >>>>>>> branch 'refs/heads/master' of https://benjaminfisher@github.com/benjaminfisher/Web-Chess.git
+
+v16.5 - Added functionality for the 'prison' to show captured pieces. << B. Fisher 3/11 1830
 
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces
 	2) Checked King is able to move to squares in the checking pieces vector that are behind itself
 		for example: King @ G8, Rook on 8th row, King can still move to H8.
+	3) King can move into squares that are threatened by an opposing pawn.
 					
 	Resolve issues with piece movement when pinned against the king
+		- Issues attempting to remove opposing king's footprint from current players king's legal moves.
+			Some legal squares are being removed.
 	Code out the Checkmate function.
 	Debug the Stalemate function
 	Add move list and captured pieces to the dashboard

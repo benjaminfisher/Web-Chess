@@ -5,7 +5,7 @@ body {
 
 img{z-index:10;}
 
-#wrapper{width:950px; float:left;}
+#wrapper{width:960px; float:left;}
 
 #Dash{
 	font: 1.5em/2em Arial, Helvetica, sans-serif;
@@ -65,10 +65,22 @@ img{z-index:10;}
 #prison{
 	float:left;
 	height:624px;
-	width:60px;
+	width:70px;
 	display:block;
 }
 
+	#prison ul li{
+		display:block;
+		height:50px;
+	}
+	#prison ul li span{
+		position:relative;
+		bottom:20px;
+		left:-7px;
+		z-index:5;
+	}
+	#prison ul li[rel^='white']{color:white;}
+	
 #board{
 	background:url(../images/marble.jpg);
 	border:4px outset gray;
@@ -115,6 +127,8 @@ img{z-index:10;}
 #board ul:first-child div:hover{margin-top:0;}
 #board ul li:first-child:hover{margin-left:0;}
 
+#board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
+
 .label{
 	position:absolute;
 	bottom:0px;
@@ -127,5 +141,3 @@ img{z-index:10;}
 	border:1px solid purple;
 	z-index:5;
 }
-
-#board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
