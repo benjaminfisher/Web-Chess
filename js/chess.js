@@ -431,7 +431,7 @@ function king(color, start){
 				cLabels[C + 1] + (row + 1), cLabels[C + 1] + (row - 1), cLabels[C - 1] + (row + 1), 
 				cLabels[C - 1] + (row - 1)];
 		
-		console.log(this.color + ' King squares:' + squares);
+//		console.log(this.color + ' King squares:' + squares);
 		
 		return squares;
 	};
@@ -476,10 +476,12 @@ function Legal(piece){
 		};
 	});
 	
-	// Check for castle legality and add king double step if true. << B. Fisher
+	// King move legality.
 	if(type == 'king'){
+		// Check for castle legality and add king double step if true. << B. Fisher
 		if(!piece.inCheck && !piece.moved){				// King is not in check and has not moved
 			var rook = occupied('#H' + rNum);
+			
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
 			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], [Players[1].King])){
 				legalIDs += writeID('G', rNum);
@@ -503,11 +505,11 @@ function Legal(piece){
 		
 		// Attempt to remove opposing king's footprint from moving kings available moves << B. Fisher 3.10 2215
 		for (var i = squares.length - 2; i >= 0; i--) {
+			console.log(otherKingSquares, squares)
 			if ($(otherKingSquares).match(squares[i])) squares.splice(i, 1);
 		};
 		
 		legalIDs = squares.join(',');
-		
 	};
 	// === End King legality checks ===
 	
@@ -616,12 +618,12 @@ function findDiagonal(start, xInc, yInc){
 // Checks that square is valid and not equal to origin, and its coordinates are inside the board.
 // housekeeping function for Legal << B. Fisher
 function inside(square, origin){
-	if(square && origin != square && square[1] * 1 >= 1 && square.substr(1) * 1 <= 8 && cLabels.indexOf(square[0]) >= 0) return true;
+	if(square && origin != square && square[1]*1 >= 1 && square.substr(1)*1 <= 8 && cLabels.indexOf(square[0]) >= 0) return true;
 	else return false;
 };
 
 // Returns: pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column).
-// var ignore is a piece. It can be used to prevent recursion in the Legal object, helps in pinning checks.
+// var ignore is an array of piece objects. It can be used to prevent recursion in the Legal object, helps in pinning checks.
 // If threatening pieces are found return an array of their objects, else returns false. << B. Fisher
 function check(square, player, ignore){
 	var chk = false, ids;
@@ -660,7 +662,8 @@ function Stalemate(Player) {
 	
 };
 
-
+// jQuery function to match an object (item variable) against an array (jQuery object),
+// or if item is a sting check for a match within a longer string. Returns Boolean. << B. Fisher
 (function($){
 	$.fn.match = function(item){
 		var matchValue = false;
