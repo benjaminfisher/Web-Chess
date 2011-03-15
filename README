@@ -63,15 +63,18 @@ v16.4 - Added auto-scrolling to the move logger << J-M Glenn
 
 v16.5 - Added functionality for the 'prison' to show captured pieces. << B. Fisher 3/11 1830
 
+v16.6 - Removed pawns from player's pieces array, added to Player.pawns array.
+          Resolved check issues. Corrected opponent pawn capture and move when requesting check function. Also corrected opponent king moves when 
+         calling check function. << B. Fisher 3/14 2200
+
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces
 	2) Checked King is able to move to squares in the checking pieces vector that are behind itself
 		for example: King @ G8, Rook on 8th row, King can still move to H8.
-	3) King can move into squares that are threatened by an opposing pawn.
 					
-	Resolve issues with piece movement when pinned against the king
-		- Issues attempting to remove opposing king's footprint from current players king's legal moves.
-			Some legal squares are being removed.
+	Resolve issues with piece movement when pinned against the king.
+              - Partially resolved. Moves are evaluated for check situations prior to completion.
+
 	Code out the Checkmate function.
 	Debug the Stalemate function
 	Append actual player moves using algebraic notation
