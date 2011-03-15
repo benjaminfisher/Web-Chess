@@ -128,6 +128,7 @@ img{z-index:10;}
 #board ul li:first-child:hover{margin-left:0;}
 
 #board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
+#board ul li.threat{background-color:rgba(200,0,0,0.6) !important;}
 
 .label{
 	position:absolute;

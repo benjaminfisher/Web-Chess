@@ -57,6 +57,7 @@ function Game(){
 		 */
 		$('.legal').removeClass('legal');
 		$('.selected').removeClass('selected');
+		$('.threat').removeClass('threat');
 		
 		if (square) {
 			selectedSquare = square;
@@ -631,6 +632,7 @@ function check(square, player, ignore){
 			if (ids.match(square)) {
 				if (!chk) chk = new Array();
 				chk.push(this);
+				$(square).addClass('threat');
 			};
 		};
 	});
@@ -646,6 +648,7 @@ function check(square, player, ignore){
 			if($(ids).match(square)){
 				if (!chk) chk = new Array();
 				chk.push(pawn);
+				$(square).addClass('threat');
 			};
 		};
 	});
@@ -654,9 +657,10 @@ function check(square, player, ignore){
 	if($(ids).match(square)){
 		if (!chk) chk = new Array();
 		chk.push(player.King);
+		$(square).addClass('threat');
 	};
 	
-	console.log('Player ' + player.color + ': ' + chk);
+	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
 	return chk;
 };
 
