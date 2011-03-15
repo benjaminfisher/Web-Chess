@@ -26,9 +26,7 @@ function Game(){
 		$('.legal').removeClass('legal');	// clears legal moves of last moved piece
 		
 		//Clears the EP variables of the current players pawns << B. Fisher
-		$(Players[0].pieces).each(function(){
-			if(this.type == 'pawn') this.EP = false;
-		});
+		$(Players[0].pawns).each(function(){this.EP = false});
 		
 		// Find whether the last move placed the next player in check
 		Players[1].King.inCheck = (check(Players[1].King.position, Players[0], [Players[0].King]))
@@ -122,6 +120,7 @@ function Game(){
 function Player(side){
 	this.color = side;
 	this.pieces = new Array();
+	this.pawns = new Array();
 	
 	var startRow = (this.color == 'white') ? 1 : 8, // White Player starts on Row 1, Black on row 8
 		pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
@@ -129,7 +128,7 @@ function Player(side){
 	var piece, i;
 	
 	for (p = 0; p <= 7; p++) {
-		this.pieces.push(new pawn(this.color, cLabels[p] + pawnRow));
+		this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
 	};
 	
 	this.pieces.push(new rook(this.color, "A" + startRow));	
@@ -144,19 +143,22 @@ function Player(side){
 	this.pieces.push(new queen(this.color, "D" + startRow));
 
 	this.King = new king(this.color, "E" + startRow);
-	this.pieces.push(this.King);
 	
 	var self = this;
 	
-	//Remove a piece from this players piece array when captured << B. Fisher 3.3 2100
-	$(self.pieces).bind('remove', function(){
-		var piece = this;
-		$.each(self.pieces, function(index, item){
+	//Remove a piece from this players piece array when captured << B. Fisher 3/3 2100
+	// Revised to function with seperate pieces and pawns arrays << B. Fisher 3/14 2030
+	$('#board img').bind('remove', function(){
+		var piece = callPiece(this);
+		var array = (piece.type == 'pawn') ? self.pawns : self.pieces;
+		
+		$.each(array, function(index, item){
 			if(piece === item){
-				self.pieces.splice(index, 1);
+				array.splice(index, 1);
 				return true;
 			};
 		});
+		console.log(self.color + ' Pieces: ' + self.pieces, ' Pawns: ' + self.pawns);
 	});
 };
 
@@ -503,10 +505,12 @@ function Legal(piece){
 			if(check(squares[i], Players[1], [Players[1].King])) squares.splice(i, 1);
 		};
 		
+		console.log('Opponent: ' + otherKingSquares)
 		// Attempt to remove opposing king's footprint from moving kings available moves << B. Fisher 3.10 2215
 		for (var i = squares.length - 2; i >= 0; i--) {
-			console.log(otherKingSquares, squares)
-			if ($(otherKingSquares).match(squares[i])) squares.splice(i, 1);
+//			if ($(otherKingSquares).match(squares[i])) squares.splice(i, 1);
+			console.log('Square: ' + squares[i] + ' match: ' + $(otherKingSquares).match(squares[i]));
+
 		};
 		
 		legalIDs = squares.join(',');
