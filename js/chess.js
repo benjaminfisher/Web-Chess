@@ -158,7 +158,6 @@ function Player(side){
 				return true;
 			};
 		});
-		console.log(self.color + ' Pieces: ' + self.pieces, ' Pawns: ' + self.pawns);
 	});
 };
 
@@ -198,9 +197,11 @@ function Piece(color, start){
 		// Check to see if move results in check << B. Fisher 3/07 2030
 		if (this.type != 'king' && check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
 			$('.legal').removeClass('legal');
+			
 			// Move it to the place of the piece it's capturing
 			$(this.image).appendTo('#' + this.position);
-			// Capturing would result in check, put the piece back and alert the player
+			
+			// Capturing would result in check, put the piece back and alert the player << B. Fisher
 			if(capturedPiece) (capturedPiece.image).appendTo(capturedPiece.position);
 			alert('Move results in check.');
 			$('#' + this.position).removeClass('selected');
@@ -211,13 +212,14 @@ function Piece(color, start){
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
 			change = true;
+			
 			// Append the move depending on what moved, where it went, what it captured, etc. << J-M Glenn
 			if (color == "white") {
 				$('<tr><td>WHITE Move</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 				$('#Dash').attr({ scrollTop: $('#Dash').attr('scrollHeight') });
 			} else {
 				$('#log tbody td:last').show().text('BLACK Move');
-			}
+			};
 		};
 	};
 	
@@ -251,22 +253,22 @@ function pawn(color, start){
 	// inc variable indicates which direction is forward depending on color.
 	// endRow variable is the promotion rank for the pawn << B. Fisher
 	var self = this,
-		inc = (color == 'white') ? 1 : -1,
 		endRow = (color == 'white') ? 8 : 1;
 	
 	this.type = "pawn";
 	this.EP = false;
+	this.inc = (color == 'white') ? 1 : -1
 	
 	this.footprint = function(){
 		row = self.row(),
 		col = self.col(),
 		ids = new Array();
 		
-		if(!self.moved)	ids.push(col + (row + 2*inc));
-		else ids.push(col + (row + 1*inc));
+		if(!self.moved)	ids.push(col + (row + 2*this.inc));
+		else ids.push(col + (row + 1*this.inc));
 		
-		ids.push(cLabels[cLabels.indexOf(col)-1] + (row + inc));
-		ids.push(cLabels[cLabels.indexOf(col)+1] + (row + inc));
+		ids.push(cLabels[cLabels.indexOf(col)-1] + (row + this.inc));
+		ids.push(cLabels[cLabels.indexOf(col)+1] + (row + this.inc));
 		
 		return ids;
 	};
@@ -301,7 +303,6 @@ function pawn(color, start){
 			Players[0].pieces.push(new knight(this.color, this.position));
 		} else Players[0].pieces.push(new queen(this.color, this.position));
 	};
-	
 	self.place(start);
 }
 pawn.prototype = new Piece();
@@ -505,14 +506,6 @@ function Legal(piece){
 			if(check(squares[i], Players[1], [Players[1].King])) squares.splice(i, 1);
 		};
 		
-		console.log('Opponent: ' + otherKingSquares)
-		// Attempt to remove opposing king's footprint from moving kings available moves << B. Fisher 3.10 2215
-		for (var i = squares.length - 2; i >= 0; i--) {
-//			if ($(otherKingSquares).match(squares[i])) squares.splice(i, 1);
-			console.log('Square: ' + squares[i] + ' match: ' + $(otherKingSquares).match(squares[i]));
-
-		};
-		
 		legalIDs = squares.join(',');
 	};
 	// === End King legality checks ===
@@ -630,17 +623,40 @@ function inside(square, origin){
 // var ignore is an array of piece objects. It can be used to prevent recursion in the Legal object, helps in pinning checks.
 // If threatening pieces are found return an array of their objects, else returns false. << B. Fisher
 function check(square, player, ignore){
-	var chk = false, ids;
+	var chk = false, ids, footprint;
+	
 	$(player.pieces).each(function(){
 		if (!$(ignore).match(this)) {
 			ids = Legal(this);
 			if (ids.match(square)) {
-				if (!chk) 
-					chk = new Array();
+				if (!chk) chk = new Array();
 				chk.push(this);
 			};
 		};
 	});
+	
+	// Evaluate player's pawn capture squares. << B. Fisher 3/14 2130
+	$(player.pawns).each(function(){
+		var pawn = this;
+		if(!$(ignore).match(this)){
+			ids = this.footprint();
+			$(ids).each(function(index){
+				if(this[0] == pawn.col()) ids.splice(index, 1);
+			});
+			if($(ids).match(square)){
+				if (!chk) chk = new Array();
+				chk.push(pawn);
+			};
+		};
+	});
+	
+	ids = player.King.footprint();
+	if($(ids).match(square)){
+		if (!chk) chk = new Array();
+		chk.push(player.King);
+	};
+	
+	console.log('Player ' + player.color + ': ' + chk);
 	return chk;
 };
 
@@ -656,13 +672,20 @@ function Checkmate(){
 	//if all available moves for the king are threatened
 };
 
-function Stalemate(Player) {
+function Stalemate(player) {
 	var legalMoves = '';
-	$.each(Player.pieces, function(){
-		legalMoves += this.Legal;
+	$.each(player.pieces, function(){
+		legalMoves += Legal(this);
 	});
-	if(legalMoves.length > 0) return true;
-	else return false;
+	
+	$.each(player.pawns, function(){
+		legalMoves += Legal(this);
+	});
+	
+	legalMoves += Legal(player.King);
+	
+	if(legalMoves.length > 0) return false;
+	else return true;
 	
 };
 
