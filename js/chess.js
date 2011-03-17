@@ -29,16 +29,17 @@ function Game(){
 		$(Players[0].pawns).each(function(){this.EP = false});
 		
 		// Find whether the last move placed the next player in check
-		Players[1].King.inCheck = (check(Players[1].King.position, Players[0]))
+		Players[1].King.inCheck = (check(Players[1].King.position, Players[0]));
 		
 		// Check whether the game has ended due to resignation.
 		//Will prevent the turn change but doesn't exit the game. << B. Fisher 3/10 1800
 		if (gameOver) {
 			alert(Players[0].color + ' resigned on turn ' + turnCount + '.');
+			endGame();
 		} else {
 			this.Players.reverse(); // Switches the active player
-			if (Players[0].color == 'white') 
-				turnCount++
+			if (Players[0].color == 'white') turnCount++;
+			
 			change = null;
 			
 			$('#Dash').css('background', Players[0].color);
@@ -414,15 +415,19 @@ function king(color, start){
 	this.index = null;
 	
 	this.move = function(destination){
+		// Evaluate if king is castling. << B. Fisher
 		if (this.castle() && (destination.id.match('G') || destination.id.match('C'))) {
+			// If king is moving to column 'G' (kingside) rook is on column 'H'
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
+			// If king is moving to column 'C' (queenside) rook is on column 'A'
 			}else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
 			};
 			
+			// Move the king, than move the rook to the king's other side (dest). << B. Fisher
 			this._move(destination);
 			$(rook.image).fadeOut('fast', function(){
 				rook.move(dest);
@@ -438,11 +443,11 @@ function king(color, start){
 	
 	this.footprint = function(){
 		var row = this.row(),
-			C = cLabels.indexOf(this.col()),
+			column = cLabels.indexOf(this.col()),
 			square,
 			squares = new Array();
 				
-		for(var c = C-1; c <= C+1; c++){
+		for(var c = column-1; c <= column+1; c++){
 			for(var r = row-1; r <= row+1; r++){
 				square = cLabels[c] + r;
 				if(square != this.position) squares.push(square);
@@ -487,11 +492,6 @@ function Legal(piece){
 				else if (piece.EP && piece.EP.col() == this[0]) legalIDs += writeID(this[0], this[1]);
 				// add vertical moves
 				else if (C == this[0]) legalIDs += vector(position, this, color, false);
-			} else if (type == 'king'){
-				if(dest && dest.color != color){
-					console.log(dest);
-					if(check(dest.position, Players[1])) $(dest).addClass('threat');
-				};
 			} else {
 				legalIDs += vector(position, this, color, true)
 			};
@@ -501,7 +501,7 @@ function Legal(piece){
 	// King move legality.
 	if(type == 'king'){
 		// Check for castle legality and add king double step if true. << B. Fisher
-		if(!piece.inCheck && !piece.moved){				// King is not in check and has not moved
+		if(piece.castle){
 			var rook = occupied('#H' + rNum);
 			
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
@@ -509,9 +509,9 @@ function Legal(piece){
 				legalIDs += writeID('G', rNum);
 			};
 			
-			var rook = occupied('#A' + rNum);
 			// Queenside squares between rook and king are not occupied. The king is not moving across check.
 			// and the queenside rook has not moved.
+			var rook = occupied('#A' + rNum);
 			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1])){
 				legalIDs += writeID('C', rNum);
 			};
@@ -528,7 +528,7 @@ function Legal(piece){
 	};
 	// === End King legality checks ===
 	
-//	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
+	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
 	
 	return legalIDs;
 };
@@ -708,6 +708,25 @@ function Stalemate(player) {
 	if(legalMoves.length > 0) return false;
 	else return true;
 	
+};
+
+function endGame(){
+	var cover = $('<div>');
+	
+	$(cover)
+		.appendTo('body')
+		.attr('id', 'cover')
+		.css({
+			position: 'absolute',
+			top: '16px',
+			left: '16px',
+			height: '616px',
+			width: '616px',
+			backgroundColor: 'rgba(50,50,50,0.3)',
+			zIndex: '9000'
+		});
+		
+	$('#resign').button('disable');
 };
 
 // jQuery function to match an object (item variable) against an array (jQuery object),
