@@ -29,7 +29,7 @@ function Game(){
 		$(Players[0].pawns).each(function(){this.EP = false});
 		
 		// Find whether the last move placed the next player in check
-		Players[1].King.inCheck = (check(Players[1].King.position, Players[0], [Players[0].King]))
+		Players[1].King.inCheck = (check(Players[1].King.position, Players[0]))
 		
 		// Check whether the game has ended due to resignation.
 		//Will prevent the turn change but doesn't exit the game. << B. Fisher 3/10 1800
@@ -162,9 +162,11 @@ function Player(side){
 	});
 };
 
+
 //=======================================================
 function Piece(color, start){
 	this.moved = false;
+	this.protection = false;
 	this.position = start;
 	this.color = color;
 	
@@ -183,6 +185,10 @@ function Piece(color, start){
 		$(this.image).appendTo("#" + position);
 	};
 	
+	this.evalProtect = function(){
+		return true;
+	};
+	
 	this._move = function(destination){
 		var occupant = occupied(destination.id), // Piece to be captured
 			self = this,
@@ -196,7 +202,7 @@ function Piece(color, start){
 		if (capturedPiece) $(capturedPiece).remove();
 		
 		// Check to see if move results in check << B. Fisher 3/07 2030
-		if (this.type != 'king' && check(Players[0].King.position, Players[1], [Players[1].King, capturedPiece])) {
+		if (this.type != 'king' && check(Players[0].King.position, Players[1], [capturedPiece])) {
 			$('.legal').removeClass('legal');
 			
 			// Move it to the place of the piece it's capturing
@@ -213,6 +219,8 @@ function Piece(color, start){
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
 			change = true;
+			
+			this.evalProtect();
 			
 			// Append the move depending on what moved, where it went, what it captured, etc. << J-M Glenn
 			if (color == "white") {
@@ -275,7 +283,7 @@ function pawn(color, start){
 	};
 	
 	this.move = function(destination){
-		// Check for en passant
+		// Evaluate whether pawn has passed an opponent pawn on opening double step << B. Fisher
 		if(!this.moved && (destination.id.match(4) || destination.id.match(5))){
 			var prev = (this.col() == 'A') ? false : occupied(destination.previousElementSibling.id);
 			var next = (this.col() == 'H') ? false : occupied(destination.nextElementSibling.id);
@@ -284,7 +292,8 @@ function pawn(color, start){
 			if(next && next == 'pawn' && next.color != color) next.EP = this;
 		};
 		
-		// Check if pawn is capturing en passant
+		// Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed.
+		// If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
 		if(this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
 		
 		this._move(destination)
@@ -345,7 +354,7 @@ function knight(color, start){
 		
 		for(var r = row - 2; r <= row + 2; r++){
 			if(r != row){
-				if(Math.abs(row - r) == 1) {cShift = 2} else {cShift = 1};
+				cShift = (Math.abs(row - r) == 1) ? cShift = 2 : cShift = 1;
 				ids.push(cLabels[col + cShift] + r);
 				ids.push(cLabels[col - cShift] + r);
 			};
@@ -429,14 +438,16 @@ function king(color, start){
 	
 	this.footprint = function(){
 		var row = this.row(),
-			col = this.col(),
-			C = cLabels.indexOf(col),
-			squares = [col + (row + 1), col + (row - 1), cLabels[C + 1] + row, cLabels[C - 1] + row,
-				cLabels[C + 1] + (row + 1), cLabels[C + 1] + (row - 1), cLabels[C - 1] + (row + 1), 
-				cLabels[C - 1] + (row - 1)];
-		
-//		console.log(this.color + ' King squares:' + squares);
-		
+			C = cLabels.indexOf(this.col()),
+			square,
+			squares = new Array();
+				
+		for(var c = C-1; c <= C+1; c++){
+			for(var r = row-1; r <= row+1; r++){
+				square = cLabels[c] + r;
+				if(square != this.position) squares.push(square);
+			};
+		};
 		return squares;
 	};
 	
@@ -463,17 +474,24 @@ function Legal(piece){
 
 	$(footprint).each(function(){
 		if (inside(this, position)){
+			dest = occupied('#' + this);
 			if(type == 'knight') {
-				if(occupied('#' + this).color != color) legalIDs += writeID(this[0], this[1]);
-			}else if(type == 'pawn'){
+				// Knights are 'leapers'. They do not move along a vector but jump to the destination square. << B. Fisher
+				if(dest.color != color) legalIDs += writeID(this[0], this[1]);
+			} else if(type == 'pawn'){
 				// pawns cannot capture on their own column
-				if (occupied('#' + this) && occupied('#' + this).color != color && C != this[0]) {
+				if (dest && dest.color != color && C != this[0]) {
 					legalIDs += writeID(this[0], this[1]);
 				}
 				// Check for a pawn in EP and whether its column matches the move
 				else if (piece.EP && piece.EP.col() == this[0]) legalIDs += writeID(this[0], this[1]);
-					// add vertical moves
-					else if (C == this[0]) legalIDs += vector(position, this, color, false);
+				// add vertical moves
+				else if (C == this[0]) legalIDs += vector(position, this, color, false);
+			} else if (type == 'king'){
+				if(dest && dest.color != color){
+					console.log(dest);
+					if(check(dest.position, Players[1])) $(dest).addClass('threat');
+				};
 			} else {
 				legalIDs += vector(position, this, color, true)
 			};
@@ -487,24 +505,23 @@ function Legal(piece){
 			var rook = occupied('#H' + rNum);
 			
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
-			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1], [Players[1].King])){
+			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1])){
 				legalIDs += writeID('G', rNum);
 			};
 			
 			var rook = occupied('#A' + rNum);
 			// Queenside squares between rook and king are not occupied. The king is not moving across check.
 			// and the queenside rook has not moved.
-			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1], [Players[1].King])){
+			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1])){
 				legalIDs += writeID('C', rNum);
 			};
 		};
 		
 		// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
-		var squares = legalIDs.split(','),
-			otherKingSquares = Players[1].King.footprint();
+		var squares = legalIDs.split(',');
 			
 		for(var i = squares.length-2; i>=0; i--){
-			if(check(squares[i], Players[1], [Players[1].King])) squares.splice(i, 1);
+			if(check(squares[i], Players[1])) squares.splice(i, 1);
 		};
 		
 		legalIDs = squares.join(',');
@@ -624,13 +641,13 @@ function inside(square, origin){
 // var ignore is an array of piece objects. It can be used to prevent recursion in the Legal object, helps in pinning checks.
 // If threatening pieces are found return an array of their objects, else returns false. << B. Fisher
 function check(square, player, ignore){
-	var chk = false, ids, footprint;
+	var chk = new Array(),
+		ids, footprint;
 	
 	$(player.pieces).each(function(){
 		if (!$(ignore).match(this)) {
 			ids = Legal(this);
 			if (ids.match(square)) {
-				if (!chk) chk = new Array();
 				chk.push(this);
 				$(square).addClass('threat');
 			};
@@ -646,7 +663,6 @@ function check(square, player, ignore){
 				if(this[0] == pawn.col()) ids.splice(index, 1);
 			});
 			if($(ids).match(square)){
-				if (!chk) chk = new Array();
 				chk.push(pawn);
 				$(square).addClass('threat');
 			};
@@ -655,10 +671,11 @@ function check(square, player, ignore){
 	
 	ids = player.King.footprint();
 	if($(ids).match(square)){
-		if (!chk) chk = new Array();
 		chk.push(player.King);
 		$(square).addClass('threat');
 	};
+	
+	if (chk.length < 1) chk = false;
 	
 	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
 	return chk;

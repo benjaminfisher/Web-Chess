@@ -66,6 +66,8 @@ v16.5 - Added functionality for the 'prison' to show captured pieces. << B. Fish
 v16.6 - Removed pawns from player's pieces array, added to Player.pawns array.
           Resolved check issues. Corrected opponent pawn capture and move when requesting check function. Also corrected opponent king moves when 
          calling check function. << B. Fisher 3/14 2200
+         
+v16.7 - Simplified king.footprint function, now easier to parse feedback. << B. Fisher
 
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces
