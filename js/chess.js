@@ -89,7 +89,7 @@ function Game(){
 			
 //			$("#board img." + Players[0].color).draggable("enable");
 		};
-		
+		castled = false;
 	};
 	
 	function select(square){
@@ -785,21 +785,7 @@ function logCastle(side, color) {
 		} else {
 			$('#log tbody td:last').show().text('0-0');
 		}
-		if (color == "white") {
-			$('<tr><td>0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').show().text('0-0');
-		}
 	} else {
-		$('#log tbody td:last').show().text(start+moveType+end);
-	};
-		if (color == "white") {
-			$('<tr><td>0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').show().text('0-0-0');
-		}
 		if (color == "white") {
 			$('<tr><td>0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
@@ -807,6 +793,7 @@ function logCastle(side, color) {
 			$('#log tbody td:last').show().text('0-0-0');
 		}
 	}
+}
 
 
 // jQuery function to match an object (item variable) against an array (jQuery object),
