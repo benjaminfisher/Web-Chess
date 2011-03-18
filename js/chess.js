@@ -50,6 +50,8 @@ function Game(){
 		if(Checkmate()) gameOver = 2;
 		if(Stalemate()) gameOver = 3;
 		
+		$('.threat').removeClass('threat');
+		
 		// End game alerts << B. Fisher
 		switch (gameOver) {
 		// If gameOver is 1 current player resigned
@@ -125,7 +127,7 @@ function Game(){
 		legalMoves += Legal(Players[0].King);
 		console.log('Stalemate moves: ' + legalMoves);
 		
-		if(legalMoves.length = 0 && !Players[0].King.inCheck) return true;
+		if(legalMoves.length == 0 && !Players[0].King.inCheck) return true;
 		else return false;
 	};
 
