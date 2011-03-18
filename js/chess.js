@@ -19,7 +19,8 @@ function Game(){
 	$('#resign')
 		.button()
 		.click(function(){
-			endGame(1);
+			gameOver = 1;
+			turn();
 		});
 	
 	$('.hidden').hide();
@@ -62,6 +63,7 @@ function Game(){
 		
 		$('.threat').removeClass('threat');
 		castled = false;
+//			$("#board img." + Players[0].color).draggable("enable");
 	};
 	
 	function select(square){
@@ -484,21 +486,27 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
-
-				logCastle("king", color); // Log castling kingside << J-M Glenn
 			// If king is moving to column 'C' (queenside) rook is on column 'A'
 			} else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
-
-				logCastle("queen", color); // Log castling queenside << J-M Glenn
 			};
-			
+			// Manually set castled to true so the King and Rook moves aren't logged << J-M Glenn
+			castled = true;
 			// Move the king, than move the rook to the king's other side (dest). << B. Fisher
 			this._move(destination);
 			$(rook.image).fadeOut('fast', function(){
 				rook.move(dest);
 				$(rook.image).fadeIn('fast');
+				// Log the castle for king/queen-side
+				if (destination.id.match('G')) {
+					logCastle("king", color);
+				}
+				if (destination.id.match('C')) {
+					logCastle("queen", color);
+				}
+				// Reset the castled to false so black's moves will be logged << J-M Glenn
+				castled = false;
 			});
 		} else this._move(destination);
 	};
@@ -776,7 +784,6 @@ function logMove(piece, start, end, captured) {
 
 // Special case check for logging castling << J-M Glenn
 function logCastle(side, color) {
-	castled = true;
 	if (side == "king") {
 		if (color == "white") {
 			$('<tr><td>0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
