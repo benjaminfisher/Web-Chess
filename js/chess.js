@@ -14,7 +14,7 @@ function Game(){
 	$('#resign')
 		.button()
 		.click(function(){
-			gameOver = true;
+			gameOver = 1;
 			turn();
 		});
 	
@@ -47,12 +47,30 @@ function Game(){
 		// Find whether the last move placed the next player in check
 		Players[1].King.inCheck = (check(Players[1].King.position, Players[0]));
 		
-		// Check whether the game has ended due to resignation.
-		//Will prevent the turn change but doesn't exit the game. << B. Fisher 3/10 1800
-		if (gameOver) {
+		if(Checkmate()) gameOver = 2;
+		if(Stalemate()) gameOver = 3;
+		
+		// End game alerts << B. Fisher
+		switch (gameOver) {
+		// If gameOver is 1 current player resigned
+		case 1:
 			alert(Players[0].color + ' resigned on turn ' + turnCount + '.');
 			endGame();
-		} else {
+			break;
+		
+		// If gameOver is 2 current player is mated.
+		case 2:
+			alert(Players[0].color + ' was mated after ' + turnCount + ' moves.');
+			endGame();
+			break;
+			
+		case 3:
+			alert(Players[0].color + ' is in Stalemate after ' + turnCount + ' moves.');
+			endGame();
+			break;
+		
+		// If gameOver is false then proceed with next players turn.
+		default:
 			this.Players.reverse(); // Switches the active player
 			if (Players[0].color == 'white') turnCount++;
 			
@@ -61,7 +79,7 @@ function Game(){
 			$('#Dash').css('background', Players[0].color);
 			$('#turn').html(Players[0].color);
 			
-			$("#board img." + Players[0].color).draggable("enable");
+//			$("#board img." + Players[0].color).draggable("enable");
 		};
 		
 	};
@@ -93,20 +111,22 @@ function Game(){
 		return false;
 	};
 
-	function Stalemate(player) {
+	function Stalemate() {
+		// If king is not in check, put the current player has no legal moves return true. << B. Fisher
 		var legalMoves = '';
-		$.each(player.pieces, function(){
+		$.each(Players[0].pieces, function(){
 			legalMoves += Legal(this);
 		});
 		
-		$.each(player.pawns, function(){
+		$.each(Players[0].pawns, function(){
 			legalMoves += Legal(this);
 		});
 		
-		legalMoves += Legal(player.King);
+		legalMoves += Legal(Players[0].King);
+		console.log('Stalemate moves: ' + legalMoves);
 		
-		if(legalMoves.length > 0) return false;
-		else return true;
+		if(legalMoves.length = 0 && !Players[0].King.inCheck) return true;
+		else return false;
 	};
 
 	function endGame(){
@@ -455,7 +475,6 @@ function king(color, start){
 	var self = this;
 	this.type = "king";
 	this.inCheck = false;
-	this.index = null;
 	
 	this.move = function(destination){
 		// Evaluate if king is castling. << B. Fisher
@@ -571,7 +590,7 @@ function Legal(piece){
 	};
 	// === End King legality checks ===
 	
-	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
+//	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
 	
 	return legalIDs;
 };
