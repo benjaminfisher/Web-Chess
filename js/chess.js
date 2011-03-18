@@ -43,7 +43,6 @@ function Game(){
 	});
 	
 	function turn(){
-		castled = false;
 		select(false);
 		$(pieces).draggable("disable");		// disables piece dragging for previous player
 		$('.legal').removeClass('legal');	// clears legal moves of last moved piece
