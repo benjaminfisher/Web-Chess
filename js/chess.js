@@ -266,13 +266,7 @@ function Piece(color, start){
 			
 			this.evalProtect();
 			
-			// Append the move depending on what moved, where it went, what it captured, etc. << J-M Glenn
-			if (color == "white") {
-				$('<tr><td>WHITE Move</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
-				$('#Dash').attr({ scrollTop: $('#Dash').attr('scrollHeight') });
-			} else {
-				$('#log tbody td:last').show().text('BLACK Move');
-			};
+			logMove(this, start, this.position, capturedPiece);
 		};
 	};
 	
@@ -727,6 +721,20 @@ function check(square, player, ignore){
 function callPiece(image){
 	return $(image).data().piece;
 };
+
+// Log the player's move << J-M Glenn
+function logMove(piece, start, end, captured) {
+	var color = piece.color,
+		moveType = (captured == null) ? "-" : "x",
+		start = start.toLowerCase(),
+		end = end.toLowerCase();
+	if (color == "white") {
+		$('<tr><td>'+start+moveType+end+'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+		$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+	} else {
+		$('#log tbody td:last').show().text(start+moveType+end);
+	};
+}
 
 // jQuery function to match an object (item variable) against an array (jQuery object),
 // or if item is a sting check for a match within a longer string. Returns Boolean. << B. Fisher
