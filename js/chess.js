@@ -286,6 +286,7 @@ function Piece(color, start){
 			change = false;
 		} else {
 			// The move was valid, carry on with the capture
+			var location = this.position;
 			this.position = destination.id;
 			this.moved = true;
 			if(capturedPiece) capturedPiece.capture();
@@ -293,7 +294,7 @@ function Piece(color, start){
 			
 			this.evalProtect();
 			
-			if (!castled) logMove(this, start, this.position, capturedPiece);
+			if (!castled) logMove(this, location, this.position, capturedPiece);
 		};
 	};
 	
@@ -770,10 +771,10 @@ function logMove(piece, start, end, captured) {
 		pieceType = (pieceType != "P") ? pieceType : '';
 		
 		if (color == "white") {
-			$('<tr><td>'+pieceType+start+moveType+end+'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('<tr><td>' + pieceType + start + moveType + end +'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
 		} else {
-			$('#log tbody td:last').show().text(pieceType+start+moveType+end);
+			$('#log tbody td:last').show().text(pieceType + start + moveType + end);
 		};
 	}
 }
