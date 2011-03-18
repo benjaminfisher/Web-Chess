@@ -20,6 +20,22 @@ function Game(){
 	
 	$('.hidden').hide();
 	
+	$(squares).click(function(event){
+		var kid = occupied(this.id);
+		
+		if(kid && kid.color == Players[0].color){	// checks if piece belongs to the current player
+			select(this);
+			$(Legal(kid)).addClass('legal');
+		} else if($(this).hasClass('legal')) {		// If clicked square is a legal move
+			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
+			
+			piece.move(this);
+			if (change) turn();
+		} else {
+			select();			// if square is not occupied, or is occupied by an opponent piece
+		};						// that is not capturable than clear the selection
+	});
+	
 	function turn(){
 		select(false);
 		$(pieces).draggable("disable");		// disables piece dragging for previous player
@@ -100,22 +116,6 @@ function Game(){
 		}
 	}).droppable({disabled: true});
 */
-
-	$(squares).click(function(event){
-		var kid = occupied(this.id);
-		
-		if(kid && kid.color == Players[0].color){	// checks if piece belongs to the current player
-			select(this);
-			$(Legal(kid)).addClass('legal');
-		} else if($(this).hasClass('legal')) {		// If clicked square is a legal move
-			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
-			
-			piece.move(this);
-			if (change) turn();
-		} else {
-			select();			// if square is not occupied, or is occupied by an opponent piece
-		};						// that is not capturable than clear the selection
-	});
 };
 
 // ===============================================
@@ -691,6 +691,7 @@ function Checkmate(){
 	// if checking piece is vulnerable
 	
 	//if all available moves for the king are threatened
+	return false;
 };
 
 function Stalemate(player) {
