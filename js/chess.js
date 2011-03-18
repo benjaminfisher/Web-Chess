@@ -19,8 +19,7 @@ function Game(){
 	$('#resign')
 		.button()
 		.click(function(){
-			gameOver = 1;
-			turn();
+			endGame(1);
 		});
 	
 	$('.hidden').hide();

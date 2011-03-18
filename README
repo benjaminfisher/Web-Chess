@@ -82,6 +82,6 @@ Tasks to complete: Correct the following issues with King moves under check:
               - Partially resolved. Moves are evaluated for check situations prior to completion.
 
 	Code out the Checkmate function.
-	Debug the Stalemate function
+	Debug the Stalemate function.
 	Append actual player moves using algebraic notation
 	Ask for player names at the beginning of the game, and show them in the dashboard
