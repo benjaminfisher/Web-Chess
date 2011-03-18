@@ -82,7 +82,50 @@ function Game(){
 		}
 		else {
 			selectedSquare = null;
-		}
+		};
+	};
+	function Checkmate(player){
+		//if players king is in check
+		
+		// if checking piece is vulnerable
+		
+		//if all available moves for the king are threatened
+		return false;
+	};
+
+	function Stalemate(player) {
+		var legalMoves = '';
+		$.each(player.pieces, function(){
+			legalMoves += Legal(this);
+		});
+		
+		$.each(player.pawns, function(){
+			legalMoves += Legal(this);
+		});
+		
+		legalMoves += Legal(player.King);
+		
+		if(legalMoves.length > 0) return false;
+		else return true;
+	};
+
+	function endGame(){
+		var cover = $('<div>');
+		
+		$(cover)
+			.appendTo('body')
+			.attr('id', 'cover')
+			.css({
+				position: 'absolute',
+				top: '16px',
+				left: '16px',
+				height: '616px',
+				width: '616px',
+				backgroundColor: 'rgba(50,50,50,0.3)',
+				zIndex: '9000'
+			});
+			
+		$('#resign').button('disable');
 	};
 	
 /*	Disabled due to drop function not completeing before the turn change << B. Fisher 3/06 0145 
@@ -683,51 +726,6 @@ function check(square, player, ignore){
 
 function callPiece(image){
 	return $(image).data().piece;
-};
-
-function Checkmate(){
-	//if players king is in check
-	
-	// if checking piece is vulnerable
-	
-	//if all available moves for the king are threatened
-	return false;
-};
-
-function Stalemate(player) {
-	var legalMoves = '';
-	$.each(player.pieces, function(){
-		legalMoves += Legal(this);
-	});
-	
-	$.each(player.pawns, function(){
-		legalMoves += Legal(this);
-	});
-	
-	legalMoves += Legal(player.King);
-	
-	if(legalMoves.length > 0) return false;
-	else return true;
-	
-};
-
-function endGame(){
-	var cover = $('<div>');
-	
-	$(cover)
-		.appendTo('body')
-		.attr('id', 'cover')
-		.css({
-			position: 'absolute',
-			top: '16px',
-			left: '16px',
-			height: '616px',
-			width: '616px',
-			backgroundColor: 'rgba(50,50,50,0.3)',
-			zIndex: '9000'
-		});
-		
-	$('#resign').button('disable');
 };
 
 // jQuery function to match an object (item variable) against an array (jQuery object),
