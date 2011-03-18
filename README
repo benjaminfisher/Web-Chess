@@ -71,6 +71,8 @@ v16.7 - Simplified king.footprint function, now easier to parse feedback. << B. 
 
 v16.8 - Added endGame function to cover the board and disable the resign button. << B. Fisher 3/16 1845
 
+v17   - Coded endGame function with scenarios for resignation, checkmate and stalemate. << B. Fisher 3/17 2130
+
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces
 	2) Checked King is able to move to squares in the checking pieces vector that are behind itself
