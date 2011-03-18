@@ -19,8 +19,7 @@ function Game(){
 	$('#resign')
 		.button()
 		.click(function(){
-			gameOver = 1;
-			turn();
+			endGame(1);
 		});
 	
 	$('.hidden').hide();
@@ -58,37 +57,10 @@ function Game(){
 			
 		change = null;
 		
-		if(Checkmate()) gameOver = 2;
-		if(Stalemate()) gameOver = 3;
+		if(Checkmate()) endGame(2);
+		if(Stalemate()) endGame(3);
 		
 		$('.threat').removeClass('threat');
-		
-		// End game alerts << B. Fisher
-		switch (gameOver) {
-		// If gameOver is 1 current player resigned
-		case 1:
-			alert(Players[0].color + ' resigned on turn ' + turnCount + '.');
-			endGame();
-			break;
-		
-		// If gameOver is 2 current player is mated.
-		case 2:
-			alert(Players[0].color + ' was mated after ' + turnCount + ' moves.');
-			endGame();
-			break;
-			
-		case 3:
-			alert(Players[0].color + ' is in Stalemate after ' + turnCount + ' moves.');
-			endGame();
-			break;
-		
-		// If gameOver is false then proceed with next players turn.
-		default:
-			$('#Dash').css('background', Players[0].color);
-			$('#turn').html(Players[0].color);
-			
-//			$("#board img." + Players[0].color).draggable("enable");
-		};
 		castled = false;
 	};
 	
@@ -137,7 +109,34 @@ function Game(){
 		else return false;
 	};
 
-	function endGame(){
+	function endGame(gameOver){
+		// End game alerts << B. Fisher
+		switch (gameOver) {
+		// If gameOver is 1 current player resigned
+		case 1:
+			alert(Players[0].color + ' resigned on turn ' + turnCount + '.');
+			endGame();
+			break;
+		
+		// If gameOver is 2 current player is mated.
+		case 2:
+			alert(Players[0].color + ' was mated after ' + turnCount + ' moves.');
+			endGame();
+			break;
+			
+		case 3:
+			alert(Players[0].color + ' is in Stalemate after ' + turnCount + ' moves.');
+			endGame();
+			break;
+		
+		// If gameOver is false then proceed with next players turn.
+		default:
+			$('#Dash').css('background', Players[0].color);
+			$('#turn').html(Players[0].color);
+			
+//			$("#board img." + Players[0].color).draggable("enable");
+		};
+		
 		var cover = $('<div>');
 		
 		$(cover)
