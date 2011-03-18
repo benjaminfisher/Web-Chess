@@ -766,17 +766,15 @@ function logMove(piece, start, end, captured) {
 			moveType = (captured == null) ? "-" : "x",
 			start = start.toLowerCase(),
 			end = end.toLowerCase(),
-			pieceType = (piece.type != "knight") ? piece.type.toUpperCase().charAt(0) : "N",
-			enemyType = (moveType == "x") ? ((captured.type != "knight") ? captured.type.toUpperCase().charAt(0) : "N") : '';
+			pieceType = (piece.type != "knight") ? piece.type.toUpperCase().charAt(0) : "N";
 			
 		pieceType = (pieceType != "P") ? pieceType : '';
-		enemyType = (enemyType != "P") ? enemyType : '';
 		
 		if (color == "white") {
-			$('<tr><td>'+pieceType+start+moveType+enemyType+end+'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('<tr><td>'+pieceType+start+moveType+end+'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
 		} else {
-			$('#log tbody td:last').show().text(pieceType+start+moveType+enemyType+end);
+			$('#log tbody td:last').show().text(pieceType+start+moveType+end);
 		};
 	}
 }

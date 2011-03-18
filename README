@@ -73,6 +73,8 @@ v16.8 - Added endGame function to cover the board and disable the resign button.
 
 v17   - Coded endGame function with scenarios for resignation, checkmate and stalemate. << B. Fisher 3/17 2130
 
+v17.1 - Coded move logging and specialty case of logging castling. << J-M Glenn
+
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces
 	2) Checked King is able to move to squares in the checking pieces vector that are behind itself
@@ -83,5 +85,4 @@ Tasks to complete: Correct the following issues with King moves under check:
 
 	Code out the Checkmate function.
 	Debug the Stalemate function
-	Append actual player moves using algebraic notation
 	Ask for player names at the beginning of the game, and show them in the dashboard
