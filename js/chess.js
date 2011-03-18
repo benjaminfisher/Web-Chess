@@ -62,8 +62,7 @@ function Game(){
 		if(Stalemate()) endGame(3);
 		
 		$('.threat').removeClass('threat');
-		castled = false;
-//			$("#board img." + Players[0].color).draggable("enable");
+//		$("#board img." + Players[0].color).draggable("enable");
 	};
 	
 	function select(square){
