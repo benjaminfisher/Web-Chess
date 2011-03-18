@@ -3,7 +3,7 @@
  * change: required to track whether a move resulted in check. Passes the value between 
  * 		square selection and piece move functions. << B. Fisher
  */
-var cLabels = "ABCDEFGH", Players = [], change = false;
+var cLabels = "ABCDEFGH", Players = [], change = false, castled = false;
 
 function Game(){
 	var self = this,
@@ -12,8 +12,7 @@ function Game(){
 	squares = $('#board ul li'),
 	selectedSquare = null,
 	gameOver = false,
-	turnCount = 1,
-	castled = false;
+	turnCount = 1;
 	
 	Players = [new Player('white'), new Player('black')];
 	
@@ -296,7 +295,7 @@ function Piece(color, start){
 			
 			this.evalProtect();
 			
-			logMove(this, start, this.position, capturedPiece);
+			if (!castled) logMove(this, start, this.position, capturedPiece);
 		};
 	};
 	
@@ -487,12 +486,12 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
-				logCastle("king"); // Log castling kingside << J-M Glenn
+				logCastle("king", color); // Log castling kingside << J-M Glenn
 			// If king is moving to column 'C' (queenside) rook is on column 'A'
 			} else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
-				logCastle("queen"); // Log castling queenside << J-M Glenn
+				logCastle("queen", color); // Log castling queenside << J-M Glenn
 			};
 			
 			// Move the king, than move the rook to the king's other side (dest). << B. Fisher
@@ -776,11 +775,22 @@ function logMove(piece, start, end, captured) {
 }
 
 // Special case check for logging castling << J-M Glenn
-function logCastle(side) {
+function logCastle(side, color) {
+	castled = true;
 	if (side == "king") {
-		//kingside
+		if (color == "white") {
+			$('<tr><td>0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').show().text('0-0');
+		}
 	} else {
-		//queenside
+		if (color == "white") {
+			$('<tr><td>0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').show().text('0-0-0');
+		}
 	}
 }
 
