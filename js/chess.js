@@ -12,7 +12,8 @@ function Game(){
 	squares = $('#board ul li'),
 	selectedSquare = null,
 	gameOver = false,
-	turnCount = 1;
+	turnCount = 1,
+	castled = false;
 	
 	Players = [new Player('white'), new Player('black')];
 	
@@ -43,6 +44,7 @@ function Game(){
 	});
 	
 	function turn(){
+		castled = false;
 		select(false);
 		$(pieces).draggable("disable");		// disables piece dragging for previous player
 		$('.legal').removeClass('legal');	// clears legal moves of last moved piece
@@ -52,6 +54,11 @@ function Game(){
 		
 		// Find whether the last move placed the next player in check
 		Players[1].King.inCheck = (check(Players[1].King.position, Players[0]));
+		
+		this.Players.reverse(); // Switches the active player
+		if (Players[0].color == 'white') turnCount++;
+			
+		change = null;
 		
 		if(Checkmate()) gameOver = 2;
 		if(Stalemate()) gameOver = 3;
@@ -79,11 +86,6 @@ function Game(){
 		
 		// If gameOver is false then proceed with next players turn.
 		default:
-			this.Players.reverse(); // Switches the active player
-			if (Players[0].color == 'white') turnCount++;
-			
-			change = null;
-			
 			$('#Dash').css('background', Players[0].color);
 			$('#turn').html(Players[0].color);
 			
@@ -200,19 +202,19 @@ function Player(side){
 	
 	var piece, i;
 	
-	for (p = 0; p <= 7; p++) {
+/*	for (p = 0; p <= 7; p++) {
 		this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
 	};
-	
+*/	
 	this.pieces.push(new rook(this.color, "A" + startRow));	
 	this.pieces.push(new rook(this.color, "H" + startRow));
-
+/*
 	this.pieces.push(new knight(this.color, "B" + startRow));
 	this.pieces.push(new knight(this.color, "G" + startRow));
 	
 	this.pieces.push(new bishop(this.color, "C" + startRow));
 	this.pieces.push(new bishop(this.color, "F" + startRow));
-
+*/
 	this.pieces.push(new queen(this.color, "D" + startRow));
 
 	this.King = new king(this.color, "E" + startRow);
@@ -485,10 +487,12 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
+				logCastle("king"); // Log castling kingside << J-M Glenn
 			// If king is moving to column 'C' (queenside) rook is on column 'A'
-			}else if (destination.id.match('C')) {
+			} else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
+				logCastle("queen"); // Log castling queenside << J-M Glenn
 			};
 			
 			// Move the king, than move the rook to the king's other side (dest). << B. Fisher
@@ -751,16 +755,33 @@ function callPiece(image){
 
 // Log the player's move << J-M Glenn
 function logMove(piece, start, end, captured) {
-	var color = piece.color,
-		moveType = (captured == null) ? "-" : "x",
-		start = start.toLowerCase(),
-		end = end.toLowerCase();
-	if (color == "white") {
-		$('<tr><td>'+start+moveType+end+'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
-		$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+	if (!castled) { // Not castling, log normally
+		var color = piece.color,
+			moveType = (captured == null) ? "-" : "x",
+			start = start.toLowerCase(),
+			end = end.toLowerCase(),
+			pieceType = (piece.type != "knight") ? piece.type.toUpperCase().charAt(0) : "N",
+			enemyType = (moveType == "x") ? ((captured.type != "knight") ? captured.type.toUpperCase().charAt(0) : "N") : '';
+			
+		pieceType = (pieceType != "P") ? pieceType : '';
+		enemyType = (enemyType != "P") ? enemyType : '';
+		
+		if (color == "white") {
+			$('<tr><td>'+pieceType+start+moveType+enemyType+end+'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').show().text(pieceType+start+moveType+enemyType+end);
+		};
+	}
+}
+
+// Special case check for logging castling << J-M Glenn
+function logCastle(side) {
+	if (side == "king") {
+		//kingside
 	} else {
-		$('#log tbody td:last').show().text(start+moveType+end);
-	};
+		//queenside
+	}
 }
 
 // jQuery function to match an object (item variable) against an array (jQuery object),
