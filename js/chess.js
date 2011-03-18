@@ -201,19 +201,19 @@ function Player(side){
 	
 	var piece, i;
 	
-/*	for (p = 0; p <= 7; p++) {
+	for (p = 0; p <= 7; p++) {
 		this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
 	};
 	
 	this.pieces.push(new rook(this.color, "A" + startRow));	
 	this.pieces.push(new rook(this.color, "H" + startRow));
-/*
+
 	this.pieces.push(new knight(this.color, "B" + startRow));
 	this.pieces.push(new knight(this.color, "G" + startRow));
 	
 	this.pieces.push(new bishop(this.color, "C" + startRow));
 	this.pieces.push(new bishop(this.color, "F" + startRow));
-*/
+
 	this.pieces.push(new queen(this.color, "D" + startRow));
 
 	this.King = new king(this.color, "E" + startRow);
