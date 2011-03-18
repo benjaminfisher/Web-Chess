@@ -203,7 +203,7 @@ function Player(side){
 /*	for (p = 0; p <= 7; p++) {
 		this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
 	};
-*/	
+	
 	this.pieces.push(new rook(this.color, "A" + startRow));	
 	this.pieces.push(new rook(this.color, "H" + startRow));
 /*
@@ -485,11 +485,13 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
+
 				logCastle("king", color); // Log castling kingside << J-M Glenn
 			// If king is moving to column 'C' (queenside) rook is on column 'A'
 			} else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
+
 				logCastle("queen", color); // Log castling queenside << J-M Glenn
 			};
 			
@@ -783,7 +785,21 @@ function logCastle(side, color) {
 		} else {
 			$('#log tbody td:last').show().text('0-0');
 		}
+		if (color == "white") {
+			$('<tr><td>0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').show().text('0-0');
+		}
 	} else {
+		$('#log tbody td:last').show().text(start+moveType+end);
+	};
+		if (color == "white") {
+			$('<tr><td>0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').show().text('0-0-0');
+		}
 		if (color == "white") {
 			$('<tr><td>0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
@@ -791,7 +807,7 @@ function logCastle(side, color) {
 			$('#log tbody td:last').show().text('0-0-0');
 		}
 	}
-}
+
 
 // jQuery function to match an object (item variable) against an array (jQuery object),
 // or if item is a sting check for a match within a longer string. Returns Boolean. << B. Fisher
