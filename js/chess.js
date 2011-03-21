@@ -790,7 +790,7 @@ function logMove(piece, start, end, captured) {
 function logCastle(side, color) {
 	if (side == "king") {
 		if (color == "white") {
-			$('<tr><td>0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('<tr><td>'+turnCount+'. 0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
 		} else {
 			$('#log tbody td:last').show().text('0-0');
