@@ -7,7 +7,7 @@ img{z-index:10;}
 
 #wrapper{width:960px; float:left;}
 
-#Dash{
+#Dash {
 	font: 1.5em/2em Arial, Helvetica, sans-serif;
 	background-color: #FFF;
 	border: 2px outset grey;
@@ -84,7 +84,7 @@ img{z-index:10;}
 		z-index:5;
 	}
 	#prison ul li[rel^='white']{color:white;}
-	
+
 #board{
 	background:url(../images/marble.jpg);
 	border:4px outset gray;
