@@ -14,8 +14,6 @@ function Game(){
 	gameOver = false;
 
 	Players = [new Player('white'), new Player('black')];
-	Players[0].name = prompt("White side's name:", "Player 1");
-	Players[1].name = prompt("Black side's name:", "Player 2");
 	$('#turn').html(Players[0].name);
 
 	$('#resign')
@@ -222,6 +220,8 @@ function Player(side){
 	this.pieces.push(new queen(this.color, "D" + startRow));
 
 	this.King = new king(this.color, "E" + startRow);
+	
+	this.name = prompt(this.color + " side's name:", this.color);	
 
 	var self = this;
 
