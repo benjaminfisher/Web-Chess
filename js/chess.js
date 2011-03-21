@@ -12,12 +12,7 @@ function Game(){
 	squares = $('#board ul li'),
 	selectedSquare = null,
 	gameOver = false;
-
-	Players = [new Player('white'), new Player('black')];
-	Players[0].name = prompt("White side's name:", "Player 1");
-	Players[1].name = prompt("Black side's name:", "Player 2");
-	$('#turn').html(Players[0].name);
-
+	
 	$('#resign')
 		.button()
 		.click(function(){
@@ -25,6 +20,11 @@ function Game(){
 		});
 
 	$('.hidden').hide();
+	
+	Players.push(new Player('white'));
+	Players.push(new Player('black'));
+	
+	$('#turn').html(Players[0].name);
 
 	$(squares).click(function(event){
 		var kid = occupied(this.id);
@@ -33,7 +33,7 @@ function Game(){
 			select(this);
 			$(Legal(kid)).addClass('legal');
 		} else if($(this).hasClass('legal')) {		// If clicked square is a legal move
-			piece = occupied(selectedSquare.id);	// retrieve piece image from the selected square
+			piece = occupied(selectedSquare.id);	// retrieve piece from the selected square
 
 			piece.move(this);
 			// If the last move did not result in check call the turn change. << B. Fisher
@@ -110,7 +110,7 @@ function Game(){
 		});
 
 		legalMoves += Legal(Players[0].King);
-		console.log('Stalemate moves: ' + legalMoves);
+		//console.log('Stalemate moves: ' + legalMoves);
 
 		if(legalMoves.length == 0 && !Players[0].King.inCheck) return true;
 		else return false;
@@ -200,11 +200,12 @@ function Player(side){
 	this.color = side;
 	this.pieces = new Array();
 	this.pawns = new Array();
+	
+	this.name = prompt(this.color[0].toUpperCase() + this.color.substr(1) + " side's name:", 'Player ' + ($(Players).size() + 1));
+	if(!this.name) this.name = 'Player ' + ($(Players).size() + 1);
 
 	var startRow = (this.color == 'white') ? 1 : 8, // White Player starts on Row 1, Black on row 8
 		pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
-
-	var piece, i;
 
 	for (p = 0; p <= 7; p++) {
 		this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
@@ -221,7 +222,7 @@ function Player(side){
 
 	this.pieces.push(new queen(this.color, "D" + startRow));
 
-	this.King = new king(this.color, "E" + startRow);
+	this.King = new king(this.color, "E" + startRow);	
 
 	var self = this;
 
@@ -280,7 +281,7 @@ function Piece(color, start){
 		if (capturedPiece) $(capturedPiece).remove();
 
 		// Check to see if move results in check << B. Fisher 3/07 2030
-		if (this.type != 'king' && check(Players[0].King.position, Players[1], [capturedPiece])) {
+		if (this.type != 'king' && check(Players[0].King.position, Players[1], capturedPiece)) {
 			$('.legal').removeClass('legal');
 
 			// Move it to the place of the piece it's capturing
@@ -602,7 +603,10 @@ function Legal(piece){
 		var squares = legalIDs.split(',');
 
 		for(var i = squares.length-2; i>=0; i--){
-			if(check(squares[i], Players[1])) squares.splice(i, 1);
+			if (check(squares[i], Players[1])) {
+				$(squares[i]).addClass('threat');
+				squares.splice(i, 1);
+			};
 		};
 
 		legalIDs = squares.join(',');
@@ -654,7 +658,7 @@ function vector(start, end, side, capture){
 // If one is found return the piece, if not return false. << B. Fisher
 function occupied(square_ID){
 	if (typeof(square_ID) != 'string') return false;
-	if(!square_ID.match('#')) square_ID = '#' + square_ID;
+	if(square_ID.match('#')<=0) square_ID = '#' + square_ID;
 
 	var kid = $(square_ID).children('img');
 	if (kid.length > 0) {
@@ -726,39 +730,36 @@ function check(square, player, ignore){
 		ids, footprint;
 
 	$(player.pieces).each(function(){
-		if (!$(ignore).match(this)) {
+		if(this != ignore)
 			ids = Legal(this);
-			if (ids.match(square)) {
+			if (ids.length > 0 && ids.match(square)) {
 				chk.push(this);
-				$(square).addClass('threat');
 			};
-		};
 	});
 
 	// Evaluate player's pawn capture squares. << B. Fisher 3/14 2130
 	$(player.pawns).each(function(){
 		var pawn = this;
-		if(!$(ignore).match(this)){
+		if (ignore != this) {
 			ids = this.footprint();
 			$(ids).each(function(index){
-				if(this[0] == pawn.col()) ids.splice(index, 1);
+				if (this[0] == pawn.col()) 
+					ids.splice(index, 1);
 			});
-			if($(ids).match(square)){
+			if ($.inArray(ids, square) >= 0) {
 				chk.push(pawn);
-				$(square).addClass('threat');
 			};
 		};
 	});
 
 	ids = player.King.footprint();
-	if($(ids).match(square)){
+	if($.inArray(ids, square) >= 0){
 		chk.push(player.King);
-		$(square).addClass('threat');
 	};
 
 	if (chk.length < 1) chk = false;
 
-//	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
+	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
 	return chk;
 };
 
@@ -803,18 +804,4 @@ function logCastle(side, color) {
 			$('#log tbody td:last').show().text('0-0-0');
 		}
 	}
-}
-
-
-// jQuery function to match an object (item variable) against an array (jQuery object),
-// or if item is a sting check for a match within a longer string. Returns Boolean. << B. Fisher
-(function($){
-	$.fn.match = function(item){
-		var matchValue = false;
-	  	this.each(function(){
-		  	if (typeof item == 'string' && item.match(this)) matchValue = true;
-			else if(item === this) matchValue = true;
-		});
-		return matchValue;
-	};
- }(jQuery));
+};
