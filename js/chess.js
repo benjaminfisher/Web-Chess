@@ -202,6 +202,7 @@ function Player(side){
 	this.pawns = new Array();
 	
 	this.name = prompt(this.color[0].toUpperCase() + this.color.substr(1) + " side's name:", 'Player ' + ($(Players).size() + 1));
+	if(!this.name) this.name = 'Player ' + ($(Players).size() + 1);
 
 	var startRow = (this.color == 'white') ? 1 : 8, // White Player starts on Row 1, Black on row 8
 		pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
