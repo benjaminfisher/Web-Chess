@@ -57,7 +57,7 @@ img{z-index:10;}
 		color: black;
 	}
 	#log table thead th {
-		width: 97px;
+		width: 50%;
 	}
 	#log table tr td:last-child {
 		color: black;

@@ -798,7 +798,7 @@ function logMove(piece, start, end, captured) {
 		pieceType = (pieceType != "P") ? pieceType : '';
 
 		if (color == "white") {
-			row = $('<tr>').append('<td>').append('<td>').appendTo('#log tbody');
+			row = $('<tr>').append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
 			$(row).children().first().text(turnCount+".");
 			$(row).children().not(':first').not(':last').text(pieceType+start+moveType+end);
 			$(row).children().last().hide();
