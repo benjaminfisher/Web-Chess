@@ -732,9 +732,7 @@ function check(square, player, ignore){
 	$(player.pieces).each(function(){
 		if(this != ignore)
 			ids = Legal(this);
-			if (ids.length > 0 && ids.match(square)) {
-				chk.push(this);
-			};
+			if (ids.length > 0 && ids.match(square)) chk.push(this);
 	});
 
 	// Evaluate player's pawn capture squares. << B. Fisher 3/14 2130
@@ -753,10 +751,7 @@ function check(square, player, ignore){
 	});
 
 	ids = player.King.footprint();
-	if($.inArray(ids, square) >= 0){
-		chk.push(player.King);
-	};
-
+	if($.inArray(ids, square) >= 0)	chk.push(player.King);
 	if (chk.length < 1) chk = false;
 
 	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
