@@ -3,7 +3,7 @@
  * change: required to track whether a move resulted in check. Passes the value between
  * 		square selection and piece move functions. << B. Fisher
  */
-var cLabels = "ABCDEFGH", Players = [], change = false, castled = false, turnCount = 1;
+var cLabels = "ABCDEFGH", Players = [], change = false, castled = "", turnCount = 1;
 
 function Game(){
 	var self = this,
@@ -302,7 +302,7 @@ function Piece(color, start){
 
 			this.evalProtect();
 
-			if (!castled) logMove(this, location, this.position, capturedPiece);
+			logMove(this, location, this.position, capturedPiece);
 		};
 	};
 
@@ -493,27 +493,22 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
+				castled = "king";
 			// If king is moving to column 'C' (queenside) rook is on column 'A'
 			} else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
+				castled = "queen";
 			};
-			// Manually set castled to true so the King and Rook moves aren't logged << J-M Glenn
-			castled = true;
+			
 			// Move the king, than move the rook to the king's other side (dest). << B. Fisher
 			this._move(destination);
 			$(rook.image).fadeOut('fast', function(){
 				rook.move(dest);
 				$(rook.image).fadeIn('fast');
-				// Log the castle for king/queen-side
-				if (destination.id.match('G')) {
-					logCastle("king", color);
-				}
-				if (destination.id.match('C')) {
-					logCastle("queen", color);
-				}
+				
 				// Reset the castled to false so black's moves will be logged << J-M Glenn
-				castled = false;
+				castled = "";
 			});
 		} else this._move(destination);
 	};
@@ -766,7 +761,29 @@ function callPiece(image){
 
 // Log the player's move << J-M Glenn
 function logMove(piece, start, end, captured) {
-	if (!castled) { // Not castling, log normally
+	if (castled == "king") {
+		// Kingside Castle
+		if (color == "white") {
+			var row = ('<tr>').append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
+			$(row).children().first().text(turnCount+'.');
+			$(row).children().not(':first').not(':last').text('0-0');
+			$(row).children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').text('0-0').show();
+		}
+	} else if (castled == "queen") {
+		// Queenside Castle
+		if (color == "white") {
+			var row = ('<tr>').append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
+			$(row).children().first().text(turnCount+'.');
+			$(row).children().not(':first').not(':last').text('0-0-0');
+			$(row).children().last().hide();
+			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+		} else {
+			$('#log tbody td:last').text('0-0-0').show();
+		}
+	} else {
 		var color = piece.color,
 			moveType = (captured == null) ? "-" : "x",
 			start = start.toLowerCase(),
@@ -776,29 +793,13 @@ function logMove(piece, start, end, captured) {
 		pieceType = (pieceType != "P") ? pieceType : '';
 
 		if (color == "white") {
-			$('<tr><td>'+turnCount+". " + pieceType + start + moveType + end +'</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			row = $('<tr>').append('<td>').append('<td>').appendTo('#log tbody');
+			$(row).children().first().text(turnCount+".");
+			$(row).children().not(':first').not(':last').text(pieceType+start+moveType+end);
+			$(row).children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
 		} else {
-			$('#log tbody td:last').show().text(pieceType + start + moveType + end);
+			$('#log tbody td:last').text(pieceType + start + moveType + end).show();
 		};
 	}
 }
-
-// Special case check for logging castling << J-M Glenn
-function logCastle(side, color) {
-	if (side == "king") {
-		if (color == "white") {
-			$('<tr><td>'+turnCount+'. 0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').show().text('0-0');
-		}
-	} else {
-		if (color == "white") {
-			$('<tr><td>'+turnCount+'. 0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').show().text('0-0-0');
-		}
-	}
-};
