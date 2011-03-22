@@ -583,7 +583,7 @@ function Legal(piece){
 	// King move legality.
 	if(type == 'king'){
 		// Check for castle legality and add king double step if true. << B. Fisher
-		if(piece.castle){
+		if(piece.castle()){
 			var rook = occupied('#H' + rNum);
 
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
@@ -732,10 +732,7 @@ function check(square, player, ignore){
 	$(player.pieces).each(function(){
 		if(this != ignore) {
 			ids = Legal(this);
-			if (ids.length > 0 && ids.match(square)) {
-				chk.push(this);
-			}
-		}
+			if (ids.length > 0 && ids.match(square)) chk.push(this);
 	});
 
 	// Evaluate player's pawn capture squares. << B. Fisher 3/14 2130
@@ -754,10 +751,7 @@ function check(square, player, ignore){
 	});
 
 	ids = player.King.footprint();
-	if($.inArray(ids, square) >= 0){
-		chk.push(player.King);
-	};
-
+	if($.inArray(ids, square) >= 0)	chk.push(player.King);
 	if (chk.length < 1) chk = false;
 
 	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
@@ -799,7 +793,7 @@ function logCastle(side, color) {
 		}
 	} else {
 		if (color == "white") {
-			$('<tr><td>0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
+			$('<tr><td>'+turnCount+'. 0-0-0</td><td></td></tr>').appendTo('#log tbody').children().last().hide();
 			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
 		} else {
 			$('#log tbody td:last').show().text('0-0-0');
