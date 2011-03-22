@@ -31,7 +31,7 @@ function Game(){
 
 		if(kid && kid.color == Players[0].color){	// checks if piece belongs to the current player
 			select(this);
-			$(Legal(kid)).addClass('legal');
+			$(Legal(kid).moves).addClass('legal');
 		} else if($(this).hasClass('legal')) {		// If clicked square is a legal move
 			piece = occupied(selectedSquare.id);	// retrieve piece from the selected square
 
@@ -102,14 +102,14 @@ function Game(){
 		// If king is not in check, put the current player has no legal moves return true. << B. Fisher
 		var legalMoves = '';
 		$.each(Players[0].pieces, function(){
-			legalMoves += Legal(this);
+			legalMoves += Legal(this).moves;
 		});
 
 		$.each(Players[0].pawns, function(){
-			legalMoves += Legal(this);
+			legalMoves += Legal(this).moves;
 		});
 
-		legalMoves += Legal(Players[0].King);
+		legalMoves += Legal(Players[0].King).moves;
 		//console.log('Stalemate moves: ' + legalMoves);
 
 		if(legalMoves.length == 0 && !Players[0].King.inCheck) return true;
@@ -556,6 +556,8 @@ function Legal(piece){
 		cNum = cLabels.indexOf(C)+1,
 		dest, orig,
 		legalIDs = "";
+		
+	var legal = new Array();
 
 //	console.log(color + ' ' + type + ' - footprint: ' + footprint + ' | moved: ' + piece.moved);
 
@@ -564,7 +566,8 @@ function Legal(piece){
 			dest = occupied('#' + this);
 			if(type == 'knight') {
 				// Knights are 'leapers'. They do not move along a vector but jump to the destination square. << B. Fisher
-				if(dest.color != color) legalIDs += writeID(this[0], this[1]);
+				if(dest.color == color) legal.push(dest);
+				else legalIDs += writeID(this[0], this[1]);
 			} else if(type == 'pawn'){
 				// pawns cannot capture on their own column
 				if (dest && dest.color != color && C != this[0]) {
@@ -612,10 +615,12 @@ function Legal(piece){
 		legalIDs = squares.join(',');
 	};
 	// === End King legality checks ===
+	
+	legal['moves'] = legalIDs;
+	
+	console.log(legal.moves);
 
-//	console.log(color + ' ' + type + ' legal IDs: ' + legalIDs);
-
-	return legalIDs;
+	return legal;
 };
 
 /* Function: vector
@@ -731,7 +736,7 @@ function check(square, player, ignore){
 
 	$(player.pieces).each(function(){
 		if (this != ignore) {
-			ids = Legal(this);
+			ids = Legal(this).moves;
 			if (ids.length > 0 && ids.match(square)) 
 				chk.push(this);
 		};
