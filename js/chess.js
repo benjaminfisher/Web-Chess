@@ -265,7 +265,9 @@ function Piece(color, start){
 	};
 
 	this.evalProtect = function(){
-		return true;
+		var legal = Legal(this);
+		
+		console.log(legal);
 	};
 
 	this._move = function(destination){
@@ -554,7 +556,7 @@ function Legal(piece){
 		rNum = position[1]*1,
 		C = position[0],
 		cNum = cLabels.indexOf(C)+1,
-		dest, orig,
+		dest, orig, path,
 		legalIDs = "";
 		
 	var legal = new Array();
@@ -570,15 +572,18 @@ function Legal(piece){
 				else legalIDs += writeID(this[0], this[1]);
 			} else if(type == 'pawn'){
 				// pawns cannot capture on their own column
-				if (dest && dest.color != color && C != this[0]) {
-					legalIDs += writeID(this[0], this[1]);
+				if (dest && C != this[0]) {
+					if(dest.color == color) legal.push(dest);
+					else legalIDs += writeID(this[0], this[1]);
 				}
 				// Check for a pawn in EP and whether its column matches the move
 				else if (piece.EP && piece.EP.col() == this[0]) legalIDs += writeID(this[0], this[1]);
 				// add vertical moves
-				else if (C == this[0]) legalIDs += vector(position, this, color, false);
+				else if (C == this[0]) legalIDs += vector(position, this, color, false).list;
 			} else {
-				legalIDs += vector(position, this, color, true)
+				path = vector(position, this, color, true);
+				legalIDs += path.list;
+				legal.push(path.end);
 			};
 		};
 	});
@@ -590,14 +595,14 @@ function Legal(piece){
 			var rook = occupied('#H' + rNum);
 
 			// Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
-			if(vector(position, 'G' + rNum, color, false).match('G') && rook && !rook.moved && !check('F' + rNum, Players[1])){
+			if(vector(position, 'G' + rNum, color, false).list.match('G') && rook && !rook.moved && !check('F' + rNum, Players[1])){
 				legalIDs += writeID('G', rNum);
 			};
 
 			// Queenside squares between rook and king are not occupied. The king is not moving across check.
 			// and the queenside rook has not moved.
 			var rook = occupied('#A' + rNum);
-			if(vector(position, 'B' + rNum, color, false).match('B') && rook && !rook.moved && !check('D' + rNum, Players[1])){
+			if(vector(position, 'B' + rNum, color, false).list.match('B') && rook && !rook.moved && !check('D' + rNum, Players[1])){
 				legalIDs += writeID('C', rNum);
 			};
 		};
@@ -617,8 +622,6 @@ function Legal(piece){
 	// === End King legality checks ===
 	
 	legal['moves'] = legalIDs;
-	
-	console.log(legal.moves);
 
 	return legal;
 };
@@ -638,25 +641,26 @@ function vector(start, end, side, capture){
 		eY = end[1]*1,
 		xInc = findInc(sX, eX),
 		yInc = findInc(sY, eY),
-		list = '',
-		color, square;
+		squareList = '',
+		dest, piece, square;
 
 	do{
 		sX += xInc;
 		sY += yInc;
 		square = cLabels[sX] + sY;
-		color = occupied('#' + square).color;
+		dest = occupied('#' + square);
 
-		if(color){
-			if(capture && color != side) list += '#' + square + ',';
+		if(dest){
+			if(capture && dest.color != side) squareList += '#' + square + ',';
+			else if(dest.color == side) piece = dest;
 			break;
 		};
 
-		list += '#' + square + ',';
+		squareList += '#' + square + ',';
 
 	}while((cLabels[sX] + sY) != end);
 
-	return list;
+	return {list: squareList, end: piece};
 };
 
 // Checks the square ID for a occupying piece.
@@ -761,7 +765,7 @@ function check(square, player, ignore){
 	if($.inArray(ids, square) >= 0)	chk.push(player.King);
 	if (chk.length < 1) chk = false;
 
-	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
+//	console.log('Player ' + player.color + ': ' + square + ' ' + chk);
 	return chk;
 };
 
