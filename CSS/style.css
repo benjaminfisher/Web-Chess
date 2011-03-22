@@ -62,7 +62,7 @@ img{z-index:10;}
 	#log table tr td:last-child {
 		color: black;
 	}
-	#log table tr:nth-child(odd) {
+	#log table tr:nth-child(odd), th {
 		background-color: grey;
 	}
 	#log table tbody tr:nth-child(even) {
