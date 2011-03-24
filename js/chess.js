@@ -3,7 +3,7 @@
  * change: required to track whether a move resulted in check. Passes the value between
  * 		square selection and piece move functions. << B. Fisher
  */
-var cLabels = "ABCDEFGH", Players = [], change = false, castled = "", turnCount = 1;
+var cLabels = "ABCDEFGH", Players = [], change = false, castled = null, turnCount = 1;
 
 function Game(){
 	var self = this,
@@ -304,7 +304,7 @@ function Piece(color, start){
 
 			this.evalProtect();
 
-			logMove(this, location, this.position, capturedPiece);
+			if (!(this.type == 'rook' && castled)) logMove(this, location, this.position, capturedPiece);
 		};
 	};
 
@@ -495,11 +495,14 @@ function king(color, start){
 			if (destination.id.match('G')) {
 				var rook = callPiece($('#H' + this.row()).children('img')[0]),
 					dest = destination.previousElementSibling;
+					
 				castled = "king";
+				
 			// If king is moving to column 'C' (queenside) rook is on column 'A'
 			} else if (destination.id.match('C')) {
 				var rook = callPiece($('#A' + this.row()).children('img')[0]),
 					dest = destination.nextElementSibling;
+					
 				castled = "queen";
 			};
 			
@@ -510,7 +513,7 @@ function king(color, start){
 				$(rook.image).fadeIn('fast');
 				
 				// Reset the castled to false so black's moves will be logged << J-M Glenn
-				castled = "";
+				castled = null;
 			});
 		} else this._move(destination);
 	};
@@ -769,46 +772,33 @@ function callPiece(image){
 };
 
 // Log the player's move << J-M Glenn
+// Modified << B. Fisher 3/23 1830
 function logMove(piece, start, end, captured) {
-	if (castled == "king") {
-		// Kingside Castle
-		if (color == "white") {
-			var row = ('<tr>').append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
-			$(row).children().first().text(turnCount+'.');
-			$(row).children().not(':first').not(':last').text('0-0');
-			$(row).children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').text('0-0').show();
-		}
-	} else if (castled == "queen") {
-		// Queenside Castle
-		if (color == "white") {
-			var row = ('<tr>').append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
-			$(row).children().first().text(turnCount+'.');
-			$(row).children().not(':first').not(':last').text('0-0-0');
-			$(row).children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').text('0-0-0').show();
-		}
+	var color = piece.color,
+		row = $('<tr>'), cell,
+		moveType = (captured == null) ? "-" : "x",
+		start = start.toLowerCase(),
+		end = end.toLowerCase(),
+		pieceType = (piece.type != "knight") ? piece.type.toUpperCase().charAt(0) : "N";
+
+	$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
+	
+	if (color == "white") {
+		$(row).append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
+		$(row).children().first().text(turnCount + '.');
+		$(row).children().last().hide();
+		cell = $(row).children().not(':first').not(':last');
 	} else {
-		var color = piece.color,
-			moveType = (captured == null) ? "-" : "x",
-			start = start.toLowerCase(),
-			end = end.toLowerCase(),
-			pieceType = (piece.type != "knight") ? piece.type.toUpperCase().charAt(0) : "N";
-
+		cell = $('#log tbody td:last');
+		$(cell).show();
+	};
+			
+	if (castled == "king") $(cell).text('0-0');
+	else if (castled == "queen") {
+		$(cell).text('0-0-0');
+	} else {
 		pieceType = (pieceType != "P") ? pieceType : '';
+		$(cell).text(pieceType + start + moveType + end);
 
-		if (color == "white") {
-			row = $('<tr>').append('<td>').append('<td>').append('<td>').appendTo('#log tbody');
-			$(row).children().first().text(turnCount+".");
-			$(row).children().not(':first').not(':last').text(pieceType+start+moveType+end);
-			$(row).children().last().hide();
-			$('#log').attr({ scrollTop: $('#log').attr('scrollHeight') });
-		} else {
-			$('#log tbody td:last').text(pieceType + start + moveType + end).show();
-		};
-	}
-}
+	};
+};
