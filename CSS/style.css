@@ -127,8 +127,10 @@ img{z-index:10;}
 	#board ul:nth-child(odd) li:nth-child(odd){background-color:rgba(0,0,0,0.5);}
 	#board ul:nth-child(even) li:nth-child(even){background-color:rgba(0,0,0,0.5);}
 	
-	#board ul li:hover{
+	#board ul li img.active:hover{
 		border:1px solid red;
+		top:-1px;
+		left:-1px;
 	}
 	
 	#board ul:first-child div:hover{margin-top:0;}
