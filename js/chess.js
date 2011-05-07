@@ -13,7 +13,6 @@ function Game(){
 	Game.change = false;
 	Game.castled = null;
 	
-	
 	$('#resign').button().click(function(){
 		endGame(1);
 	});
@@ -55,6 +54,9 @@ function Game(){
 		
 		// Find whether the last move placed the next player in check
 		Game.Players[1].King.inCheck = (check(Game.Players[1].King.position, Game.Players[0]));
+		
+		//Clears the EP variables of the current players pawns << B. Fisher
+		$(Game.Players[0].pawns).each(function(){this.EP = false});
 		
 		Game.Players.reverse(); // Switches the active player
 		
@@ -257,7 +259,6 @@ function Game(){
 		
 		this.activate = function(){
 			$(this.pawns).each(function(){
-				this.EP = false						//Clears the EP variables of pawns << B. Fisher	
 				$(this.image).addClass('active');	//Add active status to  pawns << B. Fisher 5/6 1700
 			});
 			
