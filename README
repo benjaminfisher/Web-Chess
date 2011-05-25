@@ -83,6 +83,8 @@ v18.1 - Added pawn promotion logging. << B. Fisher 3/29
 
 v19	  - Wrapped all functionality within the Game object to remove global variables.
 		Only active players pieces are outlined on hover, instead of all squares. << B. Fisher 5/6
+		
+v19.1 - Corrected issues with removing pieces from player arrays on capture. << B. Fisher 5/23
 
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces

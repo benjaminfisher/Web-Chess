@@ -32,19 +32,15 @@ function Game(){
 		if (kid && kid.color == Game.Players[0].color) { // checks if piece belongs to the current player
 			select(this);
 			$(Legal(kid).moves).addClass('legal');
-		}
-		else 
-			if ($(this).hasClass('legal')) { // If clicked square is a legal move
-				piece = occupied(selectedSquare.id); // retrieve piece from the selected square
+		} else if ($(this).hasClass('legal')) { 		// If clicked square is a legal move
+				piece = occupied(selectedSquare.id);	// retrieve piece from the selected square
 				piece.move(this);
 				// If the last move did not result in check call the turn change. << B. Fisher
-				if (Game.change) 
-					turn();
-			}
-			else {
-				select(); // if square is not occupied, or is occupied by an opponent piece
-			}; // that is not capturable than clear the selection
-			});
+				if (Game.change) turn();
+		} else {
+			select(); // if square is not occupied, or is occupied by an opponent piece
+		}; // that is not capturable than clear the selection
+	});
 	
 	function turn(){
 		select(false);
@@ -61,8 +57,9 @@ function Game(){
 		Game.Players.reverse(); // Switches the active player
 		
 		Game.Players[0].activate();
-		if (Game.Players[0].color == 'white') 
+		if (Game.Players[0].color == 'white') {
 			Game.turnCount++;
+		};
 		
 		Game.change = null;
 		
@@ -74,9 +71,7 @@ function Game(){
 		// Game didn't end, change name and color of dash
 		$('#Dash').css('background', Game.Players[0].color);
 		$('#turn').html(Game.Players[0].name);
-		
 		$('.threat').removeClass('threat');
-		//		$("#board img." + Game.Players[0].color).draggable("enable");
 	};
 	
 	function select(square){
@@ -246,15 +241,14 @@ function Game(){
 		
 		var self = this;
 		
-		this.kill = function(image){
-			var piece = callPiece(image), array, index;
+		this.kill = function(){
+			var piece = callPiece(this), array, index;
 			
 			if (piece) 
 				array = (piece.type == 'pawn') ? self.pawns : self.pieces;
 			
 			index = $.inArray(piece, array);
-			if (index > -1) 
-				array.splice(index, 1);
+			if (index > -1) array.splice(index, 1);
 		};
 		
 		this.activate = function(){
@@ -272,7 +266,7 @@ function Game(){
 		
 		//Remove a piece from this players piece array when captured << B. Fisher 3/3 2100
 		// Revised to function with seperate pieces and pawns arrays << B. Fisher 3/14 2030
-		$('#board img').bind('kill', this.kill());
+		$('#board img').bind('kill', self.kill);
 	};
 	
 	//=======================================================
@@ -624,37 +618,29 @@ function Game(){
 			if (inside(this, position)) {
 				dest = occupied('#' + this);
 				if (type == 'knight') {
-					// Knights are 'leapers'. They do not move along a vector but jump to the destination square. << B. Fisher
-					if (dest.color == color) 
-						legal.push(dest);
-					else 
-						legalIDs += writeID(this[0], this[1]);
-				}
-				else 
-					if (type == 'pawn') {
-						// pawns cannot capture on their own column
-						if (dest && C != this[0]) {
-							if (dest.color == color) 
-								legal.push(dest);
-							else 
-								legalIDs += writeID(this[0], this[1]);
-						}
-						// Check for a pawn in EP and whether its column matches the move
-						else 
-							if (piece.EP && piece.EP.col() == this[0]) 
-								legalIDs += writeID(this[0], this[1]);
-							// add vertical moves
-							else 
-								if (C == this[0]) 
-									legalIDs += vector(position, this, color, false).list;
+					// Knights are 'leapers'. They do not move along a vector 
+					// but jump to the destination square. << B. Fisher
+					if (dest.color == color) legal.push(dest);
+					else legalIDs += writeID(this[0], this[1]);
+				} else if (type == 'pawn') {
+					// pawns cannot capture on their own column
+					if (dest && C != this[0]) {
+						if (dest.color == color) legal.push(dest);
+						else legalIDs += writeID(this[0], this[1]);
 					}
-					else {
-						path = vector(position, this, color, true);
-						legalIDs += path.list;
-						legal.push(path.end);
-					};
-							};
-					});
+					// Check for a pawn in EP and whether its column matches the move
+					else if (piece.EP && piece.EP.col() == this[0])
+						legalIDs += writeID(this[0], this[1]);
+						// add vertical moves
+					else if (C == this[0])
+						legalIDs += vector(position, this, color, false).list;
+				} else {
+					path = vector(position, this, color, true);
+					legalIDs += path.list;
+					legal.push(path.end);
+				};
+			};
+		});
 		
 		// King move legality.
 		if (type == 'king') {
@@ -673,17 +659,18 @@ function Game(){
 				if (vector(position, 'B' + rNum, color, false).list.match('B') && rook && !rook.moved && !check('D' + rNum, Game.Players[1])) {
 					legalIDs += writeID('C', rNum);
 				};
-							};
+			};
 			
 			// Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 			var squares = legalIDs.split(',');
 			
+			$('.threat').removeClass('threat');
 			for (var i = squares.length - 2; i >= 0; i--) {
 				if (check(squares[i], Game.Players[1])) {
 					$(squares[i]).addClass('threat');
 					squares.splice(i, 1);
 				};
-							};
+			};
 			
 			legalIDs = squares.join(',');
 		};
@@ -844,13 +831,13 @@ function Game(){
 		// Evaluate player's pawn capture squares. << B. Fisher 3/14 2130
 		$(player.pawns).each(function(){
 			var pawn = this;
-			if (ignore != this) {
-				ids = this.footprint();
+			if (ignore != pawn) {
+				ids = pawn.footprint();
 				$(ids).each(function(index){
 					if (this[0] == pawn.col()) 
 						ids.splice(index, 1);
 				});
-				if ($.inArray(ids, square) >= 0) {
+				if ($.inArray(ids, square.substring(1)) >= 0) {
 					chk.push(pawn);
 				};
 			};

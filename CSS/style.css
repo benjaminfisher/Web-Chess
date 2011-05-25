@@ -47,8 +47,7 @@ img{z-index:10;}
 		border-spacing: 2px 2px;
 		width: 100%;
 	}
-	#log table tr {
-		border: 1px solid;
+	#log table tr {border: 1px solid;
 	}
 	#log table td {
 		padding: 1px;
@@ -69,6 +68,14 @@ img{z-index:10;}
 		background-color: darkgrey;
 	}
 
+#logo{
+	background:transparent url(../images/small-logo.png) top left no-repeat;
+	display:inline-block;
+	float:left;
+	height:50px;
+	position:relative;
+	width:50px;
+}
 #prison{
 	float:left;
 	height:624px;
@@ -121,9 +128,6 @@ img{z-index:10;}
 	
 	#board ul li img{display:block; position:relative;}
 	
-	#board ul:nth-child(1) div{}
-	#board ul li:nth-child(1){}
-	
 	#board ul:nth-child(odd) li:nth-child(odd){background-color:rgba(0,0,0,0.5);}
 	#board ul:nth-child(even) li:nth-child(even){background-color:rgba(0,0,0,0.5);}
 	
@@ -137,6 +141,7 @@ img{z-index:10;}
 	#board ul li:first-child:hover{margin-left:0;}
 	
 	#board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
+		#board ul li.legal:hover{background-color:rgba(0,100,200,0.6) !important;}
 	#board ul li.threat{background-color:rgba(200,0,0,0.6) !important;}
 
 .label{
