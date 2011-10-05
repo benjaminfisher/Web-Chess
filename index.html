@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<meta charset="utf-8">
+		<meta name="author" content="Benjamin J. Fisher">
+		
 		<title>Web Chess</title>
 		<link rel="stylesheet" type="text/css" href="CSS/reset.css" />
 		<link rel="stylesheet" type="text/css" href="CSS/style.css" />
@@ -14,7 +17,10 @@
 				new Game();
 			});
 		</script>
-
+		
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
 	</head>
 	<body>
 		<div id="wrapper">
@@ -101,6 +107,7 @@
 				</ul>
 			</div>
 
+
 			<div id="prison">
 				<ul>
 					<li rel="black queen">
@@ -147,20 +154,21 @@
 			</div>
 
 			<div id="Dash">
+				<a href="http://benjaminjfisher.com" title="BenjaminJFisher.com" id="logo"></a>
 				<button id="resign">Resign</button>
 				<p>Turn: <span id='turn'></span></p>
 				<div id="log">
-				<table>
-					<thead>
-						<tr>
-							<th colspan="2">White</th>
-							<th>Black</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2">White</th>
+								<th>Black</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 
 		</div>
