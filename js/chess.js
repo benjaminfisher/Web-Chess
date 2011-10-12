@@ -10,10 +10,11 @@ function Game() {
     $('#resign').button().click(function() {
         endGame(1);
     });
-    $('.hidden').hide();
+
     Game.Players.push(new Player('white'));
     Game.Players.push(new Player('black'));
     Game.Players[0].activate();
+	
     $('#turn').html(Game.Players[0].name);
     $(squares).click(function(event) {
         var kid = occupied(this.id);
@@ -45,7 +46,7 @@ function Game() {
         });
         Game.Players.reverse(); // Switches the active player
         Game.Players[0].activate();
-        if (Game.Players[0].color == 'white') {
+        if (Game.Players[0].color == 'white') { //Each time both players have moved turnCount incriments <<B. Fisher
             Game.turnCount++;
         }
         Game.change = null;
@@ -58,7 +59,7 @@ function Game() {
     }
 
     function select(square) {
-/* Function to handle square selection.
+		/* Function to handle square selection.
 		 * Previously selected squares are deselected.
 		 * If a square id is passed the square is given the selected class.
 		 * If a falsey value is passed than the selectedSquare variable is cleared.
@@ -120,16 +121,8 @@ function Game() {
             $('#turn').html(Game.Players[0].name);
             //			$("#board img." + Game.Players[0].color).draggable("enable");
         }
-        var cover = $('<div>');
-        $(cover).appendTo('body').attr('id', 'cover').css({
-            position: 'absolute',
-            top: '16px',
-            left: '16px',
-            height: '616px',
-            width: '616px',
-            backgroundColor: 'rgba(50,50,50,0.3)',
-            zIndex: '9000'
-        });
+
+        $('#cover').removeClass("hidden");
         $('#resign').button('disable');
     }
     // Log the player's move << J-M Glenn

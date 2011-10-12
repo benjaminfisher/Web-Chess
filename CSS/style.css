@@ -85,6 +85,7 @@ img{z-index:10;}
 	}
 	#prison ul li[rel^='white']{color:white;}
 
+/* Board styles */
 #board{
 	background:url(../images/marble.jpg);
 	border:4px outset gray;
@@ -113,10 +114,10 @@ img{z-index:10;}
 		border:1px solid silver;
 	}
 	
-	#board ul li:not(.selected){
+	#board ul li img{
+		display:block;
+		position:relative;
 	}
-	
-	#board ul li img{display:block; position:relative;}
 	
 	#board ul:nth-child(odd) li:nth-child(odd){background-color:rgba(0,0,0,0.5);}
 	#board ul:nth-child(even) li:nth-child(even){background-color:rgba(0,0,0,0.5);}
@@ -126,15 +127,25 @@ img{z-index:10;}
 		left:-1px;
 		top:-1px;
 	}
-	#board ul li.legal:hover{border:1px solid red;}
+	#board ul li.legal:hover{background-color:rgba(0,100,200,0.6) !important; border:1px solid red; }
 	
 	#board ul:first-child div:hover{margin-top:0;}
 	#board ul li:first-child:hover{margin-left:0;}
 	
 	#board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
-		#board ul li.legal:hover{background-color:rgba(0,100,200,0.6) !important;}
 	#board ul li.threat{background-color:rgba(200,0,0,0.6) !important;}
 
+#cover{
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	height: 616px;
+	width: 616px;
+	background-color: rgba(50,50,50,0.3);
+	z-index: 9000;
+}
+
+/* Styles for classes */
 .label{
 	position:absolute;
 	bottom:0px;
@@ -146,4 +157,8 @@ img{z-index:10;}
 	background-color:silver !important;
 	border:1px solid purple;
 	z-index:5;
+}
+
+.hidden{
+	visibility:hidden;
 }
