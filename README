@@ -79,7 +79,16 @@ v18 -    Modifications to Legal function. The function now returns an array of p
            The legal moves are returned as the 'moves' key pair value. Will need to be called after a move finishes to find new protected pieces. 
            << B. Fisher 3/21
 
+<<<<<<< OURS
 v18.1 - Cleaned up the logMove function. Consolidated duplicate <tr> creation and formatting. << B. Fisher 3/23 1930
+=======
+v18.1 - Added pawn promotion logging. << B. Fisher 3/29
+
+v19	  - Wrapped all functionality within the Game object to remove global variables.
+		Only active players pieces are outlined on hover, instead of all squares. << B. Fisher 5/6
+		
+v19.1 - Corrected issues with removing pieces from player arrays on capture. << B. Fisher 5/23
+>>>>>>> THEIRS
 
 Tasks to complete: Correct the following issues with King moves under check:
 	1) King can capture protected pieces
