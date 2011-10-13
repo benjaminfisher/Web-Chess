@@ -263,13 +263,21 @@ function Game() {
                 if (!(this.type == 'rook' && Game.castled)) logMove(this, location, capturedPiece);
             }
         };
+		
         this.capture = function() {
-            //		$(this.image).fadeOut('fast', function(){$(this.image).remove()});
             $(this.image).trigger('kill', this.image);
             $(this.image).remove();
+			
             // Show captured piece in the prison << B. Fisher 3/11 1640
-            var cell = $('#prison [rel="' + this.color + ' ' + this.type + '"]');
-            $(cell).find('img').fadeIn('slow');
+            var cell = $('#prison [rel="' + this.color + ' ' + this.type + '"]'),
+            prisoner = $(cell).find('img');
+			
+			if ($(prisoner).hasClass('hidden')){
+				$(prisoner).removeClass('hidden')
+				.hide()
+				.fadeIn('slow');
+			};
+
             // If the count span is empty, insert '1' and hide it.
             // If it already contains a number, add 1 and show it. << B. Fisher <<3/11 1800
             var cellCount = $(cell).find('.count')[0],
@@ -283,8 +291,8 @@ function Game() {
             return true;
         };
     }
+	
     // Start piece definitions
-
     function pawn(color, start) {
         this.toString = function() {
             return 'pawn';
