@@ -1,7 +1,6 @@
 Web Chess
 =========
-A web-based Chess application using HTML5, CSS3 & JavaScript with jQuery
-------------------------------------------------------------------------
+**A web-based Chess application using HTML5, CSS3 & JavaScript with jQuery**
 
 - **Author:** Benjamin Fisher
 - **Collaborator:** John-Michael Glenn
@@ -17,6 +16,7 @@ _Version 12_ - All pieces but king are moving legally except en Passant capture.
 _v12.1_ - Added basic king moves, still needs castle functionality & legality.
 _v12.2_ - Added castle legality & functionality, rook moves but looses its data
 _v12.3_ - Corrected rook issues when castling
+
 ^^^ B. Fisher ^^^
 
 -------------------------------------------------------------------------
@@ -33,9 +33,11 @@ v13.2 - Fixed En Passant and implemented enPassant() function << J-M Glenn
 v13.4 - En Passant capture is fully functional including clearing the pawns EP variables at the end
 			of the current player's turn. << B. Fisher 2/28 2100
 
-v13.5 - check function passed initial testing. Captured pieces need to be removed 
-			from Player pieces array << B. Fisher 3/1 0330
+v13.5 - check function passed initial testing. Captured pieces need to be removed from Player pieces array << B. Fisher 3/1 0330
 
+-------------------------------------------------------------------------
+
+-Version 14_
 v14.3 - Moved capture functionality to the Player object. Pieces are now removed from the array on capture.
 			Check function is working. Added Checkmate (comments only) and Stalemate function (untested). << B. Fisher 3/03 2200
 
@@ -45,7 +47,9 @@ v14.5 - Added skipKing option to the check function to prevent recursion over th
 			Legal is removing threatened squares from the kings legal moves. Still doesn't recognize protected pieces.
 			Started adding movePiece functionality into the Piece.move() function. << B. Fisher 3/04 1930
 
-v15   - Removed the movePiece function. All piece movement is now handled by the individual piece objects
+-------------------------------------------------------------------------
+
+_Version 15_ - Removed the movePiece function. All piece movement is now handled by the individual piece objects
 			and the Piece class. Revamped the Legality function to handle pawn capture and en passant legality.
 			also disabled piece drag and drop due to issues with turn changes. << B. Fisher 3/05 2310
 
@@ -61,7 +65,9 @@ v15.4 - Resolved pinned against king issues except when the pinning piece captur
 v15.5 - Still working on pinned against king issues. Pinning piece can move if not resulting in check. King in check isn't able to move
 			except to take the checking piece due to recursion issues with Legal and check functions. << B. Fisher 3/10 0500
 
-v16   - Added resign button with gameOver and turnCount variables. << B. Fisher 3/10 1800
+-------------------------------------------------------------------------
+
+-Version 16_ - Added resign button with gameOver and turnCount variables. << B. Fisher 3/10 1800
 
 v16.1 - Added the prison to display captured pieces << B. Fisher 33/10 1915
 
@@ -82,11 +88,15 @@ v16.7 - Simplified king.footprint function, now easier to parse feedback. << B. 
 
 v16.8 - Added endGame function to cover the board and disable the resign button. << B. Fisher 3/16 1845
 
-v17   - Coded endGame function with scenarios for resignation, checkmate and stalemate. << B. Fisher 3/17 2130
+-------------------------------------------------------------------------
+
+_Version 17_   - Coded endGame function with scenarios for resignation, checkmate and stalemate. << B. Fisher 3/17 2130
 
 v17.1 - Coded move logging and specialty case of logging castling. << J-M Glenn
 
-v18   - Modifications to Legal function. The function now returns an array of pieces of the same color that the called piece interacts with.
+-------------------------------------------------------------------------
+
+_Version 18_ - Modifications to Legal function. The function now returns an array of pieces of the same color that the called piece interacts with.
            The legal moves are returned as the 'moves' key pair value. Will need to be called after a move finishes to find new protected pieces. 
            << B. Fisher 3/21
 
@@ -94,7 +104,9 @@ v18.1 - Cleaned up the logMove function. Consolidated duplicate <tr> creation an
 
 v18.2 - Added pawn promotion logging. << B. Fisher 3/29
 
-v19	  - Wrapped all functionality within the Game object to remove global variables.
+-------------------------------------------------------------------------
+
+_Version 19_ - Wrapped all functionality within the Game object to remove global variables.
 		Only active players pieces are outlined on hover, instead of all squares. << B. Fisher 5/6
 		
 v19.1 - Corrected issues with removing pieces from player arrays on capture. << B. Fisher 5/23
