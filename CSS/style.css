@@ -29,7 +29,7 @@ img{z-index:10;}
 	
 	#resign{float:left;}
 
-/* Styles for piece logging table */
+/* Styles for move logging table */
 #log {
 	font: 14px Arial, Helvetica, sans-serif;
 	background-color: transparent;

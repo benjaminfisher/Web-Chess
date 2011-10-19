@@ -7,6 +7,7 @@ function Game() {
     Game.Players = [];
     Game.change = false;
     Game.castled = null;
+	
     $('#resign').button().click(function() {
         endGame(1);
     });
