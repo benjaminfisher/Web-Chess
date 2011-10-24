@@ -17,26 +17,28 @@ function Game() {
     Game.Players[0].activate();
 	
     $('#turn').html(Game.Players[0].name);
-    $(squares).click(function(event) {
-        var kid = occupied(this.id);
+	
+    $(squares).click(function(){validateSquare(this)});
+	function validateSquare(square){
+		jSquare = $(square);
+		var kid = occupied(square.id);
         if (kid && kid.color == Game.Players[0].color) { // checks if piece belongs to the current player
-            select(this);
+            select(square);
             $(Legal(kid).moves).addClass('legal');
         }
-        else if ($(this).hasClass('legal')) { // If clicked square is a legal move
+        else if (jSquare.hasClass('legal')) { // If clicked square is a legal move
             piece = occupied(selectedSquare.id); // retrieve piece from the selected square
-            piece.move(this);
+            piece.move(square);
             // If the last move did not result in check call the turn change. << B. Fisher
             if (Game.change) turn();
         }
         else {
             select(); // if square is not occupied, or is occupied by an opponent piece
-        } // that is not capturable than clear the selection
-    });
+        }			// that is not capturable than clear the selection
+	}
 
     function turn() {
         select(false);
-        //		$(pieces).draggable("disable"); // disables piece dragging for previous player
         $('.legal').removeClass('legal'); // clears legal moves of last moved piece
         $('.active').removeClass('active'); // Clear active status of previous players pieces << B. Fisher 5/6 1700
         // Find whether the last move placed the next player in check
@@ -61,7 +63,7 @@ function Game() {
 
     function select(square) {
 		/* Function to handle square selection.
-		 * Previously selected squares are deselected.
+		 * Previously selected squares are de-selected.
 		 * If a square id is passed the square is given the selected class.
 		 * If a falsey value is passed than the selectedSquare variable is cleared.
 		 */
@@ -72,9 +74,7 @@ function Game() {
             selectedSquare = square;
             $(selectedSquare).addClass('selected');
         }
-        else {
-            selectedSquare = null;
-        }
+        else { selectedSquare = null; }
     }
 
     function Checkmate(player) {
@@ -308,51 +308,56 @@ function Game() {
         this.logCell = null;
         this.endRow = (color == 'white') ? 8 : 1;
         var self = this;
-        this.footprint = function() {
-            row = self.row();
-            col = self.col();
-            ids = [];
-            if (!self.moved) ids.push(col + (row + 2 * this.inc));
-            else ids.push(col + (row + 1 * this.inc));
-            ids.push(cLabels[cLabels.indexOf(col) - 1] + (row + this.inc));
-            ids.push(cLabels[cLabels.indexOf(col) + 1] + (row + this.inc));
-            return ids;
-        };
-        this.move = function(destination) {
-            // Evaluate whether pawn has passed an opponent pawn on opening double step << B. Fisher
-            if (!this.moved && (destination.id.match(4) || destination.id.match(5))) {
-                var prev = (this.col() == 'A') ? false : occupied(destination.previousElementSibling.id);
-                var next = (this.col() == 'H') ? false : occupied(destination.nextElementSibling.id);
-                if (prev && prev == 'pawn' && prev.color != color) prev.EP = this;
-                if (next && next == 'pawn' && next.color != color) next.EP = this;
-            }
-            // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed.
-            // If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
-            if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
-            this._move(destination);
-            if (this.row() == this.endRow) this.promote(destination);
-        };
-        // Pawn promotion functionality << B. Fisher 3/06
-        this.promote = function(destination) {
-            //Prompt for promotion preference << B. Fisher 3/29 1630
-            var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
-            // Remove the pawn's image, and clear it from the Player's pieces array.
-            $(this.image).remove();
-            $(this).trigger('remove');
-            // Place the promotion piece, add it to the pieces array and append the promotion
-            // to the logged move. << B. Fisher 3/29 1630
-            if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
-                Game.Players[0].pieces.push(new knight(this.color, destination.id));
-                $(self.logCell).html($(self.logCell).html() + '=N');
-            }
-            else {
-                Game.Players[0].pieces.push(new queen(this.color, destination.id));
-                $(self.logCell).html($(self.logCell).html() + '=Q');
-            }
-        };
+        
         self.place(start);
     }
-    pawn.prototype = new Piece();
+	pawn.prototype.footprint = function() {
+		self = this;
+        row = self.row();
+        col = self.col();
+        ids = [];
+        if (!self.moved) ids.push(col + (row + 2 * this.inc));
+        else ids.push(col + (row + 1 * this.inc));
+        ids.push(cLabels[cLabels.indexOf(col) - 1] + (row + this.inc));
+        ids.push(cLabels[cLabels.indexOf(col) + 1] + (row + this.inc));
+        return ids;
+	};
+    pawn.prototype.move = function(destination) {
+		self = this;
+        // Evaluate whether pawn has passed an opponent pawn on opening double step << B. Fisher
+        if (!this.moved && (destination.id.match(4) || destination.id.match(5))) {
+            var prev = (this.col() == 'A') ? false : occupied(destination.previousElementSibling.id);
+            var next = (this.col() == 'H') ? false : occupied(destination.nextElementSibling.id);
+            if (prev && prev == 'pawn' && prev.color != self.color) prev.EP = this;
+            if (next && next == 'pawn' && next.color != self.color) next.EP = this;
+        }
+        // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed.
+        // If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
+        if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
+        this._move(destination);
+        if (this.row() == this.endRow) this.promote(destination);
+	};
+	
+	// Pawn promotion functionality << B. Fisher 3/06
+	pawn.prototype.promote = function(destination) {
+		self = this;
+        //Prompt for promotion preference << B. Fisher 3/29 1630
+        var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
+        // Remove the pawn's image, and clear it from the Player's pieces array.
+        $(self.image).remove();
+        $(self).trigger('remove');
+        // Place the promotion piece, add it to the pieces array and append the promotion
+        // to the logged move. << B. Fisher 3/29 1630
+        if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
+            Game.Players[0].pieces.push(new knight(this.color, destination.id));
+            $(self.logCell).html($(self.logCell).html() + '=N');
+        }
+        else {
+            Game.Players[0].pieces.push(new queen(this.color, destination.id));
+            $(self.logCell).html($(self.logCell).html() + '=Q');
+        }
+    };
+	pawn.prototype = new Piece();
 
     function rook(color, start) {
         this.toString = function() {

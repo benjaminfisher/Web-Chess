@@ -137,8 +137,8 @@ img{z-index:10;}
 
 #cover{
 	position: absolute;
-	top: 16px;
-	left: 16px;
+	top: 7px;
+	left: 7px;
 	height: 616px;
 	width: 616px;
 	background-color: rgba(50,50,50,0.3);
