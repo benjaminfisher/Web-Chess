@@ -76,6 +76,7 @@ v16.2 - Adding the move logging table along with it's styling << J-M Glenn
 v16.3 - Attempting to remove opposing king's footprint from moving king's available moves with the match function.
 			Currently removing squares that should be legal. << B. Fisher 3/10 2215
 v16.4 - Added auto-scrolling to the move logger << J-M Glenn
+>>>>>>> branch 'refs/heads/master' of https://benjaminfisher@github.com/benjaminfisher/Web-Chess.git
 
 v16.5 - Added functionality for the 'prison' to show captured pieces. << B. Fisher 3/11 1830
 
@@ -95,7 +96,9 @@ v17.1 - Coded move logging and specialty case of logging castling. << J-M Glenn
 
 -------------------------------------------------------------------------
 
-_Version 18_ - Modifications to Legal function. The function now returns an array of pieces of the same color that the called piece interacts with. The legal moves are returned as the 'moves' key pair value. Will need to be called after a move finishes to find new protected pieces.    << B. Fisher 3/21
+_Version 18_ - Modifications to Legal function. The function now returns an array of pieces of the same color that the called piece interacts with.
+           The legal moves are returned as the 'moves' key pair value. Will need to be called after a move finishes to find new protected pieces. 
+           << B. Fisher 3/21
 
 v18.1 - Cleaned up the logMove function. Consolidated duplicate <tr> creation and formatting. << B. Fisher 3/23 1930
 
@@ -111,4 +114,3 @@ v19.1 - Corrected issues with removing pieces from player arrays on capture. << 
 v19.2 - Removed code to hide elements with a class of .hidden, and added visibility:hidden property to CSS.
 		Corrected issues with the div#cover and prison that resulted from this change. << B. Fisher 101311
 
-v19.5 - Adding doc files (HTML based documentation). << B.Fisher 10/26/11
