@@ -1,4 +1,6 @@
 # Numerous always-ignore extensions
+*.lnk
+*.bat
 *.diff
 *.err
 *.orig
