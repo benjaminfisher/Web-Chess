@@ -1,6 +1,7 @@
 /**
  * Master object to control game functionality and contain players and pieces.
  * @author Benjamin Fisher
+ * @version 19.5
  * @constructor
  * 
  */
@@ -9,9 +10,14 @@ function Game() {
         selectedSquare = null,
         gameOver = false,
         cLabels = "ABCDEFGH";
+
+	/** Tracks the number of turns taken for move logging */
     Game.turnCount = 1;
+    /** Array to hold the game's players. Players[0] is the current player */
     Game.Players = [];
+    /** [Boolean] Controls whether to change the turn. Set to true if the current move is legal. */
     Game.change = false;
+    /** House keeping variable to track whether a castle took place on the current turn for move logging. */
     Game.castled = null;
 	
     $('#resign').button().click(function() {
@@ -25,14 +31,25 @@ function Game() {
     $('#turn').html(Game.Players[0].name);
 	
     $(squares).click(function(){validateSquare(this)});
+    
+    /**
+     * First checks to see if the contained piece belongs to the current player.
+     * @author BF
+     * @param {object} square li element representing the selected square.
+     */
 	function validateSquare(square){
-		jSquare = $(square);
+		
+		/** Contained piece */
 		var kid = occupied(square.id);
+		
+		/** jQuery object of the square */
+		jSquare = $(square);
         if (kid && kid.color == Game.Players[0].color) { // checks if piece belongs to the current player
             select(square);
             $(Legal(kid).moves).addClass('legal');
         }
-        else if (jSquare.hasClass('legal')) { // If clicked square is a legal move
+        /** If clicked square is a legal move */
+        else if (jSquare.hasClass('legal')) {
             piece = occupied(selectedSquare.id); // retrieve piece from the selected square
             piece.move(square);
             // If the last move did not result in check call the turn change. << B. Fisher
@@ -41,7 +58,7 @@ function Game() {
         else {
             select(); // if square is not occupied, or is occupied by an opponent piece
         }			// that is not capturable than clear the selection
-	}
+	} // End of validateSqure()
 
     function turn() {
         select(false);
@@ -59,13 +76,15 @@ function Game() {
             Game.turnCount++;
         }
         Game.change = null;
+        
         if (Checkmate()) endGame(2);
         if (Stalemate()) endGame(3);
+        
         // Game didn't end, change name and color of dash
         $('#Dash').css('background', Game.Players[0].color);
         $('#turn').html(Game.Players[0].name);
         $('.threat').removeClass('threat');
-    }
+    } // End of turn()
 
     function select(square) {
 		/* Function to handle square selection.
@@ -81,14 +100,14 @@ function Game() {
             $(selectedSquare).addClass('selected');
         }
         else { selectedSquare = null; }
-    }
+    } // End of select()
 
     function Checkmate(player) {
         //if players king is in check
         // if checking piece is vulnerable
         //if all available moves for the king are threatened
         return false;
-    }
+    } // End of Checkmate()
 
     function Stalemate() {
         // If king is not in check, put the current player has no legal moves return true. << B. Fisher
@@ -103,7 +122,7 @@ function Game() {
         //console.log('Stalemate moves: ' + legalMoves);
         if (legalMoves.length === 0 && !Game.Players[0].King.inCheck) return true;
         else return false;
-    }
+    } // End of Stalemate()
 
     function endGame(gameOver) {
         // End game alerts << B. Fisher
@@ -131,10 +150,15 @@ function Game() {
 
         $('#cover').removeClass("hidden");
         $('#resign').button('disable');
-    }
-    // Log the player's move << J-M Glenn
-    // Modified << B. Fisher 3/23 1830
-
+    } // End of endGame()
+    
+/**
+ * Log the player's move
+ * @author J-M Glenn, Modified << B. Fisher 3/23 1830
+ * @param {object} piece The piece that moved
+ * @param {string} start The starting square of piece format [CR]
+ * @param {boolean} captured Whether move resulted in a capture
+ */
     function logMove(piece, start, captured) {
         var row = $('<tr>'),
             cell, end = piece.position.toLowerCase(),
@@ -171,19 +195,29 @@ function Game() {
     // ===============================================
 /**
  * @constructor
+ * @extends Game
+ * @param {string} side The color of the Player's pieces
  */
     function Player(side) {
+    	/** The color of the Player's pieces */
         this.color = side;
+        /** Array to hold the Player's pieces */
         this.pieces = [];
+        /** Array to hold the Player's pawns */
         this.pawns = [];
+        /** {string} Players name (displayed in the dashboard) */
         this.name = prompt(this.color[0].toUpperCase() + this.color.substr(1) + " side's name:", 'Player ' + ($(Game.Players).size() + 1));
         if (!this.name) this.name = 'Player ' + ($(Game.Players).size() + 1);
+        
+        /** The row where the Player's piece start the game */
         var startRow = (this.color == 'white') ? 1 : 8,
             // White Player starts on Row 1, Black on row 8
             pawnRow = (this.color == 'white') ? 2 : 7; // Pawns start on the next medial row
         for (p = 0; p <= 7; p++) {
             this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
         }
+        
+        /** When the player is created its pieces are placed on the board and loaded into the appropriate array */
         this.pieces.push(new rook(this.color, "A" + startRow));
         this.pieces.push(new rook(this.color, "H" + startRow));
         this.pieces.push(new knight(this.color, "B" + startRow));
@@ -193,6 +227,7 @@ function Game() {
         this.pieces.push(new queen(this.color, "D" + startRow));
         this.King = new king(this.color, "E" + startRow);
         var self = this;
+        
         this.kill = function() {
             var piece = callPiece(this),
                 array, index;
@@ -200,6 +235,7 @@ function Game() {
             index = $.inArray(piece, array);
             if (index > -1) array.splice(index, 1);
         };
+        
         this.activate = function() {
             $(this.pawns).each(function() {
                 $(this.image).addClass('active'); //Add active status to  pawns << B. Fisher 5/6 1700
@@ -216,7 +252,10 @@ function Game() {
     }
     //=======================================================
 /**
- * @constructor
+ * Parent class of pieces and pawns
+ * @class Represents a chess piece (or pawn)
+ * @param {string} color The color (side) of the Piece
+ * @param {string} start The starting position of the Piece in format [CR]
  */
     function Piece(color, start) {
         this.moved = false;
@@ -307,25 +346,30 @@ function Game() {
 /**
  * @author BF
  * @constructor
- * @extends Piece
+ * @member Piece.prototype
+ * @param {string} color The pawn's color
+ * @param {string} start Starting square of the pawn in format [CR]
  */
     function pawn(color, start) {
         this.toString = function() {
             return 'pawn';
         };
         Piece.call(this, color, start);
-        // inc variable indicates which direction is forward depending on color.
-        // endRow variable is the promotion rank for the pawn << B. Fisher
+
         this.type = "pawn";
         this.EP = false;
+        /** indicates which direction is forward depending on color. */
         this.inc = (color == 'white') ? 1 : -1;
         this.promotion = null;
         this.logCell = null;
+        /** the promotion rank for the pawn */
         this.endRow = (color == 'white') ? 8 : 1;
         var self = this;
         
         self.place(start);
     }
+    pawn.prototype = new Piece();
+    	
 	pawn.prototype.footprint = function() {
 		self = this;
         row = self.row();
@@ -337,6 +381,11 @@ function Game() {
         ids.push(cLabels[cLabels.indexOf(col) + 1] + (row + this.inc));
         return ids;
 	};
+
+/**
+ * @function
+ * @methodOf pawn
+ */
     pawn.prototype.move = function(destination) {
 		self = this;
         // Evaluate whether pawn has passed an opponent pawn on opening double step << B. Fisher
@@ -346,14 +395,15 @@ function Game() {
             if (prev && prev == 'pawn' && prev.color != self.color) prev.EP = this;
             if (next && next == 'pawn' && next.color != self.color) next.EP = this;
         }
-        /** Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed. If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher */
+        // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed. If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
         if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
         this._move(destination);
         if (this.row() == this.endRow) this.promote(destination);
 	};
+
 /**
  * Pawn promotion functionality 
- * @extends pawn
+ * @method pawn.prototype
  * @author BF
  * @since 3/06/10
  */
@@ -375,11 +425,11 @@ function Game() {
             $(self.logCell).html($(self.logCell).html() + '=Q');
         }
     };
-	pawn.prototype = new Piece();
 
 /**
  * @author BF
  * @constructor
+ * @member Piece.prototype
  */
     function rook(color, start) {
         this.toString = function() {
@@ -403,6 +453,7 @@ function Game() {
 /**
  * @author BF
  * @constructor
+ * @member Piece.prototype
  */
     function knight(color, start) {
         this.toString = function() {
@@ -435,6 +486,7 @@ function Game() {
 /**
  * @author BF
  * @constructor
+ * @member Piece.prototype
  */
     function bishop(color, start) {
         this.toString = function() {
@@ -456,6 +508,7 @@ function Game() {
 /**
  * @author BF
  * @constructor
+ * @member Piece.prototype
  */
     function queen(color, start) {
         this.toString = function() {
@@ -477,6 +530,7 @@ function Game() {
 /**
  * @author BF
  * @constructor
+ * @member Piece.prototype
  */
     function king(color, start) {
         this.toString = function() {

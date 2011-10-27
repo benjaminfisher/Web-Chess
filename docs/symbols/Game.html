@@ -193,21 +193,21 @@ ul.inheritsList
 	
 	<li><a href="../symbols/Game.html">Game</a></li>
 	
-	<li><a href="../symbols/Game-bishop.html">Game-bishop</a></li>
-	
-	<li><a href="../symbols/Game-king.html">Game-king</a></li>
-	
-	<li><a href="../symbols/Game-knight.html">Game-knight</a></li>
-	
-	<li><a href="../symbols/Game-pawn.html">Game-pawn</a></li>
-	
 	<li><a href="../symbols/Game-Piece.html">Game-Piece</a></li>
 	
 	<li><a href="../symbols/Game-Player.html">Game-Player</a></li>
 	
-	<li><a href="../symbols/Game-queen.html">Game-queen</a></li>
+	<li><a href="../symbols/Piece%23Game-bishop.html">Piece#Game-bishop</a></li>
 	
-	<li><a href="../symbols/Game-rook.html">Game-rook</a></li>
+	<li><a href="../symbols/Piece%23Game-king.html">Piece#Game-king</a></li>
+	
+	<li><a href="../symbols/Piece%23Game-knight.html">Piece#Game-knight</a></li>
+	
+	<li><a href="../symbols/Piece%23Game-pawn.html">Piece#Game-pawn</a></li>
+	
+	<li><a href="../symbols/Piece%23Game-queen.html">Piece#Game-queen</a></li>
+	
+	<li><a href="../symbols/Piece%23Game-rook.html">Piece#Game-rook</a></li>
 	
 </ul>
 <hr />
@@ -223,6 +223,8 @@ ul.inheritsList
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
+				<br />Version
+					19.5.<br />
 				
 				
 			
@@ -258,6 +260,64 @@ ul.inheritsList
 			
 
 <!-- ============================== properties summary ===================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class Game.">
+					<caption>Field Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Field Attributes</th>
+							<th scope="col">Field Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Game.<b><a href="../symbols/Game.html#.castled">castled</a></b>
+								</div>
+								<div class="description">House keeping variable to track whether a castle took place on the current turn for move logging.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Game.<b><a href="../symbols/Game.html#.change">change</a></b>
+								</div>
+								<div class="description">[Boolean] Controls whether to change the turn.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Game.<b><a href="../symbols/Game.html#.Players">Players</a></b>
+								</div>
+								<div class="description">Array to hold the game's players.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;static&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								Game.<b><a href="../symbols/Game.html#.turnCount">turnCount</a></b>
+								</div>
+								<div class="description">Tracks the number of turns taken for move logging</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
 			
 
 <!-- ============================== methods summary ======================== -->
@@ -351,7 +411,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Game.html#-logMove">logMove</a></b>(piece, start, captured)
 								</div>
-								<div class="description"></div>
+								<div class="description">Log the player's move</div>
 							</td>
 						</tr>
 					
@@ -396,7 +456,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Game.html#-validateSquare">validateSquare</a></b>(square)
 								</div>
-								<div class="description"></div>
+								<div class="description">First checks to see if the contained piece belongs to the current player.</div>
 							</td>
 						</tr>
 					
@@ -458,6 +518,99 @@ ul.inheritsList
 			
 
 <!-- ============================== field details ========================== -->		
+			
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+					<a name=".castled"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">Game.</span><b>castled</b>
+					
+					</div>
+					<div class="description">
+						House keeping variable to track whether a castle took place on the current turn for move logging.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".change"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">Game.</span><b>change</b>
+					
+					</div>
+					<div class="description">
+						[Boolean] Controls whether to change the turn. Set to true if the current move is legal.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".Players"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">Game.</span><b>Players</b>
+					
+					</div>
+					<div class="description">
+						Array to hold the game's players. Players[0] is the current player
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name=".turnCount"> </a>
+					<div class="fixedFont">&lt;static&gt; 
+					
+					
+					<span class="light">Game.</span><b>turnCount</b>
+					
+					</div>
+					<div class="description">
+						Tracks the number of turns taken for move logging
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					
+				
 			
 
 <!-- ============================== method details ========================= -->		
@@ -798,9 +951,9 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
+						Log the player's move
 						
-						
-						
+						<br /><i>Author: </i>J-M Glenn, Modified << B. Fisher 3/23 1830.
 					</div>
 					
 					
@@ -810,22 +963,22 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>piece</b>
+									<span class="light fixedFont">{object}</span> <b>piece</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>The piece that moved</dd>
 							
 								<dt>
-									<b>start</b>
+									<span class="light fixedFont">{string}</span> <b>start</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>The starting square of piece format [CR]</dd>
 							
 								<dt>
-									<b>captured</b>
+									<span class="light fixedFont">{boolean}</span> <b>captured</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>Whether move resulted in a capture</dd>
 							
 							</dl>
 						
@@ -968,9 +1121,9 @@ ul.inheritsList
 					
 					</div>
 					<div class="description">
+						First checks to see if the contained piece belongs to the current player.
 						
-						
-						
+						<br /><i>Author: </i>BF.
 					</div>
 					
 					
@@ -980,10 +1133,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>square</b>
+									<span class="light fixedFont">{object}</span> <b>square</b>
 									
 								</dt>
-								<dd></dd>
+								<dd>li element representing the selected square.</dd>
 							
 							</dl>
 						
@@ -1104,7 +1257,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.2 on Wed Oct 26 2011 17:03:01 GMT-0700 (PDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.3.2 on Thu Oct 27 2011 02:49:48 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>
