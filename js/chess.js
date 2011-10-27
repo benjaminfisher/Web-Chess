@@ -33,31 +33,34 @@ function Game() {
     $(squares).click(function(){validateSquare(this)});
     
     /**
-     * First checks to see if the contained piece belongs to the current player.
+     * First checks to see if the contained piece belongs to the current player. If so, show legal moves for the piece.
+     * Then if a piece is currently selected, check for legal class on square.
      * @author BF
      * @param {object} square li element representing the selected square.
      */
 	function validateSquare(square){
-		
 		/** Contained piece */
 		var kid = occupied(square.id);
 		
-		/** jQuery object of the square */
 		jSquare = $(square);
-        if (kid && kid.color == Game.Players[0].color) { // checks if piece belongs to the current player
+		
+		// checks if piece belongs to the current player
+        if (kid && kid.color == Game.Players[0].color) {
             select(square);
             $(Legal(kid).moves).addClass('legal');
         }
         /** If clicked square is a legal move */
         else if (jSquare.hasClass('legal')) {
-            piece = occupied(selectedSquare.id); // retrieve piece from the selected square
+        	// retrieve piece from the selected square
+            piece = occupied(selectedSquare.id);
             piece.move(square);
             // If the last move did not result in check call the turn change. << B. Fisher
             if (Game.change) turn();
         }
+        // if square is not occupied, or is occupied by a piece that is not capturable than clear the selection.
         else {
-            select(); // if square is not occupied, or is occupied by an opponent piece
-        }			// that is not capturable than clear the selection
+            select();
+        }
 	} // End of validateSqure()
 
     function turn() {
@@ -85,13 +88,15 @@ function Game() {
         $('#turn').html(Game.Players[0].name);
         $('.threat').removeClass('threat');
     } // End of turn()
-
+    
+/**
+ * Function to handle square selection.
+ * Previously selected squares (and any dependant classes) are cleared.
+ * If a square id is passed the square is given the selected class.
+ * If a falsey value is passed than the global variable 'selectedSquare' is cleared.
+ * @author BF
+ */
     function select(square) {
-		/* Function to handle square selection.
-		 * Previously selected squares are de-selected.
-		 * If a square id is passed the square is given the selected class.
-		 * If a falsey value is passed than the selectedSquare variable is cleared.
-		 */
         $('.legal').removeClass('legal');
         $('.selected').removeClass('selected');
         $('.threat').removeClass('threat');
