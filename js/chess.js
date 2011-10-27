@@ -1,3 +1,9 @@
+/**
+ * Master object to control game functionality and contain players and pieces.
+ * @author Benjamin Fisher
+ * @constructor
+ * 
+ */
 function Game() {
     var squares = $('#board ul li'),
         selectedSquare = null,
@@ -163,7 +169,9 @@ function Game() {
     }
     $('#board').data('game', this);
     // ===============================================
-
+/**
+ * @constructor
+ */
     function Player(side) {
         this.color = side;
         this.pieces = [];
@@ -207,7 +215,9 @@ function Game() {
         $('#board img').bind('kill', self.kill);
     }
     //=======================================================
-
+/**
+ * @constructor
+ */
     function Piece(color, start) {
         this.moved = false;
         this.protection = false;
@@ -294,6 +304,11 @@ function Game() {
     }
 	
     // Start piece definitions
+/**
+ * @author BF
+ * @constructor
+ * @extends Piece
+ */
     function pawn(color, start) {
         this.toString = function() {
             return 'pawn';
@@ -331,14 +346,17 @@ function Game() {
             if (prev && prev == 'pawn' && prev.color != self.color) prev.EP = this;
             if (next && next == 'pawn' && next.color != self.color) next.EP = this;
         }
-        // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed.
-        // If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
+        /** Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed. If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher */
         if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
         this._move(destination);
         if (this.row() == this.endRow) this.promote(destination);
 	};
-	
-	// Pawn promotion functionality << B. Fisher 3/06
+/**
+ * Pawn promotion functionality 
+ * @extends pawn
+ * @author BF
+ * @since 3/06/10
+ */
 	pawn.prototype.promote = function(destination) {
 		self = this;
         //Prompt for promotion preference << B. Fisher 3/29 1630
@@ -359,6 +377,10 @@ function Game() {
     };
 	pawn.prototype = new Piece();
 
+/**
+ * @author BF
+ * @constructor
+ */
     function rook(color, start) {
         this.toString = function() {
             return 'rook';
@@ -378,6 +400,10 @@ function Game() {
     }
     rook.prototype = new Piece();
 
+/**
+ * @author BF
+ * @constructor
+ */
     function knight(color, start) {
         this.toString = function() {
             return 'knight';
@@ -406,6 +432,10 @@ function Game() {
     }
     knight.prototype = new Piece();
 
+/**
+ * @author BF
+ * @constructor
+ */
     function bishop(color, start) {
         this.toString = function() {
             return 'bishop';
@@ -423,6 +453,10 @@ function Game() {
     }
     bishop.prototype = new Piece();
 
+/**
+ * @author BF
+ * @constructor
+ */
     function queen(color, start) {
         this.toString = function() {
             return 'queen';
@@ -440,6 +474,10 @@ function Game() {
     }
     queen.prototype = new Piece();
 
+/**
+ * @author BF
+ * @constructor
+ */
     function king(color, start) {
         this.toString = function() {
             return 'king';
