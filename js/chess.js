@@ -6,7 +6,7 @@
  * 
  */
 
-function Game() {
+function Game(whitePlayersName, blackPlayersName) {
     var squares = $('#board ul li'),
         selectedSquare = null,
         gameOver = false,
@@ -340,9 +340,10 @@ function Game() {
             else return true;
        },
        footprint: function() {
-            var row = this.position[1],
+            var row = this.position[1] * 1,
                 column = cLabels.indexOf(this.position[0]),
                 square, squares = new Array();
+                
             for (var c = column - 1; c <= column + 1; c++) {
                 for (var r = row - 1; r <= row + 1; r++) {
                     square = cLabels[c] + r;
@@ -359,7 +360,7 @@ function Game() {
  * @extends Game
  * @param {string} side The color of the Player's pieces
  */
-    function Player(side) {
+    function Player(name, side) {
     	/** The color of the Player's pieces */
         this.color = side;
         /** Array to hold the Player's pieces */
@@ -367,7 +368,7 @@ function Game() {
         /** Array to hold the Player's pawns */
         this.pawns = new Array();
         /** {string} Players name (displayed in the dashboard) */
-        this.name = prompt(this.color[0].toUpperCase() + this.color.substr(1) + " side's name:", 'Player ' + ($(Game.Players).size() + 1));
+        this.name = (name) ? name : 'Player ' + ($(Game.Players).size() + 1)
         if (!this.name) this.name = 'Player ' + ($(Game.Players).size() + 1);
         
         /** The row where the Player's piece start the game 
@@ -790,8 +791,8 @@ function Game() {
         endGame(1);
     });
 
-    Game.Players.push(new Player('white'));
-    Game.Players.push(new Player('black'));
+    Game.Players.push(new Player(whitePlayersName, 'white'));
+    Game.Players.push(new Player(blackPlayersName, 'black'));
     Game.Players[0].activate();
 	
     $('#turn').html(Game.Players[0].name);

@@ -145,6 +145,14 @@ img{z-index:10;}
 	z-index: 9000;
 }
 
+#cover form{
+	color: #CCC;
+	background: #333;
+	height: 200px;
+	padding-top: 100px;
+	width: 330px;
+}
+
 /* Styles for classes */
 .label{
 	position:absolute;

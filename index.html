@@ -104,7 +104,16 @@
 				</ul>
 				
 				<!-- Cover prevents interaction when the game is over -->
-				<div id="cover" class="hidden"></div>
+				<div id="cover">
+					<form action="">
+						<label for="whiteName">First Player's Name: </label>
+						<input id="whiteName" name="whiteName" placeholder="Player 1" type="text" />
+						
+						<label for="blackName">Second Player's Name: </label>
+						<input id="blackName" name="blackName" placeholder="Player 2" type="text" />
+						<button id="submit">Submit</button>
+					</form>
+				</div>
 			</div> <!-- End of Board -->
 
 			<div id="prison">
@@ -174,6 +183,18 @@
 		<script src="lib/jquery/jquery-1.4.4.min.js"></script>
 		<script src="lib/jquery/jquery-ui-1.8.10.custom.min.js" ></script>
 		<script src="js/chess.js"></script>
-		<script>$(function(){new Game();})</script>
+		<script>
+			$(function(){
+				$('#submit').click(function(){
+					var player1 = $('#whiteName').val(),
+					player2 = $('#blackName').val();
+					
+					$('#cover').addClass('hidden');
+					
+					new Game(player1, player2);
+				})
+			})
+		
+		</script>
 	</body>
 </html>
