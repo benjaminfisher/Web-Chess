@@ -30,6 +30,7 @@ img{z-index:10;}
 	#resign{float:left;}
 
 /* Styles for move logging table */
+
 #log {
 	font: 14px Arial, Helvetica, sans-serif;
 	background-color: transparent;
@@ -119,8 +120,8 @@ img{z-index:10;}
 		position:relative;
 	}
 	
-	#board ul:nth-child(odd) li:nth-child(odd){background-color:rgba(0,0,0,0.5);}
-	#board ul:nth-child(even) li:nth-child(even){background-color:rgba(0,0,0,0.5);}
+	#board ul:nth-child(odd) li:nth-child(odd),
+	#board ul:nth-child(even) li:nth-child(even) { background-color:rgba(0,0,0,0.5); }
 	
 	#board img.active:hover{
 		border:1px solid red;
@@ -153,13 +154,25 @@ img{z-index:10;}
 	width: 330px;
 }
 
-/* Styles for classes */
-.label{
-	position:absolute;
-	bottom:0px;
+#board span.label{
+	bottom:1px;
+	color: #222222;
+	font-size:0.8em;
 	left:2px;
+	position:absolute;
 	z-index:100;
+	
+	text-shadow: -1px -1px 0px #e0e0e0;
+	filter: dropshadow(color=#e0e0e0, offx=-1, offy=-1);
 }
+	#board ul:nth-child(odd) li:nth-child(odd) span.label,
+	#board ul:nth-child(even) li:nth-child(even) span.label {
+		color: #C0C0C0;
+		text-shadow: 1px 1px 0px #333;
+		filter: dropshadow(color=#CCC, offx=-1, offy=-1);
+	}
+
+/* Styles for classes */
 
 .selected{
 	background-color:silver !important;

@@ -111,7 +111,7 @@
 						
 						<label for="blackName">Second Player's Name: </label>
 						<input id="blackName" name="blackName" placeholder="Player 2" type="text" />
-						<button id="submit">Submit</button>
+						<button type="submit">Submit</button>
 					</form>
 				</div>
 			</div> <!-- End of Board -->
@@ -184,15 +184,19 @@
 		<script src="lib/jquery/jquery-ui-1.8.10.custom.min.js" ></script>
 		<script src="js/chess.js"></script>
 		<script>
-			$(function(){
-				$('#submit').click(function(){
-					var player1 = $('#whiteName').val(),
-					player2 = $('#blackName').val();
-					
-					$('#cover').addClass('hidden');
-					
-					new Game(player1, player2);
-				})
+			var form = $('form');
+			
+			form.submit(function(event){
+				event.preventDefault();
+				
+				$form = $(this)			;	
+				$form.fadeOut(function(){
+					$form.remove();
+					$('#cover').hide();
+				});
+
+				var names = $($form, 'input').val();
+				console.log(names);
 			})
 		
 		</script>
