@@ -6,7 +6,7 @@
  * 
  */
 
-function Game(whitePlayersName, blackPlayersName) {
+function Game() {
     var squares = $('#board ul li'),
         selectedSquare = null,
         gameOver = false,
@@ -20,6 +20,14 @@ function Game(whitePlayersName, blackPlayersName) {
     Game.change = false;
     /** House keeping variable to track whether a castle took place on the current turn for move logging. */
     Game.castled = null;
+    
+    Game.init = function(){
+		Game.Players.push(new Player(whitePlayersName, 'white'));
+		Game.Players.push(new Player(blackPlayersName, 'black'));
+		Game.Players[0].activate();
+		
+		$('#turn').html(Game.Players[0].name);
+	}
     
 //=======================================================
 
@@ -121,9 +129,7 @@ function Game(whitePlayersName, blackPlayersName) {
  * @param {string} color The pawn's color
  * @param {string} start Starting square of the pawn in format [CR]
  */
-    function pawn(color, start) {
-    	this.toString = function() { return 'pawn'; };
-    	
+    function pawn(color, start) {    	
         Piece.call(this, color, start);
 
         this.type = "pawn";
@@ -138,6 +144,10 @@ function Game(whitePlayersName, blackPlayersName) {
         this.endRow = (color == 'white') ? 8 : 1;
     }
 	pawn.prototype = {
+		constructor: pawn,
+		superclass: Piece.prototype,
+		toString: function() { return 'pawn'; },
+		
 		footprint: function() {
 			self = this;
 			
@@ -151,6 +161,7 @@ function Game(whitePlayersName, blackPlayersName) {
 	        ids.push(cLabels[cLabels.indexOf(col) + 1] + (row + this.inc));
 	        return ids;
 		},
+		
 		move: function(destination) {
 			self = this;
 			var col = this.position[0], row = this.position[1];
@@ -167,6 +178,7 @@ function Game(whitePlayersName, blackPlayersName) {
 	        this._move(destination);
 	        if (this.row == this.endRow) this.promote(destination);
         },
+        
         /**
 		 * Pawn promotion functionality 
 		 * @method pawn.prototype
@@ -199,13 +211,13 @@ function Game(whitePlayersName, blackPlayersName) {
  * @member Piece.prototype
  */
     function rook(color, start) {
-        this.toString = function() { return 'rook'; };
         Piece.call(this, color, start);
         
         var self = this;
         this.type = "rook";
     }
     rook.prototype = {
+    	toString: function() { return 'rook'; },
     	move: function(destination) {
 	    	this._move(destination);
     	},
@@ -223,13 +235,13 @@ function Game(whitePlayersName, blackPlayersName) {
  * @member Piece.prototype
  */
     function knight(color, start) {
-        this.toString = function() { return 'knight'; }
         Piece.call(this, color, start);
         
         var self = this;
         this.type = "knight";
     }
     knight.prototype = {
+    	toString: function() { return 'knight'; },
     	move: function(destination) {
             this._move(destination);
         },
@@ -256,14 +268,13 @@ function Game(whitePlayersName, blackPlayersName) {
  * @member Piece.prototype
  */
     function bishop(color, start) {
-        this.toString = function() { return 'bishop'; };
-        
         Piece.call(this, color, start);
         var self = this;
         
         this.type = "bishop";
     }
     bishop.prototype = {
+    	toString: function() { return 'bishop'; },
     	move: function(destination) { this._move(destination); },
     	footprint: function() {
             return [findDiagonal(this.position, 1, 1), findDiagonal(this.position, 1, -1), 
@@ -277,14 +288,12 @@ function Game(whitePlayersName, blackPlayersName) {
  * @member Piece.prototype
  */
     function queen(color, start) {
-        this.toString = function() {
-            return 'queen';
-        };
         Piece.call(this, color, start);
         var self = this;
         this.type = "queen";
     }
     queen.prototype = {
+    	toString: function() { return 'rook'; },
     	move: function(destination) { this._move(destination) },
     	footprint: function() {
     		var row = this.position[1],
@@ -302,13 +311,13 @@ function Game(whitePlayersName, blackPlayersName) {
  * @member Piece.prototype
  */
     function king(color, start) {
-        this.toString = function() { return 'king'; };
         Piece.call(this, color, start);
         var self = this;
         this.type = "king";
         this.inCheck = false;
     }
     king.prototype = {
+    	toString: function() { return 'king'; },
     	move: function(destination) {
             // Evaluate if king is castling. << B. Fisher
             if (this.castle() && (destination.id.match('G') || destination.id.match('C'))) {
@@ -791,12 +800,6 @@ function Game(whitePlayersName, blackPlayersName) {
         endGame(1);
     });
 
-    Game.Players.push(new Player(whitePlayersName, 'white'));
-    Game.Players.push(new Player(blackPlayersName, 'black'));
-    Game.Players[0].activate();
-	
-    $('#turn').html(Game.Players[0].name);
-	
     $(squares).click(function(){
     	var kid = occupied(this.id);
 		$square = $(this);
@@ -820,3 +823,7 @@ function Game(whitePlayersName, blackPlayersName) {
         }
 	});
 };
+
+Game.prototype = {
+	init: function
+}

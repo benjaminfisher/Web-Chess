@@ -183,21 +183,8 @@
 		<script src="lib/jquery/jquery-1.4.4.min.js"></script>
 		<script src="lib/jquery/jquery-ui-1.8.10.custom.min.js" ></script>
 		<script src="js/chess.js"></script>
-		<script>
-			var form = $('form');
-			
-			form.submit(function(event){
-				event.preventDefault();
-				
-				$form = $(this)			;	
-				$form.fadeOut(function(){
-					$form.remove();
-					$('#cover').hide();
-				});
-
-				var names = $($form, 'input').val();
-				console.log(names);
-			})
+		<script>			
+			$(function(){ new Game($(names[0]).val(), $(names[1]).val()); });
 		
 		</script>
 	</body>
