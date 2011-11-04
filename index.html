@@ -13,11 +13,8 @@
 		<link rel="stylesheet" type="text/css" href="CSS/style.css" />
 		<link rel="stylesheet" type="text/css" href="CSS/jquery.ui.base.css" />
 		
-		<script src="js/libs/modernizr-2.0.min.js"></script>
+		<script src="lib/head.min.js"></script>
 		
-		<!--[if lt IE 9]>
-			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
 	</head>
 	<body>
 		<div id="wrapper">
@@ -104,15 +101,7 @@
 				</ul>
 				
 				<!-- Cover prevents interaction when the game is over -->
-				<div id="cover">
-					<form action="">
-						<label for="whiteName">First Player's Name: </label>
-						<input id="whiteName" name="whiteName" placeholder="Player 1" type="text" />
-						
-						<label for="blackName">Second Player's Name: </label>
-						<input id="blackName" name="blackName" placeholder="Player 2" type="text" />
-						<button type="submit">Submit</button>
-					</form>
+				<div id="cover" class="hidden">
 				</div>
 			</div> <!-- End of Board -->
 
@@ -180,12 +169,9 @@
 			</div> <!-- End of Dash -->
 		</div> <!-- End of Wrapper -->
 		
-		<script src="lib/jquery/jquery-1.4.4.min.js"></script>
-		<script src="lib/jquery/jquery-ui-1.8.10.custom.min.js" ></script>
-		<script src="js/chess.js"></script>
 		<script>			
-			$(function(){ new Game($(names[0]).val(), $(names[1]).val()); });
-		
+			head.js("lib/jquery/jquery-1.4.4.min.js", "lib/jquery/jquery-ui-1.8.10.custom.min.js", 'js/chess.js',
+			function(){ new Game()});
 		</script>
 	</body>
 </html>

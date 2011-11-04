@@ -5,12 +5,12 @@
  * @constructor
  * 
  */
-
 function Game() {
     var squares = $('#board ul li'),
         selectedSquare = null,
         gameOver = false,
-        cLabels = "ABCDEFGH";
+        cLabels = "ABCDEFGH",
+        self = this;
 
 	/** Tracks the number of turns taken for move logging */
     Game.turnCount = 1;
@@ -21,15 +21,77 @@ function Game() {
     /** House keeping variable to track whether a castle took place on the current turn for move logging. */
     Game.castled = null;
     
-    Game.init = function(){
-		Game.Players.push(new Player(whitePlayersName, 'white'));
-		Game.Players.push(new Player(blackPlayersName, 'black'));
-		Game.Players[0].activate();
-		
-		$('#turn').html(Game.Players[0].name);
-	}
+    $(squares).click(self.square_click(this));
     
 //=======================================================
+
+/**
+ * @constructor
+ * @extends Game
+ * @param {string} side The color of the Player's pieces
+ */
+    this.Player  = function(name, side){
+    	/** The color of the Player's pieces */
+        this.color = side;
+        /** Array to hold the Player's pieces */
+        this.pieces = new Array();
+        /** Array to hold the Player's pawns */
+        this.pawns = new Array();
+        /** {string} Players name (displayed in the dashboard) */
+        this.name = (name) ? name : 'Player ' + ($(Game.Players).size() + 1)
+        if (!this.name) this.name = 'Player ' + ($(Game.Players).size() + 1);
+        
+        /** The row where the Player's piece start the game 
+         	White Player starts on Row 1, Black on row 8*/
+        var startRow = (this.color == 'white') ? 1 : 8,
+        	// Pawns start on the next medial row
+            pawnRow = (this.color == 'white') ? 2 : 7;
+            
+        for (p = 0; p <= 7; p++) {
+            this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
+        }
+        
+        /** When the player is created its pieces are placed on the board and loaded into the appropriate array */
+        this.pieces.push(new rook(this.color, "A" + startRow));
+        this.pieces.push(new rook(this.color, "H" + startRow));
+        this.pieces.push(new knight(this.color, "B" + startRow));
+        this.pieces.push(new knight(this.color, "G" + startRow));
+        this.pieces.push(new bishop(this.color, "C" + startRow));
+        this.pieces.push(new bishop(this.color, "F" + startRow));
+        this.pieces.push(new queen(this.color, "D" + startRow));
+        this.King = new king(this.color, "E" + startRow);
+        var self = this;
+        
+        //Remove a piece from this players piece array when captured << B. Fisher 3/3 2100
+        // Revised to function with seperate pieces and pawns arrays << B. Fisher 3/14 2030
+        $('#board img').bind('kill', self.kill);
+        
+	}; // End of Player() definition
+    
+    this.Player.prototype = {
+    	activate: function(){
+	    	//Add active status to  pawns << B. Fisher 5/6 1700
+	        $(this.pawns).each(function() {
+	            $(this.image).addClass('active');
+	        });
+	        //Add active status to pieces << B. Fisher 5/6 1700
+	        $.each(this.pieces, function() {
+	            $(this.image).addClass('active');
+	        });
+	        //Add active status to King << B. Fisher 5/6 1700
+	        $(this.King.image).addClass('active');
+        },
+        kill: function() {
+            var piece = callPiece(this),
+                array, index;
+                
+            if (piece) array = (piece.type == 'pawn') ? self.pawns : self.pieces;
+            index = $.inArray(piece, array);
+            if (index > -1) array.splice(index, 1);
+        },
+    }
+
+/*** End of Player() methods ***/
 
 /**
  * Parent class of pieces and pawns
@@ -364,73 +426,6 @@ function Game() {
     }
     // End piece definitions
 
-/**
- * @constructor
- * @extends Game
- * @param {string} side The color of the Player's pieces
- */
-    function Player(name, side) {
-    	/** The color of the Player's pieces */
-        this.color = side;
-        /** Array to hold the Player's pieces */
-        this.pieces = new Array();
-        /** Array to hold the Player's pawns */
-        this.pawns = new Array();
-        /** {string} Players name (displayed in the dashboard) */
-        this.name = (name) ? name : 'Player ' + ($(Game.Players).size() + 1)
-        if (!this.name) this.name = 'Player ' + ($(Game.Players).size() + 1);
-        
-        /** The row where the Player's piece start the game 
-         	White Player starts on Row 1, Black on row 8*/
-        var startRow = (this.color == 'white') ? 1 : 8,
-        	// Pawns start on the next medial row
-            pawnRow = (this.color == 'white') ? 2 : 7;
-            
-        for (p = 0; p <= 7; p++) {
-            this.pawns.push(new pawn(this.color, cLabels[p] + pawnRow));
-        }
-        
-        /** When the player is created its pieces are placed on the board and loaded into the appropriate array */
-        this.pieces.push(new rook(this.color, "A" + startRow));
-        this.pieces.push(new rook(this.color, "H" + startRow));
-        this.pieces.push(new knight(this.color, "B" + startRow));
-        this.pieces.push(new knight(this.color, "G" + startRow));
-        this.pieces.push(new bishop(this.color, "C" + startRow));
-        this.pieces.push(new bishop(this.color, "F" + startRow));
-        this.pieces.push(new queen(this.color, "D" + startRow));
-        this.King = new king(this.color, "E" + startRow);
-        var self = this;
-        
-        this.kill = function() {
-            var piece = callPiece(this),
-                array, index;
-            if (piece) array = (piece.type == 'pawn') ? self.pawns : self.pieces;
-            index = $.inArray(piece, array);
-            if (index > -1) array.splice(index, 1);
-        };
-        
-        //Remove a piece from this players piece array when captured << B. Fisher 3/3 2100
-        // Revised to function with seperate pieces and pawns arrays << B. Fisher 3/14 2030
-        $('#board img').bind('kill', self.kill);
-	}; // End of Player() definition
-    
-    Player.prototype = {
-    	activate: function(){
-	    	//Add active status to  pawns << B. Fisher 5/6 1700
-	        $(this.pawns).each(function() {
-	            $(this.image).addClass('active');
-	        });
-	        //Add active status to pieces << B. Fisher 5/6 1700
-	        $.each(this.pieces, function() {
-	            $(this.image).addClass('active');
-	        });
-	        //Add active status to King << B. Fisher 5/6 1700
-	        $(this.King.image).addClass('active');
-       }
-    }
-
-/*** End of Player() methods ***/
-
     function Checkmate(player) {
         //if players king is in check
         // if checking piece is vulnerable
@@ -687,21 +682,7 @@ function Game() {
             end: piece
         };
     };
-    // Checks the square ID for a occupying piece.
-    // If one is found return the piece, if not return false. << B. Fisher
-
-    function occupied(square_ID) {
-        if (typeof(square_ID) != 'string') return false;
-        if (square_ID.match('#') <= 0) square_ID = '#' + square_ID;
-        var kid = $(square_ID).children('img');
-        if (kid.length > 0) {
-            kid = kid[0];
-            return callPiece(kid);
-        }
-        else {
-            return false;
-        }
-    };
+    
     // Returns a properly formated CSS square ID (for jQuery selection)
     // unless the row and/or column are beyound the edge of the board. << B. Fisher
 
@@ -799,10 +780,40 @@ function Game() {
     $('#resign').button().click(function() {
         endGame(1);
     });
+    
+    self.init();
+};
 
-    $(squares).click(function(){
-    	var kid = occupied(this.id);
-		$square = $(this);
+Game.prototype = {
+	init: function(){
+		var names = this.get_player_names();
+		
+		Game.Players.push(new this.Player(names[0], 'white'));
+		Game.Players.push(new this.Player(names[1], 'black'));
+		Game.Players[0].activate();
+		
+		$('#turn').html(Game.Players[0].name);
+	},
+	
+	/** Checks the square ID for a occupying piece.
+	 * @author BF
+	 * @returns If square is occupied return the piece, else return false
+	 */
+    occupied: function(square_ID) {
+        if (typeof(square_ID) != 'string') return false;
+        if (square_ID.match('#') <= 0) square_ID = '#' + square_ID;
+        var kid = $(square_ID).children('img');
+        if (kid.length > 0) {
+            kid = kid[0];
+            return callPiece(kid);
+        }
+        else {
+            return false;
+        }
+    },
+	square_click: function(square){
+    	var kid = this.occupied(square.id);
+		$square = $(square);
 		
 		// checks if piece belongs to the current player
         if (kid && kid.color == Game.Players[0].color) {
@@ -819,11 +830,10 @@ function Game() {
         }
         // if square is not occupied, or is occupied by a piece that is not capturable than clear the selection.
         else {
-            select();
+            Game.select();
         }
-	});
-};
-
-Game.prototype = {
-	init: function
+    },
+    get_player_names: function(){
+    	return ['Player1, Player2'];
+    }
 }
