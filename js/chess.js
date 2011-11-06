@@ -588,24 +588,6 @@ function Game() {
     } // === End of turn() ===//
     
 /**
- * Function to handle square selection.
- * Previously selected squares (and any dependant classes) are cleared.
- * If a square id is passed the square is given the selected class.
- * If a falsey value is passed than the global variable 'selectedSquare' is cleared.
- * @author BF
- */
-    function select(square) {
-        $('.legal').removeClass('legal');
-        $('.selected').removeClass('selected');
-        $('.threat').removeClass('threat');
-        if (square) {
-            selectedSquare = square;
-            $(selectedSquare).addClass('selected');
-        }
-        else { selectedSquare = null; }
-    } // === End of select() ===//
-    
-/**
  * Log the player's move
  * @author J-M Glenn, Modified << B. Fisher 3/23 1830
  * @param {object} piece The piece that moved
@@ -811,6 +793,24 @@ Game.prototype = {
             return false;
         }
     },
+    /**
+ * Function to handle square selection.
+ * Previously selected squares (and any dependant classes) are cleared.
+ * If a square id is passed the square is given the selected class.
+ * If a falsey value is passed than the global variable 'selectedSquare' is cleared.
+ * @author BF
+ */
+    select: function(square) {
+        $('.legal').removeClass('legal');
+        $('.selected').removeClass('selected');
+        $('.threat').removeClass('threat');
+        if (square) {
+            selectedSquare = square;
+            $(selectedSquare).addClass('selected');
+        }
+        else { selectedSquare = null; }
+    }, // === End of select() ===//
+    
 	square_click: function(square){
     	var kid = this.occupied(square.id);
 		$square = $(square);
@@ -830,7 +830,7 @@ Game.prototype = {
         }
         // if square is not occupied, or is occupied by a piece that is not capturable than clear the selection.
         else {
-            Game.select();
+            this.select();
         }
     },
     get_player_names: function(){
