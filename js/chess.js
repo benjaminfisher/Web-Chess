@@ -242,7 +242,6 @@ function Game() {
 		    if (type == 'king') {
 		        // Check for castle legality and add king double step if true. << B. Fisher
 		        if (piece.castle()) {
-chess.js:244 Uncaught TypeError: Object pawn has no method 'castle'
 		            rook = occupied('#H' + rNum);
 		            
 		            // Kingside castle squares are unoccupied and unthreatened, and the kingside rook has not moved.
