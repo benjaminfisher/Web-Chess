@@ -12,7 +12,7 @@ function Game() {
 	
 	/** Tracks the number of turns taken for move logging */
     Game.turnCount = 1;
-    /** {Array} to hold the game's players. Players[0] is the current player */
+    /** {array} to hold the game's players. Players[0] is the current player */
     Game.Players = new Array();
     /** {boolean} Controls whether to change the turn. Set to true if the current move is legal. */
     Game.change = false;
@@ -34,6 +34,7 @@ function Game() {
 /**
  * @constructor
  * @extends Game
+ * @param {string} name The player's name
  * @param {string} side The color of the Player's pieces
  */
     Player  = function(name, side){
@@ -92,14 +93,14 @@ function Game() {
 	        $(this.King.image).addClass('active');
         },
         
-        /**
-         * Remove captured or promoted pieces from their Players piece or pawn array.
-         * @param piece the piece to be removed
-         * @param player the piece's player
-         * @param array the appropriate array
-         * @param index location of the piece or pawn in the array
-         * @author BF
-         */
+/**
+ * Remove captured or promoted pieces from their Players piece or pawn array.
+ * @param piece the piece to be removed
+ * @param player the piece's player
+ * @param array the appropriate array
+ * @param index location of the piece or pawn in the array
+ * @author BF
+ */
         kill: function() {
             var piece = Game.callPiece(this),
             	player = (Game.Players[0].color == piece.color) ? Game.Players[0] : Game.Players[1],
@@ -791,18 +792,22 @@ Game.select = function(square) {
 } // === End of select() ===//
 
 /**
- * If king is not in check, But the current player has no legal moves return true.
+ * If king is not in check, but the current player has no legal moves return true.
  * @author BF
  */
 Game.Stalemate = function() {
     var legalMoves = '';
+    
     $.each(Game.Players[0].pieces, function() {
         legalMoves += this.Legal(this).moves;
     });
+    
     $.each(Game.Players[0].pawns, function() {
         legalMoves += this.Legal(this).moves;
     });
+    
     legalMoves += Game.Players[0].King.Legal(Game.Players[0].King).moves;
+    
     //console.log('Stalemate moves: ' + legalMoves);
     if (legalMoves.length === 0 && !Game.Players[0].King.inCheck) return true;
     else return false;
