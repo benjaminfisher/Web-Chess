@@ -115,3 +115,6 @@ v19.2 - Removed code to hide elements with a class of .hidden, and added visibil
 		Corrected issues with the div#cover and prison that resulted from this change. << B. Fisher 101311
 
 v19.5 - Adding Test environment and documentation files << B. Fisher 102511
+
+v19.6 - Moved documentation files to a seperate repo, hope to intigrate with webchess wiki page.
+		Current round of optimization complete; all dependant methods moved outside of constructors. << B. Fisher 110811
