@@ -102,10 +102,10 @@ function Game() {
  * @author BF
  */
         kill: function() {
-            var piece = Game.callPiece(this),
+            var index,
+            	piece = Game.callPiece(this),
             	player = (Game.Players[0].color == piece.color) ? Game.Players[0] : Game.Players[1],
                 array = (piece.type == 'pawn') ? player.pawns : player.pieces;
-                index;
                 
             index = $.inArray(piece, array);
             if (index > -1) array.splice(index, 1);
@@ -237,7 +237,7 @@ function Game() {
 		                    else legalIDs += Game.writeID(this[0], this[1]);
 		                }
 		                // Check for a pawn in EP and whether its column matches the move
-		                else if (child.EP && child.EP.col == this[0]) legalIDs += Game.writeID(this[0], this[1]);
+		                else if (child.EP && child.EP.position[0] == this[0]) legalIDs += Game.writeID(this[0], this[1]);
 		                // add vertical moves
 		                else if (C == this[0]) legalIDs += Game.vector(child.position, this, child.color, false).list;
 		            }
@@ -331,7 +331,8 @@ function Game() {
 	
 	pawn.prototype.move = function(destination) {
 		self = this;
-		var col = this.position[0], row = this.position[1];
+		var col = this.position[0],
+			row = this.position[1];
 		
         // Evaluate whether pawn has passed an opponent pawn on opening double step << B. Fisher
         if (!this.moved && (destination.id.match(4) || destination.id.match(5))) {
@@ -340,9 +341,11 @@ function Game() {
             if (prev && prev == 'pawn' && prev.color != self.color) prev.EP = this;
             if (next && next == 'pawn' && next.color != self.color) next.EP = this;
         }
-        // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed. If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
+        // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed.
+        // If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
         if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
         	this._move.call(this, destination);
+        	
         if (this.row == this.endRow) this.promote(destination);
 	};
 	
@@ -356,9 +359,11 @@ function Game() {
 		self = this;
         //Prompt for promotion preference << B. Fisher 3/29 1630
         var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
+        
         // Remove the pawn's image, and clear it from the Player's pieces array.
         $(self.image).remove();
         $(self).trigger('remove');
+        
         // Place the promotion piece, add it to the pieces array and append the promotion
         // to the logged move. << B. Fisher 3/29 1630
         if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
