@@ -502,13 +502,13 @@ function Game() {
             if (this.castle() && (destination.id.match('G') || destination.id.match('C'))) {
                 // If king is moving to column 'G' (kingside) rook is on column 'H'
                 if (destination.id.match('G')) {
-                    var rook = Game.callPiece($('#H' + this.row).children('img')[0]),
+                    var rook = Game.callPiece($('#H' + this.position[1]).children('img')[0]),
                         dest = destination.previousElementSibling;
                     Game.castled = "king";
                 }
                 // If king is moving to column 'C' (queenside) rook is on column 'A'
                 else if (destination.id.match('C')) {
-                    var rook = Game.callPiece($('#A' + this.row).children('img')[0]),
+                    var rook = Game.callPiece($('#A' + this.position[1]).children('img')[0]),
                         dest = destination.nextElementSibling;
                     Game.castled = "queen";
                 }
