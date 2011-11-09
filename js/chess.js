@@ -75,6 +75,10 @@ function Game() {
 	}; // End of Player() definition
     
     Player.prototype = {
+    	/**
+    	 * Add the active class to all pieces and pawns of the current player
+    	 * @author BF
+    	 */
     	activate: function(){
 	    	//Add active status to  pawns << B. Fisher 5/6 1700
 	        $(this.pawns).each(function() {
@@ -87,12 +91,21 @@ function Game() {
 	        //Add active status to King << B. Fisher 5/6 1700
 	        $(this.King.image).addClass('active');
         },
+        
+        /**
+         * Remove captured or promoted pieces from their Players piece or pawn array.
+         * @param piece the piece to be removed
+         * @param player the piece's player
+         * @param array the appropriate array
+         * @param index location of the piece or pawn in the array
+         * @author BF
+         */
         kill: function() {
             var piece = Game.callPiece(this),
             	player = (Game.Players[0].color == piece.color) ? Game.Players[0] : Game.Players[1],
-                array, index;
+                array = (piece.type == 'pawn') ? player.pawns : player.pieces;
+                index;
                 
-            if (piece) array = (piece.type == 'pawn') ? player.pawns : player.pieces;
             index = $.inArray(piece, array);
             if (index > -1) array.splice(index, 1);
         },
