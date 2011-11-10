@@ -19,7 +19,7 @@ function Game() {
     /** House keeping variable to track whether a castle took place on the current turn for move logging. */
     Game.castled = null;
     
-    Game.cLabels = "ABCDEFGH",
+    Game.cLabels = "ABCDEFGH";
     
     $('#board ul li').click(function(){
     	Game.square_click(this);
@@ -28,6 +28,8 @@ function Game() {
     $('#resign').button().click(function() {
         Game.endGame(1);
     });
+    
+    Game.$cover = $('#cover');
     
 //=======================================================
 
@@ -158,14 +160,16 @@ function Game() {
             // Check to see if move results in check << B. Fisher 3/07 2030
             if (this.type != 'king' && Game.check(Game.Players[0].King.position, Game.Players[1], capturedPiece)) {
                 $('.legal').removeClass('legal');
+                
                 // Move it to the place of the piece it's capturing
                 $(this.image).appendTo('#' + this.position);
                 
                 // Capturing would result in check, put the piece back and alert the player << B. Fisher
                 if (capturedPiece)(capturedPiece.image).appendTo(capturedPiece.position);
-                alert('Move results in check.');
                 
                 $('#' + this.position).removeClass('selected');
+                $('#' + Game.Players[0].King.position).addClass('threat');
+                
                 Game.change = false;
             }
             else {
@@ -558,10 +562,31 @@ Game.prototype = {
 		Game.Players[0].activate();
 		
 		$('#turn').html(Game.Players[0].name);
+		
+		//Game.$cover.hide();
 	},
 	
 	get_player_names: function(){
-		return ['Player1', 'Player2'];
+		var names = new Array();
+		Game.$cover.fadeIn();
+		
+		form = $('<form><label for="Player1">Player 1</label>' + 
+				'<input id="Player1" placeholder="Name..." name="Player1"><br />' +
+				'<label for="Player2">Player 2</label><input id="Player2" placeholder="Name..." name="Player2">' +
+				'<br /><button type="submit">Submit</button>');
+				
+		$(form).submit(function(event){
+			event.preventDefault();
+			
+			names.push($('#Player1').val());
+			names.push($('#Player2').val());
+			
+		});
+		$(form).appendTo(Game.$cover);
+		$('#Player1').focus();
+		
+		console.log('names');
+		return names;
 	},
 }
 
@@ -586,6 +611,7 @@ Game.check = function(square, player, ignore) {
             if (ids.length > 0 && ids.match(square)) chk.push(this);
         };
     });
+    
     // Evaluate player's pawn capture squares. << B. Fisher 3/14 2130
     $(player.pawns).each(function() {
         var pawn = this;
@@ -636,7 +662,7 @@ Game.endGame = function(gameOver) {
         //			$("#board img." + Game.Players[0].color).draggable("enable");
     }
 
-    $('#cover').removeClass("hidden");
+    this.$cover.slideDown('slow');
     $('#resign').button('disable');
 } // End of endGame()
 
@@ -847,6 +873,9 @@ Game.turn = function(){
     $('#Dash').css('background', Game.Players[0].color);
     $('#turn').html(Game.Players[0].name);
     $('.threat').removeClass('threat');
+    
+    /** Display if current Player's king is threatened **/
+    if (Game.Players[0].King.inCheck) $('#' + Game.Players[0].King.position).addClass("threat");
 } // === End of turn() ===//
 
 /**

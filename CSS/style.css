@@ -34,7 +34,7 @@ img{z-index:10;}
 #log {
 	font: 14px Arial, Helvetica, sans-serif;
 	background-color: transparent;
-	border: 2px outset grey;
+	border: 2px outset gray;
 	color: #FFF;
 	overflow-y: auto;
 	height: 559px;
@@ -142,7 +142,7 @@ img{z-index:10;}
 	left: 7px;
 	height: 616px;
 	width: 616px;
-	background-color: rgba(50,50,50,0.3);
+	background-color: rgba(50,50,50,0.5);
 	z-index: 9000;
 }
 
@@ -150,9 +150,24 @@ img{z-index:10;}
 	color: #CCC;
 	background: #333;
 	height: 200px;
+	margin: 50% auto;
 	padding-top: 100px;
+	position: relative;
+	top: -150px;
 	width: 330px;
+	
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	
+	-webkit-box-shadow: 0px 0px 20px 1px #FFFFFF;
+	-moz-box-shadow: 0px 0px 20px 1px #FFFFFF;
+	box-shadow: 0px 0px 20px 1px #FFFFFF;
 }
+
+#cover form button { position: relative; left:40%; top: 2em; }
+#cover form label { margin-left: 15%; }
+#cover form input { margin-left: 1em; }
 
 #board span.label{
 	bottom:1px;
