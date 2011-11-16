@@ -35,6 +35,7 @@ function Game() {
 
 /**
  * @constructor
+ * @class
  * @extends Game
  * @param {string} name The player's name
  * @param {string} side The color of the Player's pieces
@@ -119,6 +120,7 @@ function Game() {
 /**
  * Parent class of pieces and pawns
  * @class Represents a chess piece (or pawn)
+ * @extends Game
  * @param {string} color The color (side) of the Piece
  * @param {string} start The starting position of the Piece in format [CR]
  */
@@ -137,9 +139,16 @@ function Game() {
         	.data('piece', this)// Adds piece data to the images;
         	.appendTo("#" + this.position)
     }
+    
+/**
+ * @extends Piece
+ */
     Piece.prototype = {
     	constructor: Piece,
     	
+    	/**
+    	 * Evaluate whether a piece is protected by another piece of the same color
+    	 */
     	evalProtect: function(child) {
             var legal = this.Legal(child);
        },
@@ -212,7 +221,9 @@ function Game() {
        },
        
 /**
- * Returns array of the ids of squares where a piece can move
+ * @param {Piece} child piece
+ * @returns {Array} Capturable piece objects
+ * @returns {String} .moves comma seperated list of squares where the -child- can legally move.
  * @author BF
  */
 		Legal: function(child) {
@@ -598,7 +609,7 @@ Game.callPiece = function(image) {
 /**
  * @param square The location of the threatened piece (usually a king)
  * @param player The opposing player. Player's piece and pawn moves are iterated for threats to the square.
- * @param ignore an array of piece objects. It can be used to prevent recursion in the Legal object, helps in pinning checks.
+ * @param ignore [piece] It can be used to prevent recursion in the Legal object, helps in pinning checks.
  * @return [array] pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column). If none are found returns false.
  * @author BF
  */
@@ -618,15 +629,15 @@ Game.check = function(square, player, ignore) {
         if (ignore != pawn) {
             ids = pawn.footprint();
             $(ids).each(function(index) {
-                if (this[0] == pawn.col) ids.splice(index, 1);
+                if (this[0] == pawn.position[0]) ids.splice(index, 1);
             });
-            if ($.inArray(ids, square.substring(1)) >= 0) {
+            if ($.inArray(square.substring(1), ids) >= 0) {
                 chk.push(pawn);
             };
         };
     });
     ids = player.King.footprint();
-    if ($.inArray(ids, square) >= 0) chk.push(player.King);
+    if ($.inArray(square, ids) >= 0) chk.push(player.King);
     if (chk.length < 1) chk = false;
     return chk;
 }
