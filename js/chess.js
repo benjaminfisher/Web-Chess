@@ -144,13 +144,13 @@ function Game() {
  * @extends Piece
  */
     Piece.prototype = {
-    	constructor: Piece,
+    	//constructor: Piece,
     	
     	/**
     	 * Evaluate whether a piece is protected by another piece of the same color
     	 */
     	evalProtect: function(child) {
-            var legal = this.Legal(child);
+            //var legal = this.Legal(child);
        },
        
        _move: function(destination) {
@@ -173,7 +173,7 @@ function Game() {
                 // Move it to the place of the piece it's capturing
                 $(this.image).appendTo('#' + this.position);
                 
-                // Capturing would result in check, put the piece back and alert the player << B. Fisher
+                // Capturing would result in check, put the piece back and 'threat' the king's square << B. Fisher
                 if (capturedPiece)(capturedPiece.image).appendTo(capturedPiece.position);
                 
                 $('#' + this.position).removeClass('selected');
@@ -230,6 +230,7 @@ function Game() {
 		    var C = child.position[0],
 		        cNum = Game.cLabels.indexOf(C) + 1,
 		        footprint = child.footprint(),
+		        kid = null,
 		        legal = new Array(),
 		        rNum = child.position[1] * 1,
 		        rook = null,
@@ -289,6 +290,10 @@ function Game() {
 		        squares = legalIDs.split(',');
 		        $('.threat').removeClass('threat');
 		        for (var i = squares.length - 2; i >= 0; i--) {
+		        	kid = Game.occupied(squares[i]);
+		        	if (kid.color == Game.Players[1].side) {
+		        		console.log(kid);
+		        	};
 		            if (Game.check(squares[i], Game.Players[1])) {
 		                $(squares[i]).addClass('threat');
 		                squares.splice(i, 1);
@@ -297,6 +302,7 @@ function Game() {
 		        legalIDs = squares.join(',');
 		    };
 		    // === End King legality checks === //
+		    
 		    legal['moves'] = legalIDs;
 		    
 		    return legal;
@@ -596,7 +602,7 @@ Game.prototype = {
 		$(form).appendTo(Game.$cover);
 		$('#Player1').focus();
 		
-		console.log('names');
+		//console.log('names');
 		return names;
 	},
 }
@@ -806,12 +812,13 @@ Game.square_click = function(square){
     	// retrieve piece from the selected square
         piece = self.occupied(selectedSquare.id);
         piece.move(square);
+        
         // If the last move did not result in check call the turn change. << B. Fisher
         if (Game.change) this.turn();
     }
     // if square is not occupied, or is occupied by a piece that is not capturable than clear the selection.
     else {
-        self.select();
+        self.select(false);
     }
 }
 
@@ -887,6 +894,7 @@ Game.turn = function(){
     
     /** Display if current Player's king is threatened **/
     if (Game.Players[0].King.inCheck) $('#' + Game.Players[0].King.position).addClass("threat");
+    
 } // === End of turn() ===//
 
 /**
