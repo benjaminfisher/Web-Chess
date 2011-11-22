@@ -291,8 +291,8 @@ function Game() {
 		        $('.threat').removeClass('threat');
 		        for (var i = squares.length - 2; i >= 0; i--) {
 		        	kid = Game.occupied(squares[i]);
-		        	if (kid.color == Game.Players[1].side) {
-		        		console.log(kid);
+		        	if (kid.color == Game.Players[1].color) {
+		        		console.log(Game.check(squares[i], Game.Players[1]));
 		        	};
 		            if (Game.check(squares[i], Game.Players[1])) {
 		                $(squares[i]).addClass('threat');
@@ -884,8 +884,8 @@ Game.turn = function(){
     }
     Game.change = null;
     
-    if (this.Checkmate()) this.endGame(2);
-    if (this.Stalemate()) this.endGame(3);
+    //if (this.Checkmate()) this.endGame(2);
+    //if (this.Stalemate()) this.endGame(3);
     
     // Game didn't end, change name and color of dash
     $('#Dash').css('background', Game.Players[0].color);
