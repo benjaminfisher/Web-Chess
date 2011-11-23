@@ -37,7 +37,7 @@ v13.5 - check function passed initial testing. Captured pieces need to be remove
 
 -------------------------------------------------------------------------
 
--Version 14_
+_Version 14_
 v14.3 - Moved capture functionality to the Player object. Pieces are now removed from the array on capture.
 			Check function is working. Added Checkmate (comments only) and Stalemate function (untested). << B. Fisher 3/03 2200
 
@@ -67,7 +67,7 @@ v15.5 - Still working on pinned against king issues. Pinning piece can move if n
 
 -------------------------------------------------------------------------
 
--Version 16_ - Added resign button with gameOver and turnCount variables. << B. Fisher 3/10 1800
+_Version 16_ - Added resign button with gameOver and turnCount variables. << B. Fisher 3/10 1800
 
 v16.1 - Added the prison to display captured pieces << B. Fisher 33/10 1915
 
@@ -117,10 +117,10 @@ v19.2 - Removed code to hide elements with a class of .hidden, and added visibil
 v19.5 - Adding Test environment and documentation files << B. Fisher 102511
 
 v19.6 - Moved documentation files to a seperate repo, hope to intigrate with webchess wiki page.
-	Current round of optimization complete; all dependant methods moved outside of constructors. << B. Fisher 110811
+		Current round of optimization complete; all dependant methods moved outside of constructors. << B. Fisher 110811
 
 v19.7 - Removed Player name prompts, and added form to request player names.
-	Also removed check alert; threatened king shows on red << B. Fisher 110911
+		Also removed check alert; threatened king shows on red << B. Fisher 110911
 	
 v19.8 - Resolved most of the issues with optimized code, including now king cannot capture protected pieces.
 		Promoted pieces are being added to the piece array, and removed from array on capture.
