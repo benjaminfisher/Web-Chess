@@ -69,13 +69,7 @@ function Game() {
         this.pieces.push(new bishop(this.color, "C" + startRow));
         this.pieces.push(new bishop(this.color, "F" + startRow));
         this.pieces.push(new queen(this.color, "D" + startRow));
-        this.King = new king(this.color, "E" + startRow);
-        var self = this;
-        
-        //Remove a piece from this players piece array when captured << B. Fisher 3/3 2100
-        // Revised to function with seperate pieces and pawns arrays << B. Fisher 3/14 2030
-        $('#board img').bind('kill', self.kill);
-        
+        this.King = new king(this.color, "E" + startRow);        
 	}; // End of Player() definition
     
     Player.prototype = {
@@ -94,24 +88,6 @@ function Game() {
 	        });
 	        //Add active status to King << B. Fisher 5/6 1700
 	        $(this.King.image).addClass('active');
-        },
-        
-/**
- * Remove captured or promoted pieces from their Players piece or pawn array.
- * @param piece the piece to be removed
- * @param player the piece's player
- * @param array the appropriate array
- * @param index location of the piece or pawn in the array
- * @author BF
- */
-        kill: function() {
-            var index,
-            	piece = Game.callPiece(this),
-            	player = (Game.Players[0].color == piece.color) ? Game.Players[0] : Game.Players[1],
-                array = (piece.type == 'pawn') ? player.pawns : player.pieces;
-                
-            index = $.inArray(piece, array);
-            if (index > -1) array.splice(index, 1);
         },
     }
 
@@ -144,15 +120,6 @@ function Game() {
  * @extends Piece
  */
     Piece.prototype = {
-    	//constructor: Piece,
-    	
-    	/**
-    	 * Evaluate whether a piece is protected by another piece of the same color
-    	 */
-    	evalProtect: function(child) {
-            //var legal = this.Legal(child);
-       },
-       
        _move: function(destination) {
             var occupant = Game.occupied(destination.id),
                 self = this,
@@ -199,13 +166,12 @@ function Game() {
                 if (capturedPiece) capturedPiece.capture();
                 Game.change = true;
                 
-                this.evalProtect(this);
                 if (!(this.type == 'rook' && Game.castled)) Game.logMove(this, location, capturedPiece);
             }
        },
        
        capture: function() {
-            $(this.image).trigger('kill', this.image);
+            this.kill();
             $(this.image).remove();
 			
             // Show captured piece in the prison << B. Fisher 3/11 1640
@@ -230,6 +196,23 @@ function Game() {
             else $(cellCount).html(1).hide();
             return true;
        },
+
+/**
+ * Remove captured or promoted pieces from their Players piece or pawn array.
+ * @param piece the piece to be removed
+ * @param player the piece's player
+ * @param array the appropriate array
+ * @param index location of the piece or pawn in the array
+ * @author BF
+ */
+        kill: function() {
+            var index,
+            	player = (Game.Players[0].color == this.color) ? Game.Players[0] : Game.Players[1],
+                array = (this.type == 'pawn') ? player.pawns : player.pieces;
+                
+            index = $.inArray(this, array);
+            if (index > -1) array.splice(index, 1);
+        },
        
 /**
  * @param {Piece} child piece
