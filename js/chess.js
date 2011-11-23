@@ -595,9 +595,12 @@ Game.prototype = {
 		var names = new Array();
 		Game.$cover.fadeIn();
 		
-		form = $('<form><label for="Player1">Player 1</label>' + 
-				'<input id="Player1" placeholder="Name..." name="Player1"><br />' +
-				'<label for="Player2">Player 2</label><input id="Player2" placeholder="Name..." name="Player2">' +
+		form = $('<form><h1>Welcome to Web-Chess</h1>' +
+				'<h2>Enter player\'s names</h2>' +
+				'<div><label for="Player1">Player 1</label>' + 
+				'<input id="Player1" placeholder="White..." name="Player1"><br />' +
+				'<label for="Player2">Player 2</label>' +
+				'<input id="Player2" placeholder="Black..." name="Player2"></div>' +
 				'<br /><button type="submit">Submit</button>');
 				
 		$(form).submit($.proxy(function(event){

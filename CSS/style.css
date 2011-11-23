@@ -1,5 +1,6 @@
 body {
 	background-color: maroon;
+	font-family:Arial, Helvetica, sans-serif;
 	overflow-x: hidden;
 }
 
@@ -62,6 +63,7 @@ img{z-index:10;}
 	display:inline-block;
 	float:left;
 	height:50px;
+	margin-right:1em;
 	position:relative;
 	width:50px;
 }
@@ -123,12 +125,15 @@ img{z-index:10;}
 	#board ul:nth-child(odd) li:nth-child(odd),
 	#board ul:nth-child(even) li:nth-child(even) { background-color:rgba(0,0,0,0.5); }
 	
-	#board img.active:hover{
-		border:1px solid red;
+	#board ul li:not(.selected) img.active:hover{
+		border:1px solid green;
 		left:-1px;
 		top:-1px;
 	}
-	#board ul li.legal:hover{background-color:rgba(0,100,200,0.6) !important; border:1px solid red; }
+	#board ul li.legal:hover{
+		background-color:rgba(0,100,200,0.6) !important; 
+		border:1px solid green;
+	}
 	
 	#board ul:first-child div:hover{margin-top:0;}
 	#board ul li:first-child:hover{margin-left:0;}
@@ -150,9 +155,9 @@ img{z-index:10;}
 #cover form{
 	color: #CCC;
 	background: #333;
-	height: 200px;
+	height: 285px;
 	margin: 50% auto;
-	padding-top: 100px;
+	padding-top: 1em;
 	position: relative;
 	top: -150px;
 	width: 330px;
@@ -166,14 +171,17 @@ img{z-index:10;}
 	box-shadow: 0px 0px 20px 1px #FFFFFF;
 }
 
-#cover form button { position: relative; left:40%; top: 2em; }
-#cover form label { margin-left: 15%; }
-#cover form input { margin-left: 1em; }
+#cover form {text-align:center; }
+#cover form h1 { font-size:1.5em; margin-bottom:2em; }
+#cover form h2 {font-size:1.2em; letter-spacing:2px; margin-bottom:0.5em; }
+#cover form div { margin:0 auto; text-align:center; }
+#cover form label { margin-right:5px; }
+#cover form button { position: relative; top: 1em; }
 
 #board span.label{
 	bottom:1px;
 	color: #222222;
-	font-size:0.8em;
+	font-size:0.7em;
 	left:2px;
 	position:absolute;
 	z-index:100;
@@ -190,9 +198,10 @@ img{z-index:10;}
 
 /* Styles for classes */
 
-.selected{
-	background-color:silver !important;
-	border:1px solid purple;
+#board ul li.selected{
+	border:2px solid darkblue;
+	height: 73px;
+	width:73px;
 	z-index:5;
 }
 
