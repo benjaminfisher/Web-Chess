@@ -391,7 +391,7 @@ function Game() {
         if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
         	this._move.call(this, destination);
         	
-        if (this.row == this.endRow) this.promote(destination);
+        if (this.position[1] == this.endRow) this.promote(destination);
 	};
 	
 /**
@@ -400,7 +400,7 @@ function Game() {
  * @author BF
  * @since 3/06/10
  */
-	pawn.prototype.promote = function() {
+	pawn.prototype.promote = function(destination) {
 		self = this;
         //Prompt for promotion preference << B. Fisher 3/29 1630
         var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
