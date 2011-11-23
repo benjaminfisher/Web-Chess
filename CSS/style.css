@@ -10,7 +10,7 @@ img{z-index:10;}
 #Dash {
 	font: 1.5em/2em Arial, Helvetica, sans-serif;
 	background-color: #FFF;
-	border: 2px outset grey;
+	border: 2px outset gray;
 	color: maroon;
 	float: left;
 	height: 624px;
@@ -54,8 +54,8 @@ img{z-index:10;}
 	#log table thead th:last-child {color: black;}
 	#log table thead th {width: 50%;}
 	#log table tr td:last-child {color: black;}
-	#log table tr:nth-child(odd), th {background-color: grey;}
-	#log table tr:nth-child(even) {background-color: darkgrey;}
+	#log table tr:nth-child(odd), th {background-color: gray;}
+	#log table tr:nth-child(even) {background-color: darkgray;}
 
 #logo{
 	background:transparent url(../images/small-logo.png) top left no-repeat;
@@ -133,8 +133,9 @@ img{z-index:10;}
 	#board ul:first-child div:hover{margin-top:0;}
 	#board ul li:first-child:hover{margin-left:0;}
 	
-	#board ul li.legal{background-color:rgba(0,0,200,0.6) !important;}
-	#board ul li.threat{background-color:rgba(200,0,0,0.6) !important;}
+	#board ul li.legal{ background-color:rgba(0,0,200,0.6) !important; }
+	#board ul li.threat{ background-color:rgba(200,0,0,0.6) !important; }
+	#board ul li.attack{ background-color:rgba(200,200,0,0.6) !important; }
 
 #cover{
 	position: absolute;

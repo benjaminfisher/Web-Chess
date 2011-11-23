@@ -156,18 +156,22 @@ function Game() {
        _move: function(destination) {
             var occupant = Game.occupied(destination.id),
                 self = this,
+                square_check = null;
                 capturedPiece = null;
                 
             // Store the occupant of the destination square.
             $(this.image).appendTo(destination);
+            
             if (occupant) capturedPiece = occupant;
             else if (this.EP) capturedPiece = this.EP;
             
             // If a piece is captured, remove the piece
             if (capturedPiece) $(capturedPiece).remove();
             
+            square_check = Game.check(Game.Players[0].King.position, Game.Players[1], capturedPiece);
+            
             // Check to see if move results in check << B. Fisher 3/07 2030
-            if (this.type != 'king' && Game.check(Game.Players[0].King.position, Game.Players[1], capturedPiece)) {
+            if (this.type != 'king' && square_check.threat) {
                 $('.legal').removeClass('legal');
                 
                 // Move it to the place of the piece it's capturing
@@ -179,6 +183,11 @@ function Game() {
                 $('#' + this.position).removeClass('selected');
                 $('#' + Game.Players[0].King.position).addClass('threat');
                 
+                console.log(square_check);
+                $(square_check).each(function(){
+                	$('#' + this.position).addClass('attack');
+                })
+                
                 Game.change = false;
             }
             else {
@@ -186,8 +195,10 @@ function Game() {
                 var location = this.position;
                 this.position = destination.id;
                 this.moved = true;
+                
                 if (capturedPiece) capturedPiece.capture();
                 Game.change = true;
+                
                 this.evalProtect(this);
                 if (!(this.type == 'rook' && Game.castled)) Game.logMove(this, location, capturedPiece);
             }
@@ -235,6 +246,7 @@ function Game() {
 		        rNum = child.position[1] * 1,
 		        rook = null,
 		        squares = null,
+		        square_check = null,
 		        dest, orig, path, legalIDs = "";
 		        
 		    $(footprint).each(function() {
@@ -273,7 +285,7 @@ function Game() {
 		            
 		            // Kingside castle squares are unoccupied and unthreatened,
 		            // and the kingside rook has not moved.
-		            if (Game.vector(child.position, 'G' + rNum, child.color, false).list.match('G') && rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1])) {
+		            if (Game.vector(child.position, 'G' + rNum, child.color, false).list.match('G') && rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1]).threat) {
 		                legalIDs += Game.writeID('G', rNum);
 		            };
 		            
@@ -281,7 +293,7 @@ function Game() {
 		            // The king is not moving across check.
 		            // and the queenside rook has not moved.
 		            rook = Game.occupied('#A' + rNum);
-		            if (Game.vector(child.position, 'B' + rNum, child.color, false).list.match('B') && rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1])) {
+		            if (Game.vector(child.position, 'B' + rNum, child.color, false).list.match('B') && rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1]).threat) {
 		                legalIDs += Game.writeID('C', rNum);
 		            };
 		        };
@@ -289,18 +301,30 @@ function Game() {
 		        // Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		        squares = legalIDs.split(',');
 		        $('.threat').removeClass('threat');
+		        
 		        for (var i = squares.length - 2; i >= 0; i--) {
 		        	kid = Game.occupied(squares[i]);
+		        	square_check = Game.check(squares[i], Game.Players[1]);
+		        	
+		        	// if square is occupied by a piece of opposing color, check for protection
+		        	// if protected add .threat class and remove location from legal moves
 		        	if (kid.color == Game.Players[1].color) {
-		        		console.log(Game.check(squares[i], Game.Players[1]));
+		        		if(square_check.protect){
+		        			$(squares[i]).addClass('threat');
+		        			squares.splice(i, 1);
+		        		};
 		        	};
-		            if (Game.check(squares[i], Game.Players[1])) {
+		        	
+		        	// if square is threatened by an opposing piece add .threat class
+		        	// and remove from legal moves
+		            if (square_check.threat) {
 		                $(squares[i]).addClass('threat');
 		                squares.splice(i, 1);
 		            };
 		        };
+		        
 		        legalIDs = squares.join(',');
-		    };
+		    }
 		    // === End King legality checks === //
 		    
 		    legal['moves'] = legalIDs;
@@ -622,9 +646,18 @@ Game.callPiece = function(image) {
 Game.check = function(square, player, ignore) {
     var chk = new Array(),
         ids, footprint;
+        
+    chk['protect'] = false;
+    chk['threat'] = false;
+        
     $(player.pieces).each(function() {
         if (this != ignore) {
+        	// console.log('location: ' + square, ' piece: ' + this.color + ' ' + this, this.Legal(this));
+        	if ($.inArray(Game.occupied(square), this.Legal(this)) >= 0) {
+        		chk.protect = true;
+        	};
             ids = this.Legal(this).moves;
+
             if (ids.length > 0 && ids.match(square)) chk.push(this);
         };
     });
@@ -635,6 +668,7 @@ Game.check = function(square, player, ignore) {
         if (ignore != pawn) {
             ids = pawn.footprint();
             $(ids).each(function(index) {
+            	//remove non-capture moves from footprint list
                 if (this[0] == pawn.position[0]) ids.splice(index, 1);
             });
             if ($.inArray(square.substring(1), ids) >= 0) {
@@ -642,9 +676,13 @@ Game.check = function(square, player, ignore) {
             };
         };
     });
+    
     ids = player.King.footprint();
-    if ($.inArray(square, ids) >= 0) chk.push(player.King);
-    if (chk.length < 1) chk = false;
+    if ($.inArray(square.substring(1), ids) >= 0) chk.push(player.King);
+    if (chk.length >= 1) chk.threat = true;
+    
+//    console.log(chk, 'location: ' + square, 'protected: ' + chk.protect, 'threatened: ' + chk.threat);
+    
     return chk;
 }
 
@@ -833,6 +871,8 @@ Game.select = function(square) {
     $('.legal').removeClass('legal');
     $('.selected').removeClass('selected');
     $('.threat').removeClass('threat');
+    $('.attack').removeClass('attack');
+    
     if (square) {
         selectedSquare = square;
         $(selectedSquare).addClass('selected');
@@ -868,7 +908,7 @@ Game.turn = function(){
     $('.active').removeClass('active'); // Clear active status of previous players pieces << B. Fisher 5/6 1700
     
     /** Find whether the last move placed the next player in check **/
-    Game.Players[1].King.inCheck = this.check(Game.Players[1].King.position, Game.Players[0]);
+    Game.Players[1].King.inCheck = this.check(Game.Players[1].King.position, Game.Players[0]).threat;
     
     /** Clears the EP variables of the current players pawns << B. Fisher **/
     $(Game.Players[0].pawns).each(function() {
