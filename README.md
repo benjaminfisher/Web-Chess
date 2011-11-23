@@ -121,3 +121,7 @@ v19.6 - Moved documentation files to a seperate repo, hope to intigrate with web
 
 v19.7 - Removed Player name prompts, and added form to request player names.
 	Also removed check alert; threatened king shows on red << B. Fisher 110911
+	
+v19.8 - Resolved most of the issues with optimized code, including now king cannot capture protected pieces.
+		Promoted pieces are being added to the piece array, and removed from array on capture.
+		Also added attack class to show what opposing piece is attacking the king when in check. << B. Fisher 112311
