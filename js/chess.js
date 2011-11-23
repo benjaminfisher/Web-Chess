@@ -43,10 +43,13 @@ function Game() {
     Player  = function(name, side){
     	/** The color of the Player's pieces */
         this.color = side;
+        
         /** Array to hold the Player's pieces */
         this.pieces = new Array();
+        
         /** Array to hold the Player's pawns */
         this.pawns = new Array();
+        
         /** {string} Players name (displayed in the dashboard) */
         this.name = (name) ? name : 'Player ' + ($(Game.Players).size() + 1)
         if (!this.name) this.name = 'Player ' + ($(Game.Players).size() + 1);
@@ -586,8 +589,6 @@ Game.prototype = {
 		Game.Players[0].activate();
 		
 		$('#turn').html(Game.Players[0].name);
-		
-		//Game.$cover.hide();
 	},
 	
 	get_player_names: function(){
@@ -599,13 +600,17 @@ Game.prototype = {
 				'<label for="Player2">Player 2</label><input id="Player2" placeholder="Name..." name="Player2">' +
 				'<br /><button type="submit">Submit</button>');
 				
-		$(form).submit(function(event){
+		$(form).submit($.proxy(function(event){
 			event.preventDefault();
 			
 			names.push($('#Player1').val());
 			names.push($('#Player2').val());
 			
-		});
+			form.remove();
+			$('#cover').fadeOut();
+			
+		},this));
+		
 		$(form).appendTo(Game.$cover);
 		$('#Player1').focus();
 		
