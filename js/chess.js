@@ -389,7 +389,6 @@ function Game() {
 	pawn.prototype.promote = function(destination) {
 		self = this;
 		bench = $('<div>');
-		$cover = $('#cover');
 		
 		bench.attr('id', 'bench');
 		
@@ -403,15 +402,14 @@ function Game() {
 			.attr('rel', 'queen')
 			.appendTo(bench);
 		
-		bench.appendTo($cover);
-		$cover.fadeIn();
+		bench.appendTo(Game.$cover);
+		Game.$cover.fadeIn();
 		
 		// Place the promotion piece, add it to the pieces array and append the promotion
         // to the logged move. << B. Fisher 3/29 1630
 		$(bench).children('img').click(function(){
 			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1);
 			
-			console.log(self.logCell);
 			if ($(this).attr('rel') == 'queen') {
 				Game.Players[0].pieces.push(new queen(self.color, destination.id));
             	$(self.logCell).html($(self.logCell).html() + '=Q');
@@ -420,8 +418,8 @@ function Game() {
             	$(self.logCell).html($(self.logCell).html() + '=N');
 			};
 			
-			$cover.children().remove();
-			$cover.fadeOut();
+			Game.$cover.children().remove();
+			Game.$cover.fadeOut();
 		})
         
         // Remove the pawn's image, and clear it from the Player's pieces array.
@@ -607,6 +605,7 @@ Game.prototype = {
 	init: function(){
 		var names = this.get_player_names();
 		
+		$('button').button();		
 		$('#Dash').hide();
 		
 		Game.Players.push(new Player('Player 1', 'white'));
@@ -641,7 +640,7 @@ Game.prototype = {
 			form.remove();
 			
 			$('#turn').html(Game.Players[0].name);
-			$('#cover').fadeOut();
+			Game.$cover.fadeOut();
 			$('#Dash').fadeIn();
 			
 		},this));
@@ -738,7 +737,7 @@ Game.endGame = function(gameOver) {
     }
 
     this.$cover.slideDown('slow');
-    $('#resign').button('disable');
+    $('button').button('disable');
 } // End of endGame()
 
 /**

@@ -74,9 +74,9 @@ v16.1 - Added the prison to display captured pieces << B. Fisher 33/10 1915
 v16.2 - Adding the move logging table along with it's styling << J-M Glenn
 
 v16.3 - Attempting to remove opposing king's footprint from moving king's available moves with the match function.
-			Currently removing squares that should be legal. << B. Fisher 3/10 2215
+		Currently removing squares that should be legal. << B. Fisher 3/10 2215
+		
 v16.4 - Added auto-scrolling to the move logger << J-M Glenn
->>>>>>> branch 'refs/heads/master' of https://benjaminfisher@github.com/benjaminfisher/Web-Chess.git
 
 v16.5 - Added functionality for the 'prison' to show captured pieces. << B. Fisher 3/11 1830
 
@@ -131,4 +131,4 @@ v19.9 - Player names captured via form. << B. Fisher 112911
 -------------------------------------------------------------------------
 _Version 20_ - Merge optimize branch back into master. << B. Fisher 112911
 
-v20.1 - Removed prompts from pawn promotion. Move logging is glitching (logCell is incorrect after first promotion) << B. Fisher 112311
+v20.1 - Removed prompts from pawn promotion. Move logging is glitching (logCell is incorrect after first promotion) << B. Fisher 113011

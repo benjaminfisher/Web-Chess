@@ -28,7 +28,10 @@ img{z-index:10;}
 		padding: 0 5px;
 	}
 	
-	#resign{float:left;}
+	#Dash button {
+		font-size: 0.5em;
+		line-height: 1em;
+	}
 
 /* Styles for move logging table */
 

@@ -8,4 +8,10 @@ $('#clear').click(function(){
 	});
 });
 
-$('#staging img').draggable({helper:'clone'});
+$('#staging img').draggable({
+	helper: 'clone',
+	opacity: 0.8
+	}
+);
+
+$('#board ul li').droppable();

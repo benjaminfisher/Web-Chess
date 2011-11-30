@@ -9,16 +9,13 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		
 		<title>Web Chess - Test Board</title>
-		<link rel="stylesheet" type="text/css" href="CSS/reset.css" />
-		<link rel="stylesheet" type="text/css" href="CSS/style.css" />
-		<link rel="stylesheet" type="text/css" href="CSS/test.css" />
-		<link rel="stylesheet" type="text/css" href="CSS/jquery.ui.base.css" />
+		<link rel="stylesheet" href="CSS/reset.css" />
+		<link rel="stylesheet" href="CSS/jquery-ui-1.8.16.custom.css"/>
+		<link rel="stylesheet" href="CSS/style.css" />
+		<link rel="stylesheet" href="CSS/test.css" />
 		
-		<script src="lib/head.min.js"></script>
+		<script src="js/lib/head.min.js"></script>
 		
-		<!--[if lt IE 9]>
-			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
 	</head>
 	<body>
 		<div id="wrapper">
@@ -139,9 +136,9 @@
 					<li id="H1"><span class="label">H</span></li>
 				</ul>
 				
-				<!-- The cover prevents interaction after the gave is over -->
-				<div id="cover" class="hidden"></div>
-				
+				<!-- Cover prevents interaction when the game is over -->
+				<div id="cover">
+				</div>
 			</div> <!-- End of Board -->
 
 			<div id="prison">
@@ -190,8 +187,7 @@
 			</div> <!-- End of Prison -->
 
 			<div id="Dash">
-				<button id="clear">Clear Board</button>
-				<button id="resign">Resign</button>
+
 				<p>Turn: <span id='turn'></span></p>
 				<div id="log">
 					<table>
@@ -205,12 +201,14 @@
 						</tbody>
 					</table>
 				</div>
+				<button id="resign">Resign</button>
+				<button id="clear">Clear Board</button>
 			</div> <!-- End of Dash -->
 			
 		</div> <!-- End of Wrapper -->
 		
 		<script>			
-			head.js("lib/jquery/jquery-1.4.4.min.js", "lib/jquery/jquery-ui-1.8.10.custom.min.js", 'js/chess.js', 'js/test.js',
+			head.js('js/lib/jquery/jquery-1.4.4.min.js', 'js/lib/jquery/jquery-ui-1.8.16.custom.min.js', 'js/chess.js', 'js/test.js',
 			function(){ new Game()});
 		</script>
 	</body>
