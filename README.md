@@ -125,3 +125,8 @@ v19.7 - Removed Player name prompts, and added form to request player names.
 v19.8 - Resolved most of the issues with optimized code, including now king cannot capture protected pieces.
 		Promoted pieces are being added to the piece array, and removed from array on capture.
 		Also added attack class to show what opposing piece is attacking the king when in check. << B. Fisher 112311
+		
+v19.9 - Player names captured via form. << B. Fisher 112911
+
+-------------------------------------------------------------------------
+_Version 20_ Merge optimize branch back into master. << B. Fisher 112911
