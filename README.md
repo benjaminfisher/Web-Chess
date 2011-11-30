@@ -129,4 +129,6 @@ v19.8 - Resolved most of the issues with optimized code, including now king cann
 v19.9 - Player names captured via form. << B. Fisher 112911
 
 -------------------------------------------------------------------------
-_Version 20_ Merge optimize branch back into master. << B. Fisher 112911
+_Version 20_ - Merge optimize branch back into master. << B. Fisher 112911
+
+v20.1 - Removed prompts from pawn promotion. Move logging is glitching (logCell is incorrect after first promotion) << B. Fisher 112311
