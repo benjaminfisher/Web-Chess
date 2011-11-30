@@ -152,7 +152,7 @@ img{z-index:10;}
 	z-index: 9000;
 }
 
-#cover form{
+#cover form, #cover > div {
 	color: #CCC;
 	background: #333;
 	height: 285px;
@@ -171,9 +171,9 @@ img{z-index:10;}
 	box-shadow: 0px 0px 20px 1px #FFFFFF;
 }
 
-#cover form {text-align:center; }
+#cover form, #cover div {text-align:center; }
 #cover form h1 { font-size:1.5em; margin-bottom:2em; }
-#cover form h2 {font-size:1.2em; letter-spacing:2px; margin-bottom:0.5em; }
+#cover form h2 { font-size:1.2em; letter-spacing:2px; margin-bottom:0.5em; }
 #cover form div { margin:0 auto; text-align:center; }
 #cover form label { margin-right:5px; }
 #cover form button { position: relative; top: 1em; }

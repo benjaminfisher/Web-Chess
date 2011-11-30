@@ -388,23 +388,46 @@ function Game() {
  */
 	pawn.prototype.promote = function(destination) {
 		self = this;
-        //Prompt for promotion preference << B. Fisher 3/29 1630
-        var newPiece = prompt("Promote to a [q]ueen or a k[n]ight?");
+		bench = $('<div>');
+		$cover = $('#cover');
+		
+		bench.attr('id', 'bench');
+		
+		$('<p>Select a piece for promotion: </p>').appendTo(bench);	
+		$('<img>')
+			.attr('src', 'images/thumb/knight_' + this.color + '_thumb.png')
+			.attr('rel', 'knight')
+			.appendTo(bench);
+		$('<img>')
+			.attr('src', 'images/thumb/queen_' + this.color + '_thumb.png')
+			.attr('rel', 'queen')
+			.appendTo(bench);
+		
+		bench.appendTo($cover);
+		$cover.fadeIn();
+		
+		// Place the promotion piece, add it to the pieces array and append the promotion
+        // to the logged move. << B. Fisher 3/29 1630
+		$(bench).children('img').click(function(){
+			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1);
+			
+			console.log(self.logCell);
+			if ($(this).attr('rel') == 'queen') {
+				Game.Players[0].pieces.push(new queen(self.color, destination.id));
+            	$(self.logCell).html($(self.logCell).html() + '=Q');
+			} else {
+				Game.Players[0].pieces.push(new knight(self.color, destination.id));
+            	$(self.logCell).html($(self.logCell).html() + '=N');
+			};
+			
+			$cover.children().remove();
+			$cover.fadeOut();
+		})
         
         // Remove the pawn's image, and clear it from the Player's pieces array.
         $(self.image).remove();
         $(self).trigger('remove');
         
-        // Place the promotion piece, add it to the pieces array and append the promotion
-        // to the logged move. << B. Fisher 3/29 1630
-        if (newPiece == 'n' || newPiece == 'knight' || newPiece == 'k') {
-            Game.Players[0].pieces.push(new knight(this.color, destination.id));
-            $(self.logCell).html($(self.logCell).html() + '=N');
-        }
-        else {
-            Game.Players[0].pieces.push(new queen(this.color, destination.id));
-            $(self.logCell).html($(self.logCell).html() + '=Q');
-		};
 	};
 	
 /**
@@ -807,7 +830,7 @@ Game.logMove = function(piece, start, captured) {
         move = (pieceType + start + moveType + end);
     }
     // If a pawn is promoting store the cell where the move is logged to append with promotion info << B. Fisher
-    if (piece.type == 'pawn' && piece.row == piece.endRow) piece.logCell = cell;
+    if (piece.type == 'pawn' && piece.position[1]*1 == piece.endRow) piece.logCell = cell;
     $(cell).text(move);
 }
 
