@@ -91,7 +91,7 @@ function Game() {
 	        });
 	        //Add active status to King << B. Fisher 5/6 1700
 	        $(this.King.image).addClass('active');
-        },
+        }
     }
 
 /*** End of Player() methods ***/
@@ -584,18 +584,19 @@ Game.prototype = {
 	init: function(){
 		var names = this.get_player_names();
 		
-		Game.Players.push(new Player(names[0], 'white'));
-		Game.Players.push(new Player(names[1], 'black'));
+		$('#Dash').hide();
+		
+		Game.Players.push(new Player('Player 1', 'white'));
+		Game.Players.push(new Player('Player 2', 'black'));
 		Game.Players[0].activate();
 		
 		$('#turn').html(Game.Players[0].name);
 	},
 	
 	get_player_names: function(){
-		var names = new Array();
 		Game.$cover.fadeIn();
 		
-		form = $('<form><h1>Welcome to Web-Chess</h1>' +
+		form = $('<form><h1>Welcome to Web Chess</h1>' +
 				'<h2>Enter player\'s names</h2>' +
 				'<div><label for="Player1">Player 1</label>' + 
 				'<input id="Player1" placeholder="White..." name="Player1"><br />' +
@@ -606,19 +607,24 @@ Game.prototype = {
 		$(form).submit($.proxy(function(event){
 			event.preventDefault();
 			
-			names.push($('#Player1').val());
-			names.push($('#Player2').val());
+			names = [$('#Player1').val(), $('#Player2').val()];
+			
+			if (!names[0]) names[0] = 'Player 1';
+			if (!names[1]) names[1] = 'Player 2';
+			
+			Game.Players[0].name = names[0];
+			Game.Players[1].name = names[1];
 			
 			form.remove();
+			
+			$('#turn').html(Game.Players[0].name);
 			$('#cover').fadeOut();
+			$('#Dash').fadeIn();
 			
 		},this));
 		
 		$(form).appendTo(Game.$cover);
 		$('#Player1').focus();
-		
-		//console.log('names');
-		return names;
 	},
 }
 
