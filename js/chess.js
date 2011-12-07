@@ -10,6 +10,7 @@ function Game() {
         gameOver = false,
         self = this;
 	
+	Game.board = $('#board');
 	/** Tracks the number of turns taken for move logging */
     Game.turnCount = 1;
     /** {array} to hold the game's players. Players[0] is the current player */
@@ -21,7 +22,7 @@ function Game() {
     
     Game.cLabels = "ABCDEFGH";
     
-    $('#board ul li').click(function(){
+    Game.board.find('ul li').click(function(){
     	Game.square_click(this);
     });
     
@@ -60,19 +61,7 @@ function Game() {
         	// Pawns start on the next medial row
             pawnRow = (this.color == 'white') ? 2 : 7;
             
-        for (p = 0; p <= 7; p++) {
-            this.pawns.push(new pawn(this.color, Game.cLabels[p] + pawnRow));
-        }
-        
-        /** When the player is created its pieces are placed on the board and loaded into the appropriate array */
-        this.pieces.push(new rook(this.color, "A" + startRow));
-        this.pieces.push(new rook(this.color, "H" + startRow));
-        this.pieces.push(new knight(this.color, "B" + startRow));
-        this.pieces.push(new knight(this.color, "G" + startRow));
-        this.pieces.push(new bishop(this.color, "C" + startRow));
-        this.pieces.push(new bishop(this.color, "F" + startRow));
-        this.pieces.push(new queen(this.color, "D" + startRow));
-        this.King = new king(this.color, "E" + startRow);        
+        this.init(startRow, pawnRow);
 	}; // End of Player() definition
     
     Player.prototype = {
@@ -91,7 +80,35 @@ function Game() {
 	        });
 	        //Add active status to King << B. Fisher 5/6 1700
 	        $(this.King.image).addClass('active');
-        }
+      },
+      addPiece: function(type, color, start){
+      	newPiece = null;
+      	array = (type == 'pawn') ? this.pawns : this.pieces;
+      	if (type == 'king') array = null;
+      	
+      	if (type == 'pawn') newPiece = new pawn(color, start)
+		else if (type == 'bishop') newPiece = new bishop(color, start)
+		else if (type == 'knight') newPiece = new knight(color, start)
+		else if (type == 'rook') newPiece = new rook(color, start)
+		else if (type == 'queen') newPiece = new queen(color, start)
+		else this.King = new king(color, start)
+      	
+      	if (array) array.push(newPiece)
+      },
+      init: function(sRow, pRow){
+    		for (p = 0; p <= 7; p++) {
+	            this.addPiece('pawn', this.color, Game.cLabels[p] + pRow);
+        	}
+
+	        this.addPiece('rook', this.color, "A" + sRow);
+	        this.addPiece('rook', this.color, "H" + sRow);
+	        this.addPiece('knight', this.color, "B" + sRow);
+	        this.addPiece('knight', this.color, "G" + sRow);
+	        this.addPiece('bishop', this.color, "C" + sRow);
+	        this.addPiece('bishop', this.color, "F" + sRow);
+	        this.addPiece('queen', this.color, "D" + sRow);
+	        this.addPiece('king', this.color, "E" + sRow);
+    	}
     }
 
 /*** End of Player() methods ***/
@@ -408,13 +425,13 @@ function Game() {
 		// Place the promotion piece, add it to the pieces array and append the promotion
         // to the logged move. << B. Fisher 3/29 1630
 		$(bench).children('img').click(function(){
-			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1);
+			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1).delay(800);
 			
 			if ($(this).attr('rel') == 'queen') {
-				Game.Players[0].pieces.push(new queen(self.color, destination.id));
+				Game.Players[0].addPiece('queen', self.color, destination.id);
             	$(self.logCell).html($(self.logCell).html() + '=Q');
 			} else {
-				Game.Players[0].pieces.push(new knight(self.color, destination.id));
+				Game.Players[0].addPiece('knight', self.color, destination.id);
             	$(self.logCell).html($(self.logCell).html() + '=N');
 			};
 			
@@ -595,9 +612,7 @@ function Game() {
         return squares;
     }
     // End piece definitions
-    
-    $('#board').data('game', this);
-    
+
     self.init();
 };
 
