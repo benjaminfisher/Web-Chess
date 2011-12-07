@@ -725,8 +725,8 @@ Game.check = function(square, player, ignore) {
     var chk = new Array(),
         ids, footprint;
         
-    chk['protect'] = false;
-    chk['threat'] = false;
+    chk.protect = false;
+    chk.threat = false;
         
     $(player.pieces).each(function() {
         if (this != ignore) {
@@ -748,7 +748,7 @@ Game.check = function(square, player, ignore) {
             	//remove non-capture moves from footprint list
                 if (this[0] == pawn.position[0]) ids.splice(index, 1);
             });
-            if ($.inArray(square.substring(1), ids) >= 0) {
+            if ($.inArray(square, ids) >= 0) {
                 chk.push(pawn);
             };
         };
