@@ -450,6 +450,7 @@ function Game() {
 	pawn.prototype.promote = function(destination) {
 		self = this;
 		bench = $('<div>');
+		logCell = self.logCell;
 		
 		bench.attr('id', 'bench');
 		
@@ -473,10 +474,10 @@ function Game() {
 			
 			if ($(this).attr('rel') == 'queen') {
 				Game.Players[0].addPiece('queen', self.color, destination.id);
-            	$(self.logCell).html($(self.logCell).html() + '=Q');
+            	$(logCell).html($(logCell).html() + '=Q');
 			} else {
 				Game.Players[0].addPiece('knight', self.color, destination.id);
-            	$(self.logCell).html($(self.logCell).html() + '=N');
+            	$(logCell).html($(logCell).html() + '=N');
 			};
 			
 			Game.$cover.children().remove();
@@ -781,16 +782,13 @@ Game.endGame = function(gameOver) {
         // If gameOver is 1 current player resigned
     case 1:
         alert(Game.Players[0].name + ' resigned on turn ' + Game.turnCount + '.');
-        Game.endGame();
         break;
         // If gameOver is 2 current player is mated.
     case 2:
         alert(Game.Players[0].name + ' was mated after ' + Game.turnCount + ' moves.');
-        endGame();
         break;
     case 3:
         alert(Game.Players[0].name + ' is in Stalemate after ' + Game.turnCount + ' moves.');
-        endGame();
         break;
         // If gameOver is false then proceed with next players turn.
     default:
@@ -918,19 +916,18 @@ Game.occupied = function(ID) {
 }
     
 Game.square_click = function(square){
-	self = this;
-	var kid = self.occupied(square.id);
+	var kid = Game.occupied(square.id);
 		$square = $(square);
 	
 	// checks if piece belongs to the current player
     if (kid && kid.color == Game.Players[0].color) {
-        self.select(square);
+        Game.select(square);
         $(kid.Legal(kid).moves).addClass('legal');
     }
     /** If clicked square is a legal move */
     else if ($square.hasClass('legal')) {
     	// retrieve piece from the selected square
-        piece = self.occupied(selectedSquare.id);
+        piece = Game.occupied(selectedSquare.id);
         piece.move(square);
         
         // If the last move did not result in check call the turn change. << B. Fisher
@@ -938,7 +935,7 @@ Game.square_click = function(square){
     }
     // if square is not occupied, or is occupied by a piece that is not capturable than clear the selection.
     else {
-        self.select(false);
+        Game.select(false);
     }
 }
 
