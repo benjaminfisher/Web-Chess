@@ -81,10 +81,11 @@ function Game() {
 	        //Add active status to King << B. Fisher 5/6 1700
 	        $(this.King.image).addClass('active');
       },
+      
       addPiece: function(type, color, start){
       	newPiece = null;
-      	array = (type == 'pawn') ? this.pawns : this.pieces;
-      	if (type == 'king') array = null;
+      	array = (type === 'pawn') ? this.pawns : this.pieces;
+      	if (type === 'king') array = null;
       	
       	if (type == 'pawn') newPiece = new pawn(color, start)
 		else if (type == 'bishop') newPiece = new bishop(color, start)
@@ -95,6 +96,7 @@ function Game() {
       	
       	if (array) array.push(newPiece)
       },
+      
       init: function(sRow, pRow){
     		for (p = 0; p <= 7; p++) {
 	            this.addPiece('pawn', this.color, Game.cLabels[p] + pRow);
@@ -110,7 +112,6 @@ function Game() {
 	        this.addPiece('king', this.color, "E" + sRow);
     	}
     }
-
 /*** End of Player() methods ***/
 
 /**
@@ -170,7 +171,7 @@ function Game() {
                 $('#' + this.position).removeClass('selected');
                 $('#' + Game.Players[0].King.position).addClass('threat');
                 
-                console.log(square_check);
+                // Add attach class to any pieces that are threatening the current player's king
                 $(square_check).each(function(){
                 	$('#' + this.position).addClass('attack');
                 })
@@ -274,7 +275,9 @@ function Game() {
 		            }
 		            else {
 		                path = Game.vector(child.position, this, child.color, true);
+		                // add squares in current vector to legal moves list
 		                legalIDs += path.list;
+		                // add vulnerable opposing pieces to legal Array
 		                legal.push(path.end);
 		            };
 		        };
@@ -314,7 +317,6 @@ function Game() {
 		        	if (kid.color == Game.Players[1].color) {
 		        		if(square_check.protect){
 		        			$(squares[i]).addClass('threat');
-		        			squares.splice(i, 1);
 		        		};
 		        	};
 		        	
@@ -322,9 +324,17 @@ function Game() {
 		        	// and remove from legal moves
 		            if (square_check.threat) {
 		                $(squares[i]).addClass('threat');
-		                squares.splice(i, 1);
 		            };
+		            
+		         	for (var s in square_check) if(square_check[s].type){
+		                this.penetration(squares[i], square_check[s]);
+		           };
 		        };
+		        
+		        // Remove threatened squares dicovered by penetration from legal list
+		        $('.threat').each(function() {
+		        	squares.splice(squares.indexOf('#' + this.id), 1);
+		        })
 		        
 		        legalIDs = squares.join(',');
 		    }
@@ -333,8 +343,42 @@ function Game() {
 		    legal['moves'] = legalIDs;
 		    
 		    return legal;
-		} // === End of Legal() === //
-   } // === End of Piece prototype methods === //
+		}, // === End of Legal() === //
+		
+		penetration : function(square, attacker){
+			col = square[1];
+			row = square[2]*1;
+			kcol = this.position[0];
+			krow = this.position[1]*1;
+			inc = null;
+			hole = null;
+			
+			if (attacker.type === 'rook' || attacker.type === 'queen') {
+				if (row === krow && krow === attacker.position[1]*1) {
+					if (Game.findInc(col, kcol) === 1){
+						hole = $('#' + this.position).next();
+					} else {
+						hole = $('#' + this.position).prev();
+					}
+				};
+				
+				if (col === kcol && kcol === attacker.position[0]){
+					inc = Game.findInc(row, krow);
+					hole = $('#' + kcol + (krow + inc));
+				};
+			};
+			
+			if (attacker.type === 'bishop' || attacker.type === 'queen'){
+				if(Math.abs(Game.cLabels.indexOf(kcol) - Game.cLabels.indexOf(attacker.position[0])) === Math.abs(krow - attacker.position[1]*1)){
+					hole = $('#' + Game.cLabels[Game.cLabels.indexOf(kcol) + Game.findInc(col, kcol)] + (krow + Game.findInc(row, krow)));
+				};
+			};
+			
+			if (hole && (hole.children('img').length === 0 || hole.children('img').data().piece.color != this.color)){
+				hole.addClass('threat');
+			};
+		}
+   }; // === End of Piece prototype methods === //
 	
 /*** Start piece definitions ***/
 
@@ -686,7 +730,6 @@ Game.check = function(square, player, ignore) {
         
     $(player.pieces).each(function() {
         if (this != ignore) {
-        	// console.log('location: ' + square, ' piece: ' + this.color + ' ' + this, this.Legal(this));
         	if ($.inArray(Game.occupied(square), this.Legal(this)) >= 0) {
         		chk.protect = true;
         	};
@@ -715,13 +758,12 @@ Game.check = function(square, player, ignore) {
     if ($.inArray(square.substring(1), ids) >= 0) chk.push(player.King);
     if (chk.length >= 1) chk.threat = true;
     
-//    console.log(chk, 'location: ' + square, 'protected: ' + chk.protect, 'threatened: ' + chk.threat);
-    
     return chk;
 }
 
 Game.Checkmate = function(player) {
     //if players king is in check
+    if (Game.Players[0].King.inCheck)
     // if checking piece is vulnerable
     //if all available moves for the king are threatened
     return false;
@@ -899,12 +941,17 @@ Game.square_click = function(square){
  * Previously selected squares (and any dependant classes) are cleared.
  * If a square id is passed the square is given the selected class.
  * If a falsey value is passed than the global variable 'selectedSquare' is cleared.
+ * @param [HTML object] The li containing the clicked piece
  * @author BF
  */
 Game.select = function(square) {
+	// legal moves of previously selected piece cleared
     $('.legal').removeClass('legal');
+    // previously selected piece cleared
     $('.selected').removeClass('selected');
+    // threatened squares within kings footprint cleared
     $('.threat').removeClass('threat');
+    // display of pieces threatining the king directly are cleared
     $('.attack').removeClass('attack');
     
     if (square) {
@@ -915,7 +962,7 @@ Game.select = function(square) {
 } // === End of select() ===//
 
 /**
- * If king is not in check, but the current player has no legal moves return true.
+ * @returns [boolean] true = current player's king is not in check but player has no legal moves. Else returns false.
  * @author BF
  */
 Game.Stalemate = function() {
@@ -977,7 +1024,8 @@ Game.turn = function(){
  * @param end the final square along the given path
  * @param side current player's color
  * @param [capture] {boolean} whether opposing pieces can be captured on the last square
- * @returns a string of comma seperated square ids for the requested vector, continuing to an occupied square.
+ * @returns [string] list = comma seperated square ids for the requested vector, continuing to an occupied square.
+ * @returns [piece] end = occupant of end square
  * if the square is occupied by an opponent piece the vector ids includes that square unless capture is false.
  */
 Game.vector = function(start, end, side, capture){
@@ -1011,8 +1059,7 @@ Game.vector = function(start, end, side, capture){
 }
 
 /**
- * Returns a properly formated CSS square ID (for jQuery selection)
- * unless the row and/or column are beyound the edge of the board.
+ * @returns a properly formatted CSS square ID (for jQuery selection) unless the row and/or column are beyound the edge of the board.
  * @author BF
  */
 Game.writeID = function(column, row) {

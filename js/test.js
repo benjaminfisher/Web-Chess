@@ -7,7 +7,11 @@ $(function(){
 				$(piece.image).remove();
 			};
 		});
-		$('.threat').removeClass('threat');
+		
+	    $('.legal').removeClass('legal');
+	    $('.selected').removeClass('selected');
+	    $('.threat').removeClass('threat');
+	    $('.attack').removeClass('attack');
 	});
 	
 	$('#staging img').draggable({
