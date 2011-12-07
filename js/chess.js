@@ -1,7 +1,7 @@
 /**
  * Master object to control game functionality and contain players and pieces.
  * @author Benjamin Fisher
- * @version 19.5
+ * @version 20.3
  * @constructor
  * 
  */
@@ -715,10 +715,12 @@ Game.callPiece = function(image) {
 }
 
 /**
- * @param square The location of the threatened piece (usually a king)
- * @param player The opposing player. Player's piece and pawn moves are iterated for threats to the square.
+ * @param square [string] Format is 'RC' where R = row and C = column. The location of the threatened piece (usually a king)
+ * @param player [player] The opposing player. Player's piece and pawn moves are iterated for threats to the square.
  * @param ignore [piece] It can be used to prevent recursion in the Legal object, helps in pinning checks.
- * @return [array] pieces that are threatening the square location (requires string in 'RC' format where R = row and C = column). If none are found returns false.
+ * @return [Object] array of pieces that are threatening the square location.
+ * @return [boolean] .protect whether piece occupying square is guarded by a piece of the same color
+ * @return [boolean] .threat whether the square is threatened by an opposing piece
  * @author BF
  */
 Game.check = function(square, player, ignore) {
@@ -978,11 +980,22 @@ Game.Stalemate = function() {
     
     legalMoves += Game.Players[0].King.Legal(Game.Players[0].King).moves;
     
-    //console.log('Stalemate moves: ' + legalMoves);
     if (legalMoves.length === 0 && !Game.Players[0].King.inCheck) return true;
     else return false;
 } // End of Stalemate()
-    
+
+/**
+ * Manages turn change.
+ * 1. Is next player in check
+ * 2. Clear EP variables for current player's pawns
+ * 3. Switch active player and activate all of their pieces
+ * 4. Incriment turncount if current player is white
+ * 5. Clear the change variable
+ * 6. Checkmate
+ * 7. Stalemate
+ * 8. Update dash with current player name and color
+ * 9. Show if current player is threatened
+ */
 Game.turn = function(){
     this.select(false);
     $('.legal').removeClass('legal'); // clears legal moves of last moved piece
@@ -1006,7 +1019,7 @@ Game.turn = function(){
     Game.change = null;
     
     //if (this.Checkmate()) this.endGame(2);
-    //if (this.Stalemate()) this.endGame(3);
+    if (this.Stalemate()) this.endGame(3);
     
     // Game didn't end, change name and color of dash
     $('#Dash').css('background', Game.Players[0].color);

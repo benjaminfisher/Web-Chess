@@ -136,3 +136,5 @@ v20.1 - Removed prompts from pawn promotion. Move logging is glitching (logCell 
 v20.2 - Test Board is working. Able to drag and drop new pieces. Resolved check vector issues 
 		(king moving to threatened square that he blocked) except for opponent pieces adjacent
 		to the king << B. Fisher 120711
+		
+v20.3 - Stalemate is working << B. Fisher 120711
