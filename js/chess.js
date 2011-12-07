@@ -1,7 +1,7 @@
 /**
  * Master object to control game functionality and contain players and pieces.
  * @author Benjamin Fisher
- * @version 20.3
+ * @version 20.3.1
  * @constructor
  * 
  */
@@ -777,27 +777,44 @@ Game.Checkmate = function(player) {
 } // End of Checkmate()
 
 Game.endGame = function(gameOver) {
+	$note = $('<div>');
+	
+	$('<h1>').html('Web Chess').appendTo($note);
+	
     // End game alerts << B. Fisher
     switch (gameOver) {
-        // If gameOver is 1 current player resigned
+    	
+    // Resignation case
     case 1:
-        alert(Game.Players[0].name + ' resigned on turn ' + Game.turnCount + '.');
+    	$('<p>')
+    		.html(Game.Players[0].name + ' resigned on turn ' + Game.turnCount + '.')
+    		.appendTo($note);
         break;
-        // If gameOver is 2 current player is mated.
+        
+    // Checkmate case
     case 2:
-        alert(Game.Players[0].name + ' was mated after ' + Game.turnCount + ' moves.');
+        $('<p>')
+        	.html(Game.Players[0].name + ' was mated after ' + Game.turnCount + ' moves.')
+        	.appendTo($note);
         break;
+        
+   	// Stalemate case
     case 3:
-        alert(Game.Players[0].name + ' is in Stalemate after ' + Game.turnCount + ' moves.');
+        $('<p>')
+        	.html(Game.Players[0].name + ' is in Stalemate after ' + Game.turnCount + ' moves.')
+        	.appendTo($note);
         break;
+        
         // If gameOver is false then proceed with next players turn.
     default:
         $('#Dash').css('background', Game.Players[0].color);
         $('#turn').html(Game.Players[0].name);
         //			$("#board img." + Game.Players[0].color).draggable("enable");
     }
-
-    this.$cover.slideDown('slow');
+	
+	$note.appendTo(Game.$cover);
+	
+    Game.$cover.slideDown('slow');
     $('button').button('disable');
 } // End of endGame()
 

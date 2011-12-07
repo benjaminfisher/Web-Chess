@@ -175,7 +175,7 @@ img{z-index:10;}
 }
 
 #cover form, #cover div {text-align:center; }
-#cover form h1 { font-size:1.5em; margin-bottom:2em; }
+#cover form h1, #cover div h1 { font-size:1.5em; margin-bottom:2em; }
 #cover form h2 { font-size:1.2em; letter-spacing:2px; margin-bottom:0.5em; }
 #cover form div { margin:0 auto; text-align:center; }
 #cover form label { margin-right:5px; }
