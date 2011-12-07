@@ -765,9 +765,13 @@ Game.check = function(square, player, ignore) {
 
 Game.Checkmate = function(player) {
     //if players king is in check
-    if (Game.Players[0].King.inCheck)
-    // if checking piece is vulnerable
-    //if all available moves for the king are threatened
+    if (Game.Players[0].King.inCheck) {
+    	check = Game.check(player.King.position, player);
+    	// if checking piece is vulnerable
+    	// if transposition of check is possible
+    	// if all available moves for the king are threatened
+    }
+    
     return false;
 } // End of Checkmate()
 
