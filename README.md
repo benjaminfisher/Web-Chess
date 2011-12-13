@@ -138,6 +138,6 @@ v20.2 - Test Board is working. Able to drag and drop new pieces. Resolved check 
 		to the king << B. Fisher 120711
 		
 v20.3 - Stalemate is working << B. Fisher 120711
-	v20.3.1 - pawn promotion logging fixed << B. Fisher 120711
++ v20.3.1 - pawn promotion logging fixed << B. Fisher 120711
 	
 v20.4 - All alerts removed. Style for cover notes and forms still needs some work.

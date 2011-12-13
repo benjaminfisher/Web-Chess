@@ -243,7 +243,7 @@ function Game() {
  */
 		Legal: function(child) {
 		    var C = child.position[0],
-		        cNum = Game.cLabels.indexOf(C) + 1,
+		        cNum = Game.colNumber(C),
 		        footprint = child.footprint(),
 		        kid = null,
 		        legal = new Array(),
@@ -291,7 +291,8 @@ function Game() {
 		            
 		            // Kingside castle squares are unoccupied and unthreatened,
 		            // and the kingside rook has not moved.
-		            if (Game.vector(child.position, 'G' + rNum, child.color, false).list.match('G') && rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1]).threat) {
+		            if (Game.vector(child.position, 'G' + rNum, child.color, false).list.match('G') && 
+		            	rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1]).threat) {
 		                legalIDs += Game.writeID('G', rNum);
 		            };
 		            
@@ -299,14 +300,14 @@ function Game() {
 		            // The king is not moving across check.
 		            // and the queenside rook has not moved.
 		            rook = Game.occupied('#A' + rNum);
-		            if (Game.vector(child.position, 'B' + rNum, child.color, false).list.match('B') && rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1]).threat) {
+		            if (Game.vector(child.position, 'B' + rNum, child.color, false).list.match('B') &&
+		            	rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1]).threat) {
 		                legalIDs += Game.writeID('C', rNum);
 		            };
 		        };
 		        
 		        // Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		        squares = legalIDs.split(',');
-		        $('.threat').removeClass('threat');
 		        
 		        for (var i = squares.length - 2; i >= 0; i--) {
 		        	kid = Game.occupied(squares[i]);
@@ -337,8 +338,7 @@ function Game() {
 		        })
 		        
 		        legalIDs = squares.join(',');
-		    }
-		    // === End King legality checks === //
+		    } // === End King legality checks === //
 		    
 		    legal['moves'] = legalIDs;
 		    
@@ -348,13 +348,16 @@ function Game() {
 		penetration : function(square, attacker){
 			col = square[1];
 			row = square[2]*1;
+			acol = attacker.position[0];
+			arow = attacker.position[1]*1;
 			kcol = this.position[0];
 			krow = this.position[1]*1;
 			inc = null;
 			hole = null;
 			
+			// Horizontal penetration
 			if (attacker.type === 'rook' || attacker.type === 'queen') {
-				if (row === krow && krow === attacker.position[1]*1) {
+				if (row === krow && krow === arow) {
 					if (Game.findInc(col, kcol) === 1){
 						hole = $('#' + this.position).next();
 					} else {
@@ -362,18 +365,25 @@ function Game() {
 					}
 				};
 				
-				if (col === kcol && kcol === attacker.position[0]){
+				// Vertical penetration
+				if (col === kcol && kcol === acol){
 					inc = Game.findInc(row, krow);
 					hole = $('#' + kcol + (krow + inc));
 				};
 			};
 			
+			// Diagonal penetration 
 			if (attacker.type === 'bishop' || attacker.type === 'queen'){
-				if(Math.abs(Game.cLabels.indexOf(kcol) - Game.cLabels.indexOf(attacker.position[0])) === Math.abs(krow - attacker.position[1]*1)){
-					hole = $('#' + Game.cLabels[Game.cLabels.indexOf(kcol) + Game.findInc(col, kcol)] + (krow + Game.findInc(row, krow)));
+				xChange = Math.abs(Game.colNumber(kcol) - Game.colNumber(acol));
+				yChange = Math.abs(krow - arow);
+				if(xChange === yChange){
+					hole = $('#' + Game.cLabels[Game.colNumber(kcol) + 
+					Game.findInc(acol, kcol)] + 
+					(krow + Game.findInc(arow, krow)));
 				};
 			};
 			
+			// If opposing piece is in the hole it is protected from capture by the king.
 			if (hole && (hole.children('img').length === 0 || hole.children('img').data().piece.color != this.color)){
 				hole.addClass('threat');
 			};
@@ -416,8 +426,8 @@ function Game() {
         
         if (!self.moved) ids.push(col + (row + 2 * this.inc));
         else ids.push(col + (row + 1 * this.inc));
-        ids.push(Game.cLabels[Game.cLabels.indexOf(col) - 1] + (row + this.inc));
-        ids.push(Game.cLabels[Game.cLabels.indexOf(col) + 1] + (row + this.inc));
+        ids.push(Game.cLabels[Game.colNumber(col) - 1] + (row + this.inc));
+        ids.push(Game.cLabels[Game.colNumber(col) + 1] + (row + this.inc));
         return ids;
 	};
 	
@@ -535,7 +545,7 @@ function Game() {
     
     knight.prototype.footprint = function() {
         var ids = [],
-            col = Game.cLabels.indexOf(this.position[0]),
+            col = Game.colNumber(this.position[0]),
             row = this.position[1] * 1,
             cShift;
             
@@ -645,7 +655,7 @@ function Game() {
        
        king.prototype.footprint = function() {
         var row = this.position[1] * 1,
-            column = Game.cLabels.indexOf(this.position[0]),
+            column = Game.colNumber(this.position[0]),
             square, squares = new Array();
             
         for (var c = column - 1; c <= column + 1; c++) {
@@ -707,7 +717,7 @@ Game.prototype = {
 		
 		$(form).appendTo(Game.$cover);
 		$('#Player1').focus();
-	},
+	}
 }
 
 Game.callPiece = function(image) {
@@ -726,17 +736,19 @@ Game.callPiece = function(image) {
  */
 Game.check = function(square, player, ignore) {
     var chk = new Array(),
-        ids, footprint;
+        ids, footprint, legal;
         
     chk.protect = false;
     chk.threat = false;
-        
+    
+	// Interate through player's pieces to evaluate threats
     $(player.pieces).each(function() {
         if (this != ignore) {
-        	if ($.inArray(Game.occupied(square), this.Legal(this)) >= 0) {
+        	legal = this.Legal(this);
+        	if ($.inArray(Game.occupied(square), legal) >= 0) {
         		chk.protect = true;
         	};
-            ids = this.Legal(this).moves;
+            ids = legal.moves
 
             if (ids.length > 0 && ids.match(square)) chk.push(this);
         };
@@ -751,7 +763,9 @@ Game.check = function(square, player, ignore) {
             	//remove non-capture moves from footprint list
                 if (this[0] == pawn.position[0]) ids.splice(index, 1);
             });
-            if ($.inArray(square, ids) >= 0) {
+            if ($.inArray(square.substring(1), ids) >= 0) {
+            	kid = Game.occupied(square);
+            	if (kid.color === pawn.color) chk.protect = true;
                 chk.push(pawn);
             };
         };
@@ -762,7 +776,12 @@ Game.check = function(square, player, ignore) {
     if (chk.length >= 1) chk.threat = true;
     
     return chk;
-}
+};
+
+Game.colNumber = function(column)  {
+	return "ABCDEFGH".indexOf(column);
+};
+
 
 Game.Checkmate = function(player) {
     //if players king is in check
@@ -863,7 +882,7 @@ Game.findDiagonal = function(start, xInc, yInc) {
  * @author BF
  */
 Game.inside = function(square, origin) {
-    if (square && origin != square && square[1] * 1 >= 1 && square.substr(1) * 1 <= 8 && Game.cLabels.indexOf(square[0]) >= 0) {
+    if (square && origin != square && square[1] * 1 >= 1 && square.substr(1) * 1 <= 8 && Game.colNumber(square[0]) >= 0) {
     	return true;
     }
     else {
@@ -1060,8 +1079,8 @@ Game.turn = function(){
  * if the square is occupied by an opponent piece the vector ids includes that square unless capture is false.
  */
 Game.vector = function(start, end, side, capture){
-    var sX = Game.cLabels.indexOf(start[0]),
-        eX = Game.cLabels.indexOf(end[0]),
+    var sX = Game.colNumber(start[0]),
+        eX = Game.colNumber(end[0]),
         sY = start[1] * 1,
         eY = end[1] * 1,
         xInc = Game.findInc(sX, eX),
