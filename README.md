@@ -129,6 +129,7 @@ v19.8 - Resolved most of the issues with optimized code, including now king cann
 v19.9 - Player names captured via form. << B. Fisher 112911
 
 -------------------------------------------------------------------------
+
 _Version 20_ - Merge optimize branch back into master. << B. Fisher 112911
 
 v20.1 - Removed prompts from pawn promotion. Move logging is glitching (logCell is incorrect after first promotion) << B. Fisher 113011
@@ -141,3 +142,5 @@ v20.3 - Stalemate is working << B. Fisher 120711
 + v20.3.1 - pawn promotion logging fixed << B. Fisher 120711
 	
 v20.4 - All alerts removed. Style for cover notes and forms still needs some work.
+
+v20.5 - Converted to Compass project with SASS (sass files are not included in repo).
