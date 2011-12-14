@@ -1,11 +1,1743 @@
-body{
-	background:darkgreen;
+/* line 17, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, #log table tr:nth-child(odd), td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
-div#staging{
-	float:left;
+/* line 20, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+body {
+  line-height: 1;
 }
 
-div#staging img{
-	z-index:100;
+/* line 22, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 24, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 26, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+caption, th, #log table tr:nth-child(odd), td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 28, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 101, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 30, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 114, C:/Ruby192/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/* line 1, C:/Users/Benjamin/Web-Chess/Web/css/scss/_global.scss */
+body {
+  background-color: maroon;
+  font-family: Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* line 7, C:/Users/Benjamin/Web-Chess/Web/css/scss/_global.scss */
+img {
+  z-index: 10;
+}
+
+/* line 16, C:/Users/Benjamin/Web-Chess/Web/css/scss/_global.scss */
+#wrapper {
+  width: 100%;
+  min-width: 985px;
+  float: left;
+}
+
+/* line 17, C:/Users/Benjamin/Web-Chess/Web/css/scss/_global.scss */
+.hidden {
+  visibility: hidden;
+}
+
+/* line 9, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board {
+  background: url(../images/marble.jpg);
+  border: 4px outset gray;
+  float: left;
+  width: 624px;
+  height: 624px;
+  position: relative;
+  margin: 5px;
+  padding: 7px 0 0 7px;
+}
+/* line 19, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board .label {
+  bottom: 1px;
+  color: #222222;
+  font-size: 0.7em;
+  left: 2px;
+  position: absolute;
+  z-index: 100;
+  text-shadow: -1px -1px 0px #e0e0e0;
+  filter: dropshadow(color=#e0e0e0, offx=-1, offy=-1);
+}
+/* line 31, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul {
+  height: 77px;
+  width: 616px;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #222;
+}
+/* line 38, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul:first-child div:hover {
+  margin-top: 0;
+}
+/* line 39, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul:nth-child(odd) li:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+/* line 41, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul:nth-child(odd) li:nth-child(odd) .label {
+  color: #C0C0C0;
+  text-shadow: 1px 1px 0px #333;
+  filter: dropshadow(color=#cccccc, offx=-1, offy=-1);
+}
+/* line 44, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul:nth-child(even) li:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+/* line 46, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul:nth-child(even) li:nth-child(even) .label {
+  color: #C0C0C0;
+  text-shadow: 1px 1px 0px #333;
+  filter: dropshadow(color=#cccccc, offx=-1, offy=-1);
+}
+/* line 49, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul .selected {
+  border: 2px solid darkblue;
+  height: 73px;
+  width: 73px;
+  z-index: 5;
+}
+/* line 56, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li.legal {
+  background-color: rgba(0, 0, 200, 0.6) !important;
+}
+/* line 57, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li.threat {
+  background-color: rgba(200, 0, 0, 0.6) !important;
+}
+/* line 58, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li.attack {
+  background-color: rgba(0, 200, 0, 0.6) !important;
+}
+/* line 60, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li {
+  display: inline;
+  float: left;
+  position: relative;
+  height: 75px;
+  width: 75px;
+  border: 1px solid silver;
+}
+/* line 68, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li:first-child:hover {
+  margin-left: 0;
+}
+/* line 70, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li:not(.selected) img.active:hover {
+  border: 1px solid green;
+  left: -1px;
+  top: -1px;
+}
+/* line 76, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li .legal:hover {
+  background-color: rgba(0, 100, 200, 0.6) !important;
+  border: 1px solid green;
+}
+/* line 81, C:/Users/Benjamin/Web-Chess/Web/css/scss/_board.scss */
+#board ul li img {
+  display: block;
+  position: relative;
+}
+
+/* line 1, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#Dash {
+  background-color: #FFF;
+  border: 2px outset gray;
+  color: maroon;
+  float: left;
+  height: 624px;
+  line-height: 24px;
+  margin-top: 5px;
+  padding: 5px;
+  position: relative;
+  min-width: 200px;
+  max-width: 500px;
+  width: 22%;
+}
+/* line 15, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#Dash p {
+  font-size: 1.5em;
+  margin: 6px 0;
+  padding: 0 5px;
+}
+/* line 20, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#Dash button span {
+  font-size: 0.8em;
+  padding: 0.1em 0.7em;
+}
+
+/* line 27, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#logo {
+  background: transparent url(../images/small-logo.png) top left no-repeat;
+  display: inline-block;
+  float: left;
+  height: 50px;
+  margin-right: 1em;
+  position: relative;
+  width: 50px;
+}
+
+/* line 37, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log {
+  font: 14px Arial, Helvetica, sans-serif;
+  background-color: transparent;
+  border: 2px outset gray;
+  color: #FFF;
+  overflow-y: auto;
+  height: 530px;
+  padding: 3px;
+  margin-top: 24px;
+  clear: left;
+}
+/* line 48, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table {
+  background-color: transparent;
+  border-color: black;
+  border-collapse: separate;
+  border-spacing: 2px 2px;
+  width: 100%;
+}
+/* line 55, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table th, #log table tr:nth-child(odd) {
+  background-color: gray;
+  text-align: center;
+}
+/* line 57, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table tr {
+  border: 1px solid;
+}
+/* line 60, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table tr:nth-child(even) {
+  background-color: darkgray;
+}
+/* line 62, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table tr td:last-child {
+  color: black;
+}
+/* line 64, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table td {
+  padding: 1px;
+}
+/* line 65, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table thead th, #log table thead tr:nth-child(odd) {
+  width: 50%;
+}
+/* line 65, C:/Users/Benjamin/Web-Chess/Web/css/scss/_dash.scss */
+#log table thead th:last-child, #log table thead tr:last-child:nth-child(odd) {
+  color: black;
+}
+
+/*
+ * jQuery UI CSS Framework 1.8.16
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Theming/API
+ */
+/* Layout helpers
+----------------------------------*/
+/* line 14, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-hidden {
+  display: none;
+}
+
+/* line 17, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-hidden-accessible {
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+/* line 22, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-reset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  line-height: 1.3;
+  text-decoration: none;
+  font-size: 100%;
+  list-style: none;
+}
+
+/* line 32, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-clearfix {
+  display: inline-block;
+}
+/* line 33, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* required comment for clearfix to work in Opera \*/
+/* line 43, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+* html .ui-helper-clearfix {
+  height: 1%;
+}
+
+/* line 46, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-clearfix {
+  display: block;
+}
+
+/* end clearfix */
+/* line 51, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-helper-zfix {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  opacity: 0;
+  filter: Alpha(Opacity=0);
+}
+
+/* Interaction Cues
+----------------------------------*/
+/* line 63, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-disabled {
+  cursor: default !important;
+}
+
+/* Icons
+----------------------------------*/
+/* states and images */
+/* line 71, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon {
+  display: block;
+  text-indent: -99999px;
+  overflow: hidden;
+  background-repeat: no-repeat;
+}
+
+/* Misc visuals
+----------------------------------*/
+/* Overlays */
+/* line 82, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * jQuery UI CSS Framework 1.8.16
+ *
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Theming/API
+ *
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Segoe%20UI,%20Arial,%20sans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=333333&bgTextureHeader=12_gloss_wave.png&bgImgOpacityHeader=25&borderColorHeader=333333&fcHeader=ffffff&iconColorHeader=ffffff&bgColorContent=000000&bgTextureContent=05_inset_soft.png&bgImgOpacityContent=25&borderColorContent=666666&fcContent=ffffff&iconColorContent=cccccc&bgColorDefault=555555&bgTextureDefault=02_glass.png&bgImgOpacityDefault=20&borderColorDefault=666666&fcDefault=eeeeee&iconColorDefault=cccccc&bgColorHover=0078a3&bgTextureHover=02_glass.png&bgImgOpacityHover=40&borderColorHover=59b4d4&fcHover=ffffff&iconColorHover=ffffff&bgColorActive=f58400&bgTextureActive=05_inset_soft.png&bgImgOpacityActive=30&borderColorActive=ffaf0f&fcActive=ffffff&iconColorActive=222222&bgColorHighlight=eeeeee&bgTextureHighlight=03_highlight_soft.png&bgImgOpacityHighlight=80&borderColorHighlight=cccccc&fcHighlight=2e7db2&iconColorHighlight=4b8e0b&bgColorError=ffc73d&bgTextureError=02_glass.png&bgImgOpacityError=40&borderColorError=ffb73d&fcError=111111&iconColorError=a83300&bgColorOverlay=5c5c5c&bgTextureOverlay=01_flat.png&bgImgOpacityOverlay=50&opacityOverlay=80&bgColorShadow=cccccc&bgTextureShadow=01_flat.png&bgImgOpacityShadow=30&opacityShadow=60&thicknessShadow=7px&offsetTopShadow=-7px&offsetLeftShadow=-7px&cornerRadiusShadow=8px
+ */
+/* Component containers
+----------------------------------*/
+/* line 104, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget {
+  font-family: Segoe UI, Arial, sans-serif;
+  font-size: 1.1em;
+}
+/* line 107, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget .ui-widget {
+  font-size: 1em;
+}
+/* line 109, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: Segoe UI, Arial, sans-serif;
+  font-size: 1em;
+}
+
+/* line 113, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-content {
+  border: 1px solid #666666;
+  background: black url(../images/ui/ui-bg_inset-soft_25_000000_1x100.png) 50% bottom repeat-x;
+  color: #ffffff;
+}
+/* line 117, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-content a {
+  color: #ffffff;
+}
+
+/* line 120, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-header {
+  border: 1px solid #333333;
+  background: #333333 url(../images/ui/ui-bg_gloss-wave_25_333333_500x100.png) 50% 50% repeat-x;
+  color: #ffffff;
+  font-weight: bold;
+}
+/* line 125, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-header a {
+  color: #ffffff;
+}
+
+/* Interaction states
+----------------------------------*/
+/* line 131, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-default, button, .ui-widget-content .ui-state-default, .ui-widget-content button, .ui-widget-header .ui-state-default, .ui-widget-header button {
+  border: 1px solid #666666;
+  background: #555555 url(../images/ui/ui-bg_glass_20_555555_1x400.png) 50% 50% repeat-x;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+/* line 137, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-default a, button a {
+  color: #eeeeee;
+  text-decoration: none;
+}
+/* line 140, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-default a:link, button a:link, .ui-state-default a:visited, button a:visited {
+  color: #eeeeee;
+  text-decoration: none;
+}
+
+/* line 144, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+  border: 1px solid #59b4d4;
+  background: #0078a3 url(../images/ui/ui-bg_glass_40_0078a3_1x400.png) 50% 50% repeat-x;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* line 150, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-hover a {
+  color: #ffffff;
+  text-decoration: none;
+}
+/* line 153, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-hover a:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* line 157, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+  border: 1px solid #ffaf0f;
+  background: #f58400 url(../images/ui/ui-bg_inset-soft_30_f58400_1x100.png) 50% 50% repeat-x;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* line 163, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-active a {
+  color: #ffffff;
+  text-decoration: none;
+}
+/* line 166, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-active a:link, .ui-state-active a:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* line 170, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget :active {
+  outline: none;
+}
+
+/* Interaction Cues
+----------------------------------*/
+/* line 176, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+  border: 1px solid #cccccc;
+  background: #eeeeee url(../images/ui/ui-bg_highlight-soft_80_eeeeee_1x100.png) 50% top repeat-x;
+  color: #2e7db2;
+}
+
+/* line 181, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-highlight a, .ui-widget-content .ui-state-highlight a, .ui-widget-header .ui-state-highlight a {
+  color: #2e7db2;
+}
+
+/* line 184, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
+  border: 1px solid #ffb73d;
+  background: #ffc73d url(../images/ui/ui-bg_glass_40_ffc73d_1x400.png) 50% 50% repeat-x;
+  color: #111111;
+}
+
+/* line 189, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-error a, .ui-widget-content .ui-state-error a, .ui-widget-header .ui-state-error a, .ui-state-error-text, .ui-widget-content .ui-state-error-text, .ui-widget-header .ui-state-error-text {
+  color: #111111;
+}
+
+/* line 192, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-priority-primary, .ui-widget-content .ui-priority-primary, .ui-widget-header .ui-priority-primary {
+  font-weight: bold;
+}
+
+/* line 195, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-priority-secondary, .ui-widget-content .ui-priority-secondary, .ui-widget-header .ui-priority-secondary {
+  opacity: .7;
+  filter: Alpha(Opacity=70);
+  font-weight: normal;
+}
+
+/* line 200, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
+  opacity: .35;
+  filter: Alpha(Opacity=35);
+  background-image: none;
+}
+
+/* Icons
+----------------------------------*/
+/* states and images */
+/* line 210, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon {
+  width: 16px;
+  height: 16px;
+  background-image: url(../images/ui/ui-icons_cccccc_256x240.png);
+}
+
+/* line 215, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-content .ui-icon {
+  background-image: url(../images/ui/ui-icons_cccccc_256x240.png);
+}
+
+/* line 218, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-header .ui-icon {
+  background-image: url(../images/ui/ui-icons_ffffff_256x240.png);
+}
+
+/* line 221, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-default .ui-icon, button .ui-icon {
+  background-image: url(../images/ui/ui-icons_cccccc_256x240.png);
+}
+
+/* line 224, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
+  background-image: url(../images/ui/ui-icons_ffffff_256x240.png);
+}
+
+/* line 227, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-active .ui-icon {
+  background-image: url(../images/ui/ui-icons_222222_256x240.png);
+}
+
+/* line 230, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-highlight .ui-icon {
+  background-image: url(../images/ui/ui-icons_4b8e0b_256x240.png);
+}
+
+/* line 233, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-state-error .ui-icon, .ui-state-error-text .ui-icon {
+  background-image: url(../images/ui/ui-icons_a83300_256x240.png);
+}
+
+/* positioning */
+/* line 238, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-n {
+  background-position: 0 0;
+}
+
+/* line 241, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-ne {
+  background-position: -16px 0;
+}
+
+/* line 244, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-e {
+  background-position: -32px 0;
+}
+
+/* line 247, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-se {
+  background-position: -48px 0;
+}
+
+/* line 250, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-s {
+  background-position: -64px 0;
+}
+
+/* line 253, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-sw {
+  background-position: -80px 0;
+}
+
+/* line 256, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-w {
+  background-position: -96px 0;
+}
+
+/* line 259, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-1-nw {
+  background-position: -112px 0;
+}
+
+/* line 262, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-2-n-s {
+  background-position: -128px 0;
+}
+
+/* line 265, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-carat-2-e-w {
+  background-position: -144px 0;
+}
+
+/* line 268, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-n {
+  background-position: 0 -16px;
+}
+
+/* line 271, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-ne {
+  background-position: -16px -16px;
+}
+
+/* line 274, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-e {
+  background-position: -32px -16px;
+}
+
+/* line 277, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-se {
+  background-position: -48px -16px;
+}
+
+/* line 280, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-s {
+  background-position: -64px -16px;
+}
+
+/* line 283, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-sw {
+  background-position: -80px -16px;
+}
+
+/* line 286, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-w {
+  background-position: -96px -16px;
+}
+
+/* line 289, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-1-nw {
+  background-position: -112px -16px;
+}
+
+/* line 292, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-2-n-s {
+  background-position: -128px -16px;
+}
+
+/* line 295, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-triangle-2-e-w {
+  background-position: -144px -16px;
+}
+
+/* line 298, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-n {
+  background-position: 0 -32px;
+}
+
+/* line 301, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-ne {
+  background-position: -16px -32px;
+}
+
+/* line 304, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-e {
+  background-position: -32px -32px;
+}
+
+/* line 307, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-se {
+  background-position: -48px -32px;
+}
+
+/* line 310, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-s {
+  background-position: -64px -32px;
+}
+
+/* line 313, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-sw {
+  background-position: -80px -32px;
+}
+
+/* line 316, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-w {
+  background-position: -96px -32px;
+}
+
+/* line 319, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-1-nw {
+  background-position: -112px -32px;
+}
+
+/* line 322, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-2-n-s {
+  background-position: -128px -32px;
+}
+
+/* line 325, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-2-ne-sw {
+  background-position: -144px -32px;
+}
+
+/* line 328, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-2-e-w {
+  background-position: -160px -32px;
+}
+
+/* line 331, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-2-se-nw {
+  background-position: -176px -32px;
+}
+
+/* line 334, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowstop-1-n {
+  background-position: -192px -32px;
+}
+
+/* line 337, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowstop-1-e {
+  background-position: -208px -32px;
+}
+
+/* line 340, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowstop-1-s {
+  background-position: -224px -32px;
+}
+
+/* line 343, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowstop-1-w {
+  background-position: -240px -32px;
+}
+
+/* line 346, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-n {
+  background-position: 0 -48px;
+}
+
+/* line 349, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-ne {
+  background-position: -16px -48px;
+}
+
+/* line 352, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-e {
+  background-position: -32px -48px;
+}
+
+/* line 355, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-se {
+  background-position: -48px -48px;
+}
+
+/* line 358, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-s {
+  background-position: -64px -48px;
+}
+
+/* line 361, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-sw {
+  background-position: -80px -48px;
+}
+
+/* line 364, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-w {
+  background-position: -96px -48px;
+}
+
+/* line 367, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-1-nw {
+  background-position: -112px -48px;
+}
+
+/* line 370, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-2-n-s {
+  background-position: -128px -48px;
+}
+
+/* line 373, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-2-ne-sw {
+  background-position: -144px -48px;
+}
+
+/* line 376, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-2-e-w {
+  background-position: -160px -48px;
+}
+
+/* line 379, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthick-2-se-nw {
+  background-position: -176px -48px;
+}
+
+/* line 382, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthickstop-1-n {
+  background-position: -192px -48px;
+}
+
+/* line 385, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthickstop-1-e {
+  background-position: -208px -48px;
+}
+
+/* line 388, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthickstop-1-s {
+  background-position: -224px -48px;
+}
+
+/* line 391, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowthickstop-1-w {
+  background-position: -240px -48px;
+}
+
+/* line 394, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturnthick-1-w {
+  background-position: 0 -64px;
+}
+
+/* line 397, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturnthick-1-n {
+  background-position: -16px -64px;
+}
+
+/* line 400, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturnthick-1-e {
+  background-position: -32px -64px;
+}
+
+/* line 403, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturnthick-1-s {
+  background-position: -48px -64px;
+}
+
+/* line 406, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturn-1-w {
+  background-position: -64px -64px;
+}
+
+/* line 409, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturn-1-n {
+  background-position: -80px -64px;
+}
+
+/* line 412, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturn-1-e {
+  background-position: -96px -64px;
+}
+
+/* line 415, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowreturn-1-s {
+  background-position: -112px -64px;
+}
+
+/* line 418, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowrefresh-1-w {
+  background-position: -128px -64px;
+}
+
+/* line 421, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowrefresh-1-n {
+  background-position: -144px -64px;
+}
+
+/* line 424, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowrefresh-1-e {
+  background-position: -160px -64px;
+}
+
+/* line 427, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrowrefresh-1-s {
+  background-position: -176px -64px;
+}
+
+/* line 430, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-4 {
+  background-position: 0 -80px;
+}
+
+/* line 433, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-arrow-4-diag {
+  background-position: -16px -80px;
+}
+
+/* line 436, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-extlink {
+  background-position: -32px -80px;
+}
+
+/* line 439, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-newwin {
+  background-position: -48px -80px;
+}
+
+/* line 442, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-refresh {
+  background-position: -64px -80px;
+}
+
+/* line 445, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-shuffle {
+  background-position: -80px -80px;
+}
+
+/* line 448, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-transfer-e-w {
+  background-position: -96px -80px;
+}
+
+/* line 451, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-transferthick-e-w {
+  background-position: -112px -80px;
+}
+
+/* line 454, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-folder-collapsed {
+  background-position: 0 -96px;
+}
+
+/* line 457, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-folder-open {
+  background-position: -16px -96px;
+}
+
+/* line 460, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-document {
+  background-position: -32px -96px;
+}
+
+/* line 463, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-document-b {
+  background-position: -48px -96px;
+}
+
+/* line 466, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-note {
+  background-position: -64px -96px;
+}
+
+/* line 469, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-mail-closed {
+  background-position: -80px -96px;
+}
+
+/* line 472, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-mail-open {
+  background-position: -96px -96px;
+}
+
+/* line 475, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-suitcase {
+  background-position: -112px -96px;
+}
+
+/* line 478, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-comment {
+  background-position: -128px -96px;
+}
+
+/* line 481, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-person {
+  background-position: -144px -96px;
+}
+
+/* line 484, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-print {
+  background-position: -160px -96px;
+}
+
+/* line 487, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-trash {
+  background-position: -176px -96px;
+}
+
+/* line 490, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-locked {
+  background-position: -192px -96px;
+}
+
+/* line 493, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-unlocked {
+  background-position: -208px -96px;
+}
+
+/* line 496, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-bookmark {
+  background-position: -224px -96px;
+}
+
+/* line 499, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-tag {
+  background-position: -240px -96px;
+}
+
+/* line 502, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-home {
+  background-position: 0 -112px;
+}
+
+/* line 505, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-flag {
+  background-position: -16px -112px;
+}
+
+/* line 508, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-calendar {
+  background-position: -32px -112px;
+}
+
+/* line 511, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-cart {
+  background-position: -48px -112px;
+}
+
+/* line 514, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-pencil {
+  background-position: -64px -112px;
+}
+
+/* line 517, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-clock {
+  background-position: -80px -112px;
+}
+
+/* line 520, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-disk {
+  background-position: -96px -112px;
+}
+
+/* line 523, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-calculator {
+  background-position: -112px -112px;
+}
+
+/* line 526, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-zoomin {
+  background-position: -128px -112px;
+}
+
+/* line 529, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-zoomout {
+  background-position: -144px -112px;
+}
+
+/* line 532, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-search {
+  background-position: -160px -112px;
+}
+
+/* line 535, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-wrench {
+  background-position: -176px -112px;
+}
+
+/* line 538, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-gear {
+  background-position: -192px -112px;
+}
+
+/* line 541, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-heart {
+  background-position: -208px -112px;
+}
+
+/* line 544, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-star {
+  background-position: -224px -112px;
+}
+
+/* line 547, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-link {
+  background-position: -240px -112px;
+}
+
+/* line 550, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-cancel {
+  background-position: 0 -128px;
+}
+
+/* line 553, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-plus {
+  background-position: -16px -128px;
+}
+
+/* line 556, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-plusthick {
+  background-position: -32px -128px;
+}
+
+/* line 559, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-minus {
+  background-position: -48px -128px;
+}
+
+/* line 562, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-minusthick {
+  background-position: -64px -128px;
+}
+
+/* line 565, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-close {
+  background-position: -80px -128px;
+}
+
+/* line 568, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-closethick {
+  background-position: -96px -128px;
+}
+
+/* line 571, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-key {
+  background-position: -112px -128px;
+}
+
+/* line 574, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-lightbulb {
+  background-position: -128px -128px;
+}
+
+/* line 577, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-scissors {
+  background-position: -144px -128px;
+}
+
+/* line 580, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-clipboard {
+  background-position: -160px -128px;
+}
+
+/* line 583, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-copy {
+  background-position: -176px -128px;
+}
+
+/* line 586, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-contact {
+  background-position: -192px -128px;
+}
+
+/* line 589, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-image {
+  background-position: -208px -128px;
+}
+
+/* line 592, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-video {
+  background-position: -224px -128px;
+}
+
+/* line 595, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-script {
+  background-position: -240px -128px;
+}
+
+/* line 598, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-alert {
+  background-position: 0 -144px;
+}
+
+/* line 601, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-info {
+  background-position: -16px -144px;
+}
+
+/* line 604, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-notice {
+  background-position: -32px -144px;
+}
+
+/* line 607, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-help {
+  background-position: -48px -144px;
+}
+
+/* line 610, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-check {
+  background-position: -64px -144px;
+}
+
+/* line 613, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-bullet {
+  background-position: -80px -144px;
+}
+
+/* line 616, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-radio-off {
+  background-position: -96px -144px;
+}
+
+/* line 619, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-radio-on {
+  background-position: -112px -144px;
+}
+
+/* line 622, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-pin-w {
+  background-position: -128px -144px;
+}
+
+/* line 625, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-pin-s {
+  background-position: -144px -144px;
+}
+
+/* line 628, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-play {
+  background-position: 0 -160px;
+}
+
+/* line 631, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-pause {
+  background-position: -16px -160px;
+}
+
+/* line 634, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-seek-next {
+  background-position: -32px -160px;
+}
+
+/* line 637, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-seek-prev {
+  background-position: -48px -160px;
+}
+
+/* line 640, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-seek-end {
+  background-position: -64px -160px;
+}
+
+/* line 643, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-seek-start, .ui-icon-seek-first {
+  background-position: -80px -160px;
+}
+
+/* ui-icon-seek-first is deprecated, use ui-icon-seek-start instead */
+/* line 648, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-stop {
+  background-position: -96px -160px;
+}
+
+/* line 651, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-eject {
+  background-position: -112px -160px;
+}
+
+/* line 654, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-volume-off {
+  background-position: -128px -160px;
+}
+
+/* line 657, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-volume-on {
+  background-position: -144px -160px;
+}
+
+/* line 660, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-power {
+  background-position: 0 -176px;
+}
+
+/* line 663, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-signal-diag {
+  background-position: -16px -176px;
+}
+
+/* line 666, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-signal {
+  background-position: -32px -176px;
+}
+
+/* line 669, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-battery-0 {
+  background-position: -48px -176px;
+}
+
+/* line 672, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-battery-1 {
+  background-position: -64px -176px;
+}
+
+/* line 675, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-battery-2 {
+  background-position: -80px -176px;
+}
+
+/* line 678, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-battery-3 {
+  background-position: -96px -176px;
+}
+
+/* line 681, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-plus {
+  background-position: 0 -192px;
+}
+
+/* line 684, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-minus {
+  background-position: -16px -192px;
+}
+
+/* line 687, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-close {
+  background-position: -32px -192px;
+}
+
+/* line 690, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-triangle-e {
+  background-position: -48px -192px;
+}
+
+/* line 693, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-triangle-s {
+  background-position: -64px -192px;
+}
+
+/* line 696, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-triangle-w {
+  background-position: -80px -192px;
+}
+
+/* line 699, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-triangle-n {
+  background-position: -96px -192px;
+}
+
+/* line 702, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-arrow-e {
+  background-position: -112px -192px;
+}
+
+/* line 705, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-arrow-s {
+  background-position: -128px -192px;
+}
+
+/* line 708, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-arrow-w {
+  background-position: -144px -192px;
+}
+
+/* line 711, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-arrow-n {
+  background-position: -160px -192px;
+}
+
+/* line 714, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-zoomin {
+  background-position: -176px -192px;
+}
+
+/* line 717, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-zoomout {
+  background-position: -192px -192px;
+}
+
+/* line 720, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circle-check {
+  background-position: -208px -192px;
+}
+
+/* line 723, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circlesmall-plus {
+  background-position: 0 -208px;
+}
+
+/* line 726, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circlesmall-minus {
+  background-position: -16px -208px;
+}
+
+/* line 729, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-circlesmall-close {
+  background-position: -32px -208px;
+}
+
+/* line 732, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-squaresmall-plus {
+  background-position: -48px -208px;
+}
+
+/* line 735, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-squaresmall-minus {
+  background-position: -64px -208px;
+}
+
+/* line 738, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-squaresmall-close {
+  background-position: -80px -208px;
+}
+
+/* line 741, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-grip-dotted-vertical {
+  background-position: 0 -224px;
+}
+
+/* line 744, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-grip-dotted-horizontal {
+  background-position: -16px -224px;
+}
+
+/* line 747, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-grip-solid-vertical {
+  background-position: -32px -224px;
+}
+
+/* line 750, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-grip-solid-horizontal {
+  background-position: -48px -224px;
+}
+
+/* line 753, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-gripsmall-diagonal-se {
+  background-position: -64px -224px;
+}
+
+/* line 756, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-icon-grip-diagonal-se {
+  background-position: -80px -224px;
+}
+
+/* Misc visuals
+----------------------------------*/
+/* Corner radius */
+/* line 764, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+  -moz-border-radius-topleft: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -khtml-border-top-left-radius: 6px;
+  border-top-left-radius: 6px;
+}
+
+/* line 770, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -khtml-border-top-right-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+/* line 776, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -khtml-border-bottom-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+/* line 782, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -khtml-border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* Overlays */
+/* line 790, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-overlay {
+  background: #5c5c5c url(../images/ui/ui-bg_flat_50_5c5c5c_40x100.png) 50% 50% repeat-x;
+  opacity: .80;
+  filter: Alpha(Opacity=80);
+}
+
+/* line 795, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-widget-shadow {
+  margin: -7px 0 0 -7px;
+  padding: 7px;
+  background: #cccccc url(../images/ui/ui-bg_flat_30_cccccc_40x100.png) 50% 50% repeat-x;
+  opacity: .60;
+  filter: Alpha(Opacity=60);
+  -moz-border-radius: 8px;
+  -khtml-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+
+                                                                                                                                                                                                                                                                                            /*
+* jQuery UI Button 1.8.16
+*
+* Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+* Dual licensed under the MIT or GPL Version 2 licenses.
+* http://jquery.org/license
+*
+* http://docs.jquery.com/UI/Button#theming
+*/
+/* line 816, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button {
+  display: inline-block;
+  position: relative;
+  padding: 0;
+  margin-right: .1em;
+  text-decoration: none !important;
+  cursor: pointer;
+  text-align: center;
+  zoom: 1;
+  overflow: visible;
+}
+
+/* the overflow property removes extra width in IE */
+/* line 829, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-icon-only {
+  width: 2.2em;
+}
+
+/* to make room for the icon, a width needs to be set here */
+/* line 834, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+button.ui-button-icon-only {
+  width: 2.4em;
+}
+
+/* button elements seem to need a little more width */
+/* line 839, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-icons-only {
+  width: 3.4em;
+}
+
+/* line 842, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+button.ui-button-icons-only {
+  width: 3.7em;
+}
+
+/*button text element */
+/* line 847, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button .ui-button-text {
+  display: block;
+  line-height: 1.4;
+}
+
+/* line 851, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-text-only .ui-button-text {
+  padding: .4em 1em;
+}
+
+/* line 854, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+  padding: .4em;
+  text-indent: -9999999px;
+}
+
+/* line 858, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text {
+  padding: .4em 1em .4em 2.1em;
+}
+
+/* line 861, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-text-icon-secondary .ui-button-text {
+  padding: .4em 2.1em .4em 1em;
+}
+
+/* line 864, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-text-icons .ui-button-text {
+  padding: .4em 2.1em .4em 1em;
+  padding-left: 2.1em;
+  padding-right: 2.1em;
+}
+
+/* no icon support for input elements, provide padding by default */
+/* line 871, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+input.ui-button {
+  padding: .4em 1em;
+}
+
+/*button icon element(s) */
+/* line 876, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-icon-only .ui-icon, .ui-button-text-icon-primary .ui-icon, .ui-button-text-icon-secondary .ui-icon, .ui-button-text-icons .ui-icon, .ui-button-icons-only .ui-icon {
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+}
+
+/* line 881, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-icon-only .ui-icon {
+  left: 50%;
+  margin-left: -8px;
+}
+
+/* line 885, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-text-icon-primary .ui-button-icon-primary, .ui-button-text-icons .ui-button-icon-primary, .ui-button-icons-only .ui-button-icon-primary {
+  left: .5em;
+}
+
+/* line 888, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-button-text-icon-secondary .ui-button-icon-secondary, .ui-button-text-icons .ui-button-icon-secondary, .ui-button-icons-only .ui-button-icon-secondary, .ui-button-text-icons .ui-button-icon-secondary, .ui-button-icons-only .ui-button-icon-secondary {
+  right: .5em;
+}
+
+/*button sets*/
+/* line 893, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-buttonset {
+  margin-right: 7px;
+}
+/* line 895, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+.ui-buttonset .ui-button {
+  margin-left: 0;
+  margin-right: -0.3em;
+}
+
+/* workarounds */
+/* line 901, C:/Users/Benjamin/Web-Chess/Web/css/scss/_jquery_ui.scss */
+button.ui-button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* reset extra padding in Firefox */
+/* Styles for captured piece container */
+/* line 4, scss/style.scss */
+#prison {
+  float: left;
+  height: 624px;
+  width: 70px;
+  display: block;
+}
+
+/* line 11, scss/style.scss */
+#prison ul li {
+  display: block;
+  height: 50px;
+}
+
+/* line 15, scss/style.scss */
+#prison ul li span {
+  position: relative;
+  bottom: 20px;
+  left: -7px;
+  z-index: 5;
+}
+
+/* line 21, scss/style.scss */
+#prison ul li[rel^='white'] {
+  color: white;
+}
+
+/* line 23, scss/style.scss */
+#cover {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  height: 616px;
+  width: 616px;
+  background-color: rgba(50, 50, 50, 0.5);
+  z-index: 9000;
+}
+
+/* line 33, scss/style.scss */
+#cover form, #cover > div {
+  color: #CCC;
+  background: #333;
+  height: 285px;
+  margin: 50% auto;
+  padding-top: 1em;
+  position: relative;
+  top: -150px;
+  width: 330px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  -webkit-box-shadow: 0px 0px 20px 1px #FFFFFF;
+  -moz-box-shadow: 0px 0px 20px 1px #FFFFFF;
+  box-shadow: 0px 0px 20px 1px #FFFFFF;
+}
+
+/* line 52, scss/style.scss */
+#cover form, #cover div {
+  text-align: center;
+}
+
+/* line 53, scss/style.scss */
+#cover form h1, #cover div h1 {
+  font-size: 1.5em;
+  margin-bottom: 2em;
+}
+
+/* line 54, scss/style.scss */
+#cover form h2 {
+  font-size: 1.2em;
+  letter-spacing: 2px;
+  margin-bottom: 0.5em;
+}
+
+/* line 55, scss/style.scss */
+#cover form div {
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* line 56, scss/style.scss */
+#cover form label {
+  margin-right: 5px;
+}
+
+/* line 57, scss/style.scss */
+#cover form button {
+  position: relative;
+  top: 1em;
+}
+
+/* line 3, scss/test.scss */
+body {
+  background: darkgreen;
+}
+
+/* line 6, scss/test.scss */
+#staging {
+  float: left;
+}
+/* line 8, scss/test.scss */
+#staging img {
+  z-index: 100;
 }
