@@ -1,12 +1,13 @@
 $(function(){
 	$('#clear').click(function(){
 		$('#board img').each(function(){
-			piece = Game.callPiece(this);
-			if (piece.type != "king") {
-				piece.kill();
-				$(piece.image).remove();
-			};
+			piece = $(this);
+			if(!piece.attr('alt').match('king')) piece.remove();
 		});
+		Game.Players[0].pieces = [];
+		Game.Players[0].pawns = [];
+		Game.Players[1].pieces = [];
+		Game.Players[1].pawns = [];
 		
 	    $('.legal').removeClass('legal');
 	    $('.selected').removeClass('selected');

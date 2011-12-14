@@ -446,7 +446,8 @@ function Game() {
         // Check if pawn is capturing en passant. EP variable will hold an opponent pawn that passed.
         // If opponent pawn and this pawn are not on the same column (position[0]) clear EP variable. << B. Fisher
         if (this.EP && this.EP.position[0] != destination.id[0]) this.EP = false;
-        	this._move.call(this, destination);
+        
+        this._move.call(this, destination);
         	
         if (this.position[1] == this.endRow) this.promote(destination);
 	};
@@ -763,7 +764,7 @@ Game.check = function(square, player, ignore) {
             	//remove non-capture moves from footprint list
                 if (this[0] == pawn.position[0]) ids.splice(index, 1);
             });
-            if ($.inArray(square.substring(1), ids) >= 0) {
+            if ($.inArray(Game.hash_check(square), ids) >= 0) {
             	kid = Game.occupied(square);
             	if (kid.color === pawn.color) chk.protect = true;
                 chk.push(pawn);
@@ -874,6 +875,14 @@ Game.findDiagonal = function(start, xInc, yInc) {
     };
     
     return ("ABCDEFGH"[x] + y);
+}
+
+/**
+ * function to strip '#' from a square address
+ */
+Game.hash_check = function(x){
+	y = (x[0] === '#') ? x.substring(1) : x;
+	return y;
 }
 
 /**
