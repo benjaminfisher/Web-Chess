@@ -84,8 +84,9 @@ function Game() {
       
       addPiece: function(type, color, start){
       	newPiece = null;
-      	array = (type === 'pawn') ? this.pawns : this.pieces;
-      	if (type === 'king') array = null;
+      	if (type === 'king') array = false;
+      	else if (type === 'pawn') array = this.pawns;
+      	else array = this.pieces;
       	
       	if (type == 'pawn') newPiece = new pawn(color, start)
 		else if (type == 'bishop') newPiece = new bishop(color, start)
@@ -135,7 +136,7 @@ function Game() {
         	.addClass(color)
         	.data('piece', this)// Adds piece data to the images;
         	.appendTo("#" + this.position)
-    }
+    };
     
 /**
  * @extends Piece
@@ -217,10 +218,20 @@ function Game() {
             else $(cellCount).html(1).hide();
             return true;
        },
-
+       
+       /**
+        * Evaluate the owner of the piece.
+        * @returns [Object] Player
+        * @author BF
+        */
+       owner: function(){
+       		var player = (Game.Players[0].color === self.color) ? Game.Players[0] : Game.Players[1];
+       		return player;
+       },
+	
 /**
  * Remove captured or promoted pieces from their Players piece or pawn array.
- * @param piece the piece to be removed
+ * @param piece the p iece to be removed
  * @param player the piece's player
  * @param array the appropriate array
  * @param index location of the piece or pawn in the array
@@ -228,7 +239,7 @@ function Game() {
  */
         kill: function() {
             var index,
-            	player = (Game.Players[0].color == this.color) ? Game.Players[0] : Game.Players[1],
+            	player = this.owner(),
                 array = (this.type == 'pawn') ? player.pawns : player.pieces;
                 
             index = $.inArray(this, array);
@@ -387,7 +398,7 @@ function Game() {
 			if (hole && (hole.children('img').length === 0 || hole.children('img').data().piece.color != this.color)){
 				hole.addClass('threat');
 			};
-		}
+		} // End penetration
    }; // === End of Piece prototype methods === //
 	
 /*** Start piece definitions ***/
@@ -481,24 +492,26 @@ function Game() {
 		// Place the promotion piece, add it to the pieces array and append the promotion
         // to the logged move. << B. Fisher 3/29 1630
 		$(bench).children('img').click(function(){
-			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1).delay(800);
+			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1).delay(1000);
 			
 			if ($(this).attr('rel') == 'queen') {
-				Game.Players[0].addPiece('queen', self.color, destination.id);
+				self.owner().addPiece('queen', self.color, destination.id);
             	$(logCell).html($(logCell).html() + '=Q');
 			} else {
-				Game.Players[0].addPiece('knight', self.color, destination.id);
+				self.owner().addPiece('knight', self.color, destination.id);
             	$(logCell).html($(logCell).html() + '=N');
 			};
 			
 			Game.$cover.children().remove();
 			Game.$cover.fadeOut();
-		})
+			Game.turn();
+		});
         
         // Remove the pawn's image, and clear it from the Player's pieces array.
         $(self.image).remove();
-        $(self).trigger('remove');
-        
+        Game.clearClass();
+        Game.change = false;
+        self.kill();
 	};
 	
 /**
@@ -796,6 +809,17 @@ Game.Checkmate = function(player) {
     return false;
 } // End of Checkmate()
 
+Game.clearClass = function(){
+	// legal moves of previously selected piece cleared
+    $('.legal').removeClass('legal');
+    // previously selected piece cleared
+    $('.selected').removeClass('selected');
+    // threatened squares within kings footprint cleared
+    $('.threat').removeClass('threat');
+    // display of pieces threatining the king directly are cleared
+    $('.attack').removeClass('attack');
+}
+
 Game.endGame = function(gameOver) {
 	$note = $('<div>');
 	
@@ -993,14 +1017,7 @@ Game.square_click = function(square){
  * @author BF
  */
 Game.select = function(square) {
-	// legal moves of previously selected piece cleared
-    $('.legal').removeClass('legal');
-    // previously selected piece cleared
-    $('.selected').removeClass('selected');
-    // threatened squares within kings footprint cleared
-    $('.threat').removeClass('threat');
-    // display of pieces threatining the king directly are cleared
-    $('.attack').removeClass('attack');
+	Game.clearClass();
     
     if (square) {
         selectedSquare = square;
@@ -1044,9 +1061,8 @@ Game.Stalemate = function() {
  */
 Game.turn = function(){
     this.select(false);
-    $('.legal').removeClass('legal'); // clears legal moves of last moved piece
-    $('.active').removeClass('active'); // Clear active status of previous players pieces << B. Fisher 5/6 1700
     
+    Game.clearClass();
     /** Find whether the last move placed the next player in check **/
     Game.Players[1].King.inCheck = this.check(Game.Players[1].King.position, Game.Players[0]).threat;
     
