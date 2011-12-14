@@ -244,40 +244,41 @@ function Game() {
  * @returns {String} .moves comma seperated list of squares where the -child- can legally move.
  * @author BF
  */
-		Legal: function(child) {
-		    var C = child.position[0],
+		Legal: function() {
+		    var self = this,
+		    	C = self.position[0],
 		        cNum = Game.colNumber(C),
-		        footprint = child.footprint(),
+		        footprint = self.footprint(),
 		        kid = null,
 		        legal = new Array(),
-		        rNum = child.position[1] * 1,
+		        rNum = self.position[1] * 1,
 		        rook = null,
 		        squares = null,
 		        square_check = null,
 		        dest, orig, path, legalIDs = "";
 		        
 		    $(footprint).each(function() {
-		        if (Game.inside(this, child.position)) {
+		        if (Game.inside(this, self.position)) {
 		            dest = Game.occupied('#' + this);
-		            if (child.type == 'knight') {
+		            if (self.type == 'knight') {
 		                // Knights are 'leapers'. They do not move along a vector
 		                // but jump to the destination square. << B. Fisher
-		                if (dest.color == child.color) legal.push(dest);
+		                if (dest.color == self.color) legal.push(dest);
 		                else legalIDs += Game.writeID(this[0], this[1]);
 		            }
-		            else if (child.type == 'pawn') {
+		            else if (self.type == 'pawn') {
 		                // pawns cannot capture on their own column
 		                if (dest && C != this[0]) {
-		                    if (dest.color == child.color) legal.push(dest);
+		                    if (dest.color == self.color) legal.push(dest);
 		                    else legalIDs += Game.writeID(this[0], this[1]);
 		                }
 		                // Check for a pawn in EP and whether its column matches the move
-		                else if (child.EP && child.EP.position[0] == this[0]) legalIDs += Game.writeID(this[0], this[1]);
+		                else if (self.EP && self.EP.position[0] == this[0]) legalIDs += Game.writeID(this[0], this[1]);
 		                // add vertical moves
-		                else if (C == this[0]) legalIDs += Game.vector(child.position, this, child.color, false).list;
+		                else if (C == this[0]) legalIDs += Game.vector(self.position, this, self.color, false).list;
 		            }
 		            else {
-		                path = Game.vector(child.position, this, child.color, true);
+		                path = Game.vector(self.position, this, self.color, true);
 		                // add squares in current vector to legal moves list
 		                legalIDs += path.list;
 		                // add vulnerable opposing pieces to legal Array
@@ -287,14 +288,14 @@ function Game() {
 		    });
 		    
 		    // King move legality.
-		    if (child.type == 'king') {
+		    if (self.type == 'king') {
 		        // Check for castle legality and add king double step if true. << B. Fisher
-		        if (child.castle()) {
+		        if (self.castle()) {
 		            rook = Game.occupied('#H' + rNum);
 		            
 		            // Kingside castle squares are unoccupied and unthreatened,
 		            // and the kingside rook has not moved.
-		            if (Game.vector(child.position, 'G' + rNum, child.color, false).list.match('G') && 
+		            if (Game.vector(self.position, 'G' + rNum, self.color, false).list.match('G') && 
 		            	rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1]).threat) {
 		                legalIDs += Game.writeID('G', rNum);
 		            };
@@ -303,7 +304,7 @@ function Game() {
 		            // The king is not moving across check.
 		            // and the queenside rook has not moved.
 		            rook = Game.occupied('#A' + rNum);
-		            if (Game.vector(child.position, 'B' + rNum, child.color, false).list.match('B') &&
+		            if (Game.vector(self.position, 'B' + rNum, self.color, false).list.match('B') &&
 		            	rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1]).threat) {
 		                legalIDs += Game.writeID('C', rNum);
 		            };
@@ -331,10 +332,10 @@ function Game() {
 		            };
 		            
 		            if(kid && (kid.type === 'bishop' || kid.type === 'rook')){
-		            	this.penetration('#' + child.position, kid);
+		            	self.penetration('#' + self.position, kid);
 		            };
 		         	for (var s in square_check) if(square_check[s].type){
-		                this.penetration(squares[i], square_check[s]);
+		                self.penetration(squares[i], square_check[s]);
 		           };
 		        };
 		        
@@ -754,7 +755,7 @@ Game.check = function(square, player, ignore) {
 	// Interate through player's pieces to evaluate threats
     $(player.pieces).each(function() {
         if (this != ignore) {
-        	legal = this.Legal(this);
+        	legal = this.Legal();
         	if ($.inArray(Game.occupied(square), legal) >= 0) {
         		chk.protect = true;
         	};
@@ -793,13 +794,22 @@ Game.colNumber = function(column)  {
 };
 
 
-Game.Checkmate = function(player) {
+Game.Checkmate = function() {
+	var player = this.Players[0];
+	
     //if players king is in check
-    if (Game.Players[0].King.inCheck) {
-    	check = Game.check(player.King.position, player);
-    	// if checking piece is vulnerable
-    	// if transposition of check is possible
+    if (player.King.inCheck) {
+    	check = Game.check(player.King.position, this.Players[1]);
+    	
     	// if all available moves for the king are threatened
+    	if(player.King.Legal().moves.length === 0){
+    		// if checking piece is vulnerable
+    		if(check.length === 1 && Game.check(check[0].position, player).threat){
+    			return false;
+    		} else {return true};
+    	}
+    	
+    	// if transposition of check is possible
     }
     
     return false;
@@ -988,7 +998,7 @@ Game.square_click = function(square){
 	// checks if piece belongs to the current player
     if (kid && kid.color == Game.Players[0].color) {
         Game.select(square);
-        $(kid.Legal(kid).moves).addClass('legal');
+        $(kid.Legal().moves).addClass('legal');
     }
     /** If clicked square is a legal move */
     else if ($square.hasClass('legal')) {
@@ -1031,14 +1041,14 @@ Game.Stalemate = function() {
     var legalMoves = '';
     
     $.each(Game.Players[0].pieces, function() {
-        legalMoves += this.Legal(this).moves;
+        legalMoves += this.Legal().moves;
     });
     
     $.each(Game.Players[0].pawns, function() {
-        legalMoves += this.Legal(this).moves;
+        legalMoves += this.Legal().moves;
     });
     
-    legalMoves += Game.Players[0].King.Legal(Game.Players[0].King).moves;
+    legalMoves += Game.Players[0].King.Legal().moves;
     
     if (legalMoves.length === 0 && !Game.Players[0].King.inCheck) return true;
     else return false;
@@ -1078,7 +1088,7 @@ Game.turn = function(){
     }
     Game.change = null;
     
-    //if (this.Checkmate()) this.endGame(2);
+    if (this.Checkmate()) this.endGame(2);
     if (this.Stalemate()) this.endGame(3);
     
     // Game didn't end, change name and color of dash
