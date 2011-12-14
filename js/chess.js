@@ -41,10 +41,10 @@ function Game() {
  * @param {string} name The player's name
  * @param {string} side The color of the Player's pieces
  */
-    Player  = function(name, side){
+	Player = function(name, side){
     	/** The color of the Player's pieces */
         this.color = side;
-        
+    
         /** Array to hold the Player's pieces */
         this.pieces = new Array();
         
@@ -70,20 +70,12 @@ function Game() {
     	 * @author BF
     	 */
     	activate: function(){
-	    	//Add active status to  pawns << B. Fisher 5/6 1700
-	        $(this.pawns).each(function() {
-	            $(this.image).addClass('active');
-	        });
-	        //Add active status to pieces << B. Fisher 5/6 1700
-	        $.each(this.pieces, function() {
-	            $(this.image).addClass('active');
-	        });
-	        //Add active status to King << B. Fisher 5/6 1700
-	        $(this.King.image).addClass('active');
-      },
+	    	$('.' + this.color).addClass('active');
+     	},
       
       addPiece: function(type, color, start){
-      	newPiece = null;
+      	var newPiece = null;
+      	
       	if (type === 'king') array = false;
       	else if (type === 'pawn') array = this.pawns;
       	else array = this.pieces;
@@ -99,7 +91,7 @@ function Game() {
       },
       
       init: function(sRow, pRow){
-    		for (p = 0; p <= 7; p++) {
+    		for (var p = 0; p <= 7; p++) {
 	            this.addPiece('pawn', this.color, Game.cLabels[p] + pRow);
         	}
 
@@ -268,7 +260,7 @@ function Game() {
 		        if (Game.inside(this, child.position)) {
 		            dest = Game.occupied('#' + this);
 		            if (child.type == 'knight') {
-		                // Knights are 'leapers'. They do not move along a vector 
+		                // Knights are 'leapers'. They do not move along a vector
 		                // but jump to the destination square. << B. Fisher
 		                if (dest.color == child.color) legal.push(dest);
 		                else legalIDs += Game.writeID(this[0], this[1]);
@@ -338,6 +330,9 @@ function Game() {
 		                $(squares[i]).addClass('threat');
 		            };
 		            
+		            if(kid && (kid.type === 'bishop' || kid.type === 'rook')){
+		            	this.penetration('#' + child.position, kid);
+		            };
 		         	for (var s in square_check) if(square_check[s].type){
 		                this.penetration(squares[i], square_check[s]);
 		           };
@@ -357,19 +352,19 @@ function Game() {
 		}, // === End of Legal() === //
 		
 		penetration : function(square, attacker){
-			col = square[1];
-			row = square[2]*1;
-			acol = attacker.position[0];
-			arow = attacker.position[1]*1;
-			kcol = this.position[0];
-			krow = this.position[1]*1;
-			inc = null;
-			hole = null;
+			var col = square[1],
+				row = square[2]*1,
+				acol = attacker.position[0],
+				arow = attacker.position[1]*1,
+				kcol = this.position[0],
+				krow = this.position[1]*1,
+				inc = null,
+				hole = null;
 			
 			// Horizontal penetration
 			if (attacker.type === 'rook' || attacker.type === 'queen') {
 				if (row === krow && krow === arow) {
-					if (Game.findInc(col, kcol) === 1){
+					if (Game.findInc(acol, kcol) === 1){
 						hole = $('#' + this.position).next();
 					} else {
 						hole = $('#' + this.position).prev();
@@ -378,7 +373,7 @@ function Game() {
 				
 				// Vertical penetration
 				if (col === kcol && kcol === acol){
-					inc = Game.findInc(row, krow);
+					inc = Game.findInc(arow, krow);
 					hole = $('#' + kcol + (krow + inc));
 				};
 			};
@@ -510,6 +505,7 @@ function Game() {
         // Remove the pawn's image, and clear it from the Player's pieces array.
         $(self.image).remove();
         Game.clearClass();
+        // Hold turn change. will be called after a new piece is selected.
         Game.change = false;
         self.kill();
 	};
@@ -713,7 +709,7 @@ Game.prototype = {
 		$(form).submit($.proxy(function(event){
 			event.preventDefault();
 			
-			names = [$('#Player1').val(), $('#Player2').val()];
+			var names = [$('#Player1').val(), $('#Player2').val()];
 			
 			if (!names[0]) names[0] = 'Player 1';
 			if (!names[1]) names[1] = 'Player 2';
@@ -915,7 +911,8 @@ Game.hash_check = function(x){
  * @author BF
  */
 Game.inside = function(square, origin) {
-    if (square && origin != square && square[1] * 1 >= 1 && square.substr(1) * 1 <= 8 && Game.colNumber(square[0]) >= 0) {
+    if (square && origin != square && square[1]*1 >= 1 && square.substr(1)*1 <= 8 && 
+    	Game.colNumber(square[0]) >= 0) {
     	return true;
     }
     else {
@@ -1071,6 +1068,7 @@ Game.turn = function(){
         this.EP = false;
     });
     
+    $('.active').removeClass('active');
     // Switches the active player
     Game.Players.reverse();
     Game.Players[0].activate();
