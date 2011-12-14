@@ -1,7 +1,7 @@
 /**
  * Master object to control game functionality and contain players and pieces.
  * @author Benjamin Fisher
- * @version 20.3.1
+ * @version 20.5
  * @constructor
  * 
  */
