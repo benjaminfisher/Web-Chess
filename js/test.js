@@ -28,7 +28,7 @@ $(function(){
 			info = $dragging.attr('alt').split(' ');
 			player = (Game.Players[0].color == info[0]) ? Game.Players[0] : Game.Players[1];
 			
-			player.addPiece(info[1], info[0], this.id);
+			player.addPiece(info[1], this.id);
 		}
 	});
 });

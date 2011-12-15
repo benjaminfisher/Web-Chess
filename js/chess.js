@@ -41,19 +41,19 @@ function Game() {
  * @param {string} name The player's name
  * @param {string} side The color of the Player's pieces
  */
-	Player = function(name, side){
-    	/** The color of the Player's pieces */
-        this.color = side;
-    
+	Player = function(){
+		var pCount = $(Game.Players).size();
+		
         /** Array to hold the Player's pieces */
         this.pieces = new Array();
         
         /** Array to hold the Player's pawns */
         this.pawns = new Array();
         
+        this.color = (pCount === 0) ? 'white' : 'black';
+        
         /** {string} Players name (displayed in the dashboard) */
-        this.name = (name) ? name : 'Player ' + ($(Game.Players).size() + 1)
-        if (!this.name) this.name = 'Player ' + ($(Game.Players).size() + 1);
+        this.name = (name) ? name : 'Player ' + (pCount + 1)
         
         /** The row where the Player's piece start the game 
          	White Player starts on Row 1, Black on row 8*/
@@ -73,36 +73,41 @@ function Game() {
 	    	$('.' + this.color).addClass('active');
      	},
       
-      addPiece: function(type, color, start){
+      /**
+       * Create a new piece and add it to the correct array (pawns or pieces) for this player
+       * @param [string] type What piece this is (e.g. queen, rook etc.)
+       * @param [string] start The starting square address (format: [R]ow [C]olumn) of the piece
+       */
+      addPiece: function(type, start){
       	var newPiece = null;
       	
       	if (type === 'king') array = false;
       	else if (type === 'pawn') array = this.pawns;
       	else array = this.pieces;
       	
-      	if (type == 'pawn') newPiece = new pawn(color, start)
-		else if (type == 'bishop') newPiece = new bishop(color, start)
-		else if (type == 'knight') newPiece = new knight(color, start)
-		else if (type == 'rook') newPiece = new rook(color, start)
-		else if (type == 'queen') newPiece = new queen(color, start)
-		else this.King = new king(color, start)
+      	if (type == 'pawn') newPiece = new pawn(this.color, start)
+		else if (type == 'bishop') newPiece = new bishop(this.color, start)
+		else if (type == 'knight') newPiece = new knight(this.color, start)
+		else if (type == 'rook') newPiece = new rook(this.color, start)
+		else if (type == 'queen') newPiece = new queen(this.color, start)
+		else this.King = new king(this.color, start)
       	
       	if (array) array.push(newPiece)
       },
       
       init: function(sRow, pRow){
     		for (var p = 0; p <= 7; p++) {
-	            this.addPiece('pawn', this.color, Game.cLabels[p] + pRow);
+	            this.addPiece('pawn', Game.cLabels[p] + pRow);
         	}
 
-	        this.addPiece('rook', this.color, "A" + sRow);
-	        this.addPiece('rook', this.color, "H" + sRow);
-	        this.addPiece('knight', this.color, "B" + sRow);
-	        this.addPiece('knight', this.color, "G" + sRow);
-	        this.addPiece('bishop', this.color, "C" + sRow);
-	        this.addPiece('bishop', this.color, "F" + sRow);
-	        this.addPiece('queen', this.color, "D" + sRow);
-	        this.addPiece('king', this.color, "E" + sRow);
+	        this.addPiece('rook', "A" + sRow);
+	        this.addPiece('rook', "H" + sRow);
+	        this.addPiece('knight', "B" + sRow);
+	        this.addPiece('knight', "G" + sRow);
+	        this.addPiece('bishop', "C" + sRow);
+	        this.addPiece('bishop', "F" + sRow);
+	        this.addPiece('queen', "D" + sRow);
+	        this.addPiece('king', "E" + sRow);
     	}
     }
 /*** End of Player() methods ***/
@@ -491,10 +496,10 @@ function Game() {
 			$(this).fadeTo('slow', 0.6).fadeTo('fast', 1).delay(1000);
 			
 			if ($(this).attr('rel') == 'queen') {
-				self.owner().addPiece('queen', self.color, destination.id);
+				self.owner().addPiece('queen', destination.id);
             	$(logCell).html($(logCell).html() + '=Q');
 			} else {
-				self.owner().addPiece('knight', self.color, destination.id);
+				self.owner().addPiece('knight', destination.id);
             	$(logCell).html($(logCell).html() + '=N');
 			};
 			
@@ -686,11 +691,11 @@ Game.prototype = {
 	init: function(){
 		var names = this.get_player_names();
 		
-		$('button').button();		
+		$('button').button();
 		$('#Dash').hide();
 		
-		Game.Players.push(new Player('Player 1', 'white'));
-		Game.Players.push(new Player('Player 2', 'black'));
+		Game.Players.push(new Player());
+		Game.Players.push(new Player());
 		Game.Players[0].activate();
 		
 		$('#turn').html(Game.Players[0].name);
