@@ -638,30 +638,34 @@ function Game() {
     king.prototype.toString = function() { return 'king'; }
     
     king.prototype.move = function(destination) {
-            // Evaluate if king is castling. << B. Fisher
-            if (this.castle() && (destination.id.match('G') || destination.id.match('C'))) {
-                // If king is moving to column 'G' (kingside) rook is on column 'H'
-                if (destination.id.match('G')) {
-                    var rook = Game.callPiece($('#H' + this.position[1]).children('img')[0]),
-                        dest = destination.previousElementSibling;
-                    Game.castled = "king";
-                }
-                // If king is moving to column 'C' (queenside) rook is on column 'A'
-                else if (destination.id.match('C')) {
-                    var rook = Game.callPiece($('#A' + this.position[1]).children('img')[0]),
-                        dest = destination.nextElementSibling;
-                    Game.castled = "queen";
-                }
-                // Move the king, than move the rook to the king's other side (dest). << B. Fisher
-                this._move(destination);
-                $(rook.image).fadeOut('fast', function() {
-                    rook.move(dest);
-                    $(rook.image).fadeIn('fast');
-                    // Reset the castled to false so black's moves will be logged << J-M Glenn
-                    Game.castled = null;
-                });
-            }
-            else this._move(destination);
+    	var rook = null,
+    		dest = null;
+    		
+		// Evaluate if king is castling. << B. Fisher
+		if (this.castle() && (destination.id.match('G') || destination.id.match('C'))) {
+		    // If king is moving to column 'G' (kingside) rook is on column 'H'
+		    if (destination.id.match('G')) {
+		        rook = Game.occupied('H' + this.position[1]);
+		        dest = destination.previousElementSibling;
+		        Game.castled = "king";
+		    }
+		    // If king is moving to column 'C' (queenside) rook is on column 'A'
+		    else if (destination.id.match('C')) {
+		        rook = Game.occupied('A' + this.position[1]);
+		        dest = destination.nextElementSibling;
+		        Game.castled = "queen";
+		    }
+		    // Move the king, than move the rook to the king's other side (dest). << B. Fisher
+		    this._move(destination);
+		    $(rook.image).fadeOut('fast', function() {
+		        rook.move(dest);
+		        $(rook.image).fadeIn('fast');
+		        
+		        // Reset the castled to false so black's moves will be logged << J-M Glenn
+		    	Game.castled = null;
+		    });
+		}
+		else this._move(destination);
        }
        
 		king.prototype.castle = function() {
