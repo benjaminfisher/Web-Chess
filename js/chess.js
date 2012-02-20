@@ -109,7 +109,7 @@ function Game() {
 	        this.addPiece('queen', "D" + sRow);
 	        this.addPiece('king', "E" + sRow);
     	}
-    }
+    };
 /*** End of Player() methods ***/
 
 /**
@@ -228,7 +228,7 @@ function Game() {
 	
 /**
  * Remove captured or promoted pieces from their Players piece or pawn array.
- * @param piece the p iece to be removed
+ * @param piece the piece to be removed
  * @param player the piece's player
  * @param array the appropriate array
  * @param index location of the piece or pawn in the array
@@ -689,6 +689,7 @@ function Game() {
     // End piece definitions
 
     self.init();
+    return false;
 };
 
 Game.prototype = {
@@ -738,7 +739,7 @@ Game.prototype = {
 		$(form).appendTo(Game.$cover);
 		$('#Player1').focus();
 	}
-}
+};
 
 Game.callPiece = function(image) {
 	if (image) return $(image).data().piece;
@@ -819,6 +820,8 @@ Game.Checkmate = function() {
     	}
     	
     	// if transposition of check is possible
+    	
+    	
     }
     
     return false;
