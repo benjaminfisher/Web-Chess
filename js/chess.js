@@ -244,7 +244,6 @@ function Game() {
         },
        
 /**
- * @param {Piece} child piece
  * @returns {Array} Capturable piece objects
  * @returns {String} .moves comma seperated list of squares where the -child- can legally move.
  * @author BF
@@ -805,23 +804,28 @@ Game.colNumber = function(column)  {
 
 
 Game.Checkmate = function() {
-	var player = this.Players[0];
+	var player = this.Players[0],
+		check = Game.check(player.King.position, this.Players[1]);
 	
+	var transpose = function (){
+		var squares = Game.vector(player.King.position, check[0].position, player.color, false).list;
+		
+		console.log(squares);
+
+	};
     //if players king is in check
-    if (player.King.inCheck) {
-    	check = Game.check(player.King.position, this.Players[1]);
-    	
+    if (player.King.inCheck) {    	
     	// if all available moves for the king are threatened
     	if(player.King.Legal().moves.length === 0){
     		// if checking piece is vulnerable
     		if(check.length === 1 && Game.check(check[0].position, player).threat){
     			return false;
+    		
+    		// if transposition of check is possible
+    		} else if (transpose()) {
+    			return false
     		} else {return true};
-    	}
-    	
-    	// if transposition of check is possible
-    	
-    	
+    	};
     }
     
     return false;
@@ -1012,7 +1016,7 @@ Game.square_click = function(square){
         Game.select(square);
         $(kid.Legal().moves).addClass('legal');
     }
-    /** If clicked square is a legal move */
+    // If clicked square is a legal move
     else if ($square.hasClass('legal')) {
     	// retrieve piece from the selected square
         piece = Game.occupied(selectedSquare.id);
@@ -1139,11 +1143,11 @@ Game.vector = function(start, end, side, capture){
         square = Game.cLabels[sX] + sY;
         dest = this.occupied('#' + square);
         if (dest) {
-            if (capture && dest.color != side) squareList += '#' + square + ',';
+            if (capture && dest.color != side) squareList += ', #' + square;
             else if (dest.color == side) piece = dest;
             break;
         };
-        squareList += '#' + square + ',';
+        squareList += (squareList.length > 0) ? ', #' + square : '#' + square;
     }
     while ((Game.cLabels[sX] + sY) != end);
     
