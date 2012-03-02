@@ -261,6 +261,13 @@ function Game() {
 		        square_check = null,
 		        dest, orig, path, legalIDs = "";
 		        
+	        var append = function(startString, appendString){
+	        	if (startString.length > 0 && appendString.length > 0 && 
+	        		startString[startString.length] != ',' && appendString[0] != ','){
+	        		return startString + ',' + appendString;
+	        	} else return startString + appendString;
+	        };
+
 		    $(footprint).each(function() {
 		        if (Game.inside(this, self.position)) {
 		            dest = Game.occupied('#' + this);
@@ -268,28 +275,32 @@ function Game() {
 		                // Knights are 'leapers'. They do not move along a vector
 		                // but jump to the destination square. << B. Fisher
 		                if (dest.color == self.color) legal.push(dest);
-		                else legalIDs += Game.writeID(this[0], this[1]);
+		                else legalIDs = append(legalIDs, Game.writeID(this[0], this[1]));
 		            }
 		            else if (self.type == 'pawn') {
 		                // pawns cannot capture on their own column
 		                if (dest && C != this[0]) {
 		                    if (dest.color == self.color) legal.push(dest);
-		                    else legalIDs += Game.writeID(this[0], this[1]);
+		                    else legalIDs = append(legalIDs, Game.writeID(this[0], this[1]));
 		                }
 		                // Check for a pawn in EP and whether its column matches the move
-		                else if (self.EP && self.EP.position[0] == this[0]) legalIDs += Game.writeID(this[0], this[1]);
+		                else if (self.EP && self.EP.position[0] == this[0]) {
+		                	legalIDs = append(legalIDs, Game.writeID(this[0], this[1]));
+		                }
 		                // add vertical moves
-		                else if (C == this[0]) legalIDs += Game.vector(self.position, this, self.color, false).list;
+		                else if (C == this[0]) {
+		                	legalIDs = append(legalIDs, Game.vector(self.position, this, self.color, false).list);
+		                }
 		            }
 		            else {
 		                path = Game.vector(self.position, this, self.color, true);
 		                // add squares in current vector to legal moves list
-		                legalIDs += path.list;
+		                legalIDs = append(legalIDs, path.list);
 		                // add vulnerable opposing pieces to legal Array
 		                legal.push(path.end);
 		            };
-		        };
-		    });
+	            };
+	        });
 		    
 		    // King move legality.
 		    if (self.type == 'king') {
@@ -301,7 +312,7 @@ function Game() {
 		            // and the kingside rook has not moved.
 		            if (Game.vector(self.position, 'G' + rNum, self.color, false).list.match('G') && 
 		            	rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1]).threat) {
-		                legalIDs += Game.writeID('G', rNum);
+		                legalIDs = append(legalIDs, Game.writeID('G', rNum));
 		            };
 		            
 		            // Queenside squares between rook and king are not occupied.
@@ -310,7 +321,7 @@ function Game() {
 		            rook = Game.occupied('#A' + rNum);
 		            if (Game.vector(self.position, 'B' + rNum, self.color, false).list.match('B') &&
 		            	rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1]).threat) {
-		                legalIDs += Game.writeID('C', rNum);
+		                legalIDs = append(legalIDs, Game.writeID('C', rNum));
 		            };
 		        };
 		        
@@ -808,7 +819,7 @@ Game.Checkmate = function() {
 		check = Game.check(player.King.position, this.Players[1]);
 	
 	var transpose = function (){
-		var squares = Game.vector(player.King.position, check[0].position, player.color, false).list;
+		var squares = Game.vector(player.King.position, check[0].position, player.color, false).list.split(',');
 		
 		console.log(squares);
 
@@ -1143,11 +1154,11 @@ Game.vector = function(start, end, side, capture){
         square = Game.cLabels[sX] + sY;
         dest = this.occupied('#' + square);
         if (dest) {
-            if (capture && dest.color != side) squareList += ', #' + square;
+            if (capture && dest.color != side) squareList += (squareList.length > 0) ? ',#' + square : '#' + square;
             else if (dest.color == side) piece = dest;
             break;
         };
-        squareList += (squareList.length > 0) ? ', #' + square : '#' + square;
+        squareList += (squareList.length > 0) ? ',#' + square : '#' + square;
     }
     while ((Game.cLabels[sX] + sY) != end);
     
@@ -1174,5 +1185,5 @@ Game.writeID = function(column, row) {
         else if (error == 2) console.log('Square ID Error: row is less than board index');
         else if (error == 3) console.log('Square ID Error: row is greater than board index');
     }
-    return '#' + column + row + ","
+    return '#' + column + row;
 }
