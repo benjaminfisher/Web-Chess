@@ -707,7 +707,6 @@ Game.prototype = {
 		var names = this.get_player_names();
 		
 		$('button').button();
-		$('#Dash').hide();
 		
 		Game.Players.push(new Player());
 		Game.Players.push(new Player());
@@ -742,7 +741,7 @@ Game.prototype = {
 			
 			$('#turn').html(Game.Players[0].name);
 			Game.$cover.fadeOut();
-			$('#Dash').fadeIn();
+			$('#Dash').removeClass('hidden').hide().fadeIn('slow');
 			
 		},this));
 		
