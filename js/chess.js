@@ -289,7 +289,7 @@ function Game() {
 		                }
 		                // add vertical moves
 		                else if (C == this[0]) {
-		                	legalIDs = append(legalIDs, Game.vector(self.position, this, self.color, false).list);
+		                	legalIDs = append(legalIDs, Game.vector(self.position, this, self.color).list);
 		                }
 		            }
 		            else {
@@ -310,7 +310,7 @@ function Game() {
 		            
 		            // Kingside castle squares are unoccupied and unthreatened,
 		            // and the kingside rook has not moved.
-		            if (Game.vector(self.position, 'G' + rNum, self.color, false).list.match('G') && 
+		            if (Game.vector(self.position, 'G' + rNum, self.color).list.match('G') && 
 		            	rook && !rook.moved && !Game.check('F' + rNum, Game.Players[1]).threat) {
 		                legalIDs = append(legalIDs, Game.writeID('G', rNum));
 		            };
@@ -319,14 +319,18 @@ function Game() {
 		            // The king is not moving across check.
 		            // and the queenside rook has not moved.
 		            rook = Game.occupied('#A' + rNum);
-		            if (Game.vector(self.position, 'B' + rNum, self.color, false).list.match('B') &&
+		            if (Game.vector(self.position, 'B' + rNum, self.color).list.match('B') &&
 		            	rook && !rook.moved && !Game.check('D' + rNum, Game.Players[1]).threat) {
 		                legalIDs = append(legalIDs, Game.writeID('C', rNum));
 		            };
 		        };
 		        
+		        console.log(squares);
 		        // Removes any square ids from legalIDs that would move the king into check << B. Fisher 3.04 1700
 		        squares = legalIDs.split(',');
+		        
+		        console.log(legalIDs.split(','));
+		        console.log(this.type, this.color, legalIDs, squares);
 		        
 		        for (var i = squares.length - 2; i >= 0; i--) {
 		        	kid = Game.occupied(squares[i]);
@@ -818,7 +822,7 @@ Game.Checkmate = function() {
 		check = Game.check(player.King.position, this.Players[1]);
 	
 	var transpose = function (){
-		var squares = Game.vector(player.King.position, check[0].position, player.color, false).list.split(',');
+		var squares = Game.vector(player.King.position, check[0].position, player.color).list.split(',');
 		
 		console.log(squares);
 
@@ -1145,6 +1149,7 @@ Game.vector = function(start, end, side, capture){
         xInc = Game.findInc(sX, eX),
         yInc = Game.findInc(sY, eY),
         squareList = '',
+        capture = capture || false, // default capture to false
         dest, piece, square;
         
     do {
