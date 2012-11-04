@@ -168,12 +168,14 @@
 		</div> <!-- End of Wrapper -->
 		
 		<script>
-			head.js('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', 'js/lib/jquery/jquery-ui-1.8.16.custom.min.js', 'js/chess.js',
-			function(){
-				// Load jQuery locally if CDN fails
-				if(!$){document.write(unescape("%3Cscript src='js/lib/jquery/jquery-1.7.1.min.js' %3E%3C/script%3E"))};
-				new Game()
-			});
+            head.js('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', 'js/lib/jquery/jquery-ui-1.8.16.custom.min.js', 'js/chess.js',
+                    function () {
+                    "use strict";
+                        
+                    // Load jQuery locally if CDN fails
+                    if (!$) {document.write(unescape("%3Cscript src='js/lib/jquery/jquery-1.7.1.min.js' %3E%3C/script%3E"))}
+                    new Game()
+                    })
 		</script>
 	</body>
 </html>
