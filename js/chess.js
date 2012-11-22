@@ -107,7 +107,8 @@ function Game() {
 			else this.King = new king(this.color, start);
 
 			if (array) array.push(newPiece);
-		},
+		}
+    };
 /*** End of Player() methods ***/
 
 	/**
@@ -117,7 +118,7 @@ function Game() {
 	 * @param {string} color The color (side) of the Piece
 	 * @param {string} start The starting position of the Piece in format [CR]
 	 */
-	function Piece(color, start){
+	Piece = function(color, start){
 		this.moved = false;
 		this.protection = false;
 		this.position = start;
@@ -130,7 +131,7 @@ function Game() {
 			.addClass(color)
 			.data('piece', this)
 			.appendTo("#" + this.position);
-	}
+	};
 
 	/**
 	 * @extends Piece
