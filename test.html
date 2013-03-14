@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="author" content="Benjamin J. Fisher">
+		<meta name="description" content="Web based chess application using HTML5, CSS3 and JQuery">
+		
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		
+		<title>Web Chess - Test Board</title>
+		<link rel="stylesheet" href="css/test.css" />
+		
+		<script src="js/lib/head.min.js"></script>
+		
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="staging">
+				<ul>
+					<li rel="black queen">
+						<img src="images/thumb/queen_black_thumb.png" alt="black queen" />
+					</li>
+					<li rel="black rook">
+						<img src="images/thumb/rook_black_thumb.png" alt="black rook" />
+					</li>
+					<li rel="black bishop">
+						<img src="images/thumb/bishop_black_thumb.png" alt="black bishop" />
+					</li>
+					<li rel="black knight">
+						<img src="images/thumb/knight_black_thumb.png" alt="black knight" />
+					</li>
+					<li rel="black pawn">
+						<img src="images/thumb/pawn_black_thumb.png" alt="black pawn" />
+					</li>
+					<li rel="white queen">
+						<img src="images/thumb/queen_white_thumb.png" alt="white queen" />
+					</li>
+					<li rel="white rook">
+						<img src="images/thumb/rook_white_thumb.png" alt="white rook" />
+					</li>
+					<li rel="white bishop">
+						<img src="images/thumb/bishop_white_thumb.png" alt="white bishop" />
+					</li>
+					<li rel="white knight">
+						<img src="images/thumb/knight_white_thumb.png" alt="white knight" />
+					</li>
+					<li rel="white pawn">
+						<img src="images/thumb/pawn_white_thumb.png" alt="white pawn" />
+					</li>
+				</ul>
+			</div>
+			
+			<div id="board">
+					<ul>
+					<li id="A8"><span class="label">8</span></li>
+					<li id="B8"></li>
+					<li id="C8"></li>
+					<li id="D8"></li>
+					<li id="E8"></li>
+					<li id="F8"></li>
+					<li id="G8"></li>
+					<li id="H8"></li>
+				</ul>
+				<ul>
+					<li id="A7"><span class="label">7</span></li>
+					<li id="B7"></li>
+					<li id="C7"></li>
+					<li id="D7"></li>
+					<li id="E7"></li>
+					<li id="F7"></li>
+					<li id="G7"></li>
+					<li id="H7"></li>
+				</ul>
+				<ul>
+					<li id="A6"><span class="label">6</span></li>
+					<li id="B6"></li>
+					<li id="C6"></li>
+					<li id="D6"></li>
+					<li id="E6"></li>
+					<li id="F6"></li>
+					<li id="G6"></li>
+					<li id="H6"></li>
+				</ul>
+				<ul>
+					<li id="A5"><span class="label">5</span></li>
+					<li id="B5"></li>
+					<li id="C5"></li>
+					<li id="D5"></li>
+					<li id="E5"></li>
+					<li id="F5"></li>
+					<li id="G5"></li>
+					<li id="H5"></li>
+				</ul>
+				<ul>
+					<li id="A4"><span class="label">4</span></li>
+					<li id="B4"></li>
+					<li id="C4"></li>
+					<li id="D4"></li>
+					<li id="E4"></li>
+					<li id="F4"></li>
+					<li id="G4"></li>
+					<li id="H4"></li>
+				</ul>
+				<ul>
+					<li id="A3"><span class="label">3</span></li>
+					<li id="B3"></li>
+					<li id="C3"></li>
+					<li id="D3"></li>
+					<li id="E3"></li>
+					<li id="F3"></li>
+					<li id="G3"></li>
+					<li id="H3"></li>
+				</ul>
+				<ul>
+					<li id="A2"><span class="label">2</span></li>
+					<li id="B2"></li>
+					<li id="C2"></li>
+					<li id="D2"></li>
+					<li id="E2"></li>
+					<li id="F2"></li>
+					<li id="G2"></li>
+					<li id="H2"></li>
+				</ul>
+				<ul>
+					<li id="A1"><span class="label">A1</span></li>
+					<li id="B1"><span class="label">B</span></li>
+					<li id="C1"><span class="label">C</span></li>
+					<li id="D1"><span class="label">D</span></li>
+					<li id="E1"><span class="label">E</span></li>
+					<li id="F1"><span class="label">F</span></li>
+					<li id="G1"><span class="label">G</span></li>
+					<li id="H1"><span class="label">H</span></li>
+				</ul>
+				
+				<!-- Cover prevents interaction when the game is over -->
+				<div id="cover">
+				</div>
+			</div> <!-- End of Board -->
+
+			<div id="prison">
+				<ul>
+					<li rel="black queen">
+						<img src="images/thumb/queen_black_thumb.png" class="hidden" alt="Captured Black Queen" />
+						<span class="count"></span>
+					</li>
+					<li rel="black rook">
+						<img src="images/thumb/rook_black_thumb.png" class="hidden" alt="Captured Black Rook" />
+						<span class="count"></span>
+					</li>
+					<li rel="black bishop">
+						<img src="images/thumb/bishop_black_thumb.png" class="hidden" alt="Captured Black Bishop" />
+						<span class="count"></span>
+					</li>
+					<li rel="black knight">
+						<img src="images/thumb/knight_black_thumb.png" class="hidden" alt="Captured Black Knight" />
+						<span class="count"></span>
+					</li>
+					<li rel="black pawn">
+						<img src="images/thumb/pawn_black_thumb.png" class="hidden" alt="Captured Black Pawn" />
+						<span class="count"></span>
+					</li>
+					<li rel="white queen">
+						<img src="images/thumb/queen_white_thumb.png" class="hidden" alt="Captured White Queen" />
+						<span class="count"></span>
+					</li>
+					<li rel="white rook">
+						<img src="images/thumb/rook_white_thumb.png" class="hidden" alt="Captured White Rook" />
+						<span class="count"></span>
+					</li>
+					<li rel="white bishop">
+						<img src="images/thumb/bishop_white_thumb.png" class="hidden" alt="Captured White Bishop" />
+						<span class="count"></span>
+					</li>
+					<li rel="white knight">
+						<img src="images/thumb/knight_white_thumb.png" class="hidden" alt="Captured White Knight" />
+						<span class="count"></span>
+					</li>
+					<li rel="white pawn">
+						<img src="images/thumb/pawn_white_thumb.png" class="hidden" alt="Captured White Pawn" />
+						<span class="count"></span>
+					</li>
+				</ul>
+			</div> <!-- End of Prison -->
+
+			<div id="Dash" class="hidden">
+
+				<p>Turn: <span id='turn'></span></p>
+				<div id="log">
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2">White</th>
+								<th>Black</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<button id="resign">Resign</button>
+				<button id="clear">Clear Board</button>
+			</div> <!-- End of Dash -->
+			
+		</div> <!-- End of Wrapper -->
+		<script>
+			head.js('http://code.jquery.com/jquery.min.js',
+				function () {
+					!!window.jQuery || head.js('js/lib/jquery/jquery-1.7.1.min.js')
+				}
+			);
+			head.js('js/lib/jquery/jquery-ui-1.8.16.custom.min.js',	'js/chess.js', 'js/test.js',
+				function(){new Game()}
+			);
+		</script>
+	</body>
+</html>

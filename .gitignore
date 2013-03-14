@@ -1,9 +1,11 @@
 .DS_Store
-
-
+Thumbs.db
 .tmp*
 .project
 *.sass
 *.scss
 *.scssc
 config.rb
+css/scss
+
+/.settings
