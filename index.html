@@ -167,14 +167,15 @@
 			</div> <!-- End of Dash -->
 		</div> <!-- End of Wrapper -->
 		
-		<script src='http://code.jquery.com/jquery-1.9.1.min.js'></script>
 		<script>
-			window.onload = function(){
+			head.js('http://code.jquery.com/jquery-1.9.1.min.js', function(){
 				if(typeof jQuery === 'undefined'){
 					head.js('js/lib/jquery/jquery-1.9.1.min.js');
 				};
-				head.js('js/lib/jquery/jquery-ui-1.8.16.custom.min.js', 'js/chess.js', function(){ new Game() })
-			};
+				head.js('js/lib/jquery/jquery-ui-1.8.16.custom.min.js', 'js/chess.js',
+					function(){ new Game() }
+				)
+			})
 		</script>
 	</body>
 </html>
