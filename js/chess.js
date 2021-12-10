@@ -179,7 +179,7 @@ function Game() {
                 $('#' + this.position).removeClass('selected');
                 $('#' + Game.Players[0].King.position).addClass('threat');
 
-                // Add attach class to any pieces that are threatening the current player's king
+                // Add attack class to any pieces that are threatening the current player's king
                 $(square_check).each(function() {
                     $('#' + this.position).addClass('attack');
                 });
