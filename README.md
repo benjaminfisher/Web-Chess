@@ -144,3 +144,9 @@ v20.3 - Stalemate is working << B. Fisher 120711
 v20.4 - All alerts removed. Style for cover notes and forms still needs some work.
 
 v20.5 - Converted to Compass project with SASS (sass files are not included in repo).
+	
+	
+-------------------------------------------------------------------------
+	
+_Version 21_ - Castle legality issue
+	King can castle into check
