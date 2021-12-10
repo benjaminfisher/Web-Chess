@@ -1,7 +1,7 @@
 /**
- * Master object to control game functionality and contain players and pieces.
+ * Working on castle into check issue. Pushing latest version
  * @author Benjamin Fisher
- * @version 20.5
+ * @version 20.6
  * @constructor
  */
 function Game() {
